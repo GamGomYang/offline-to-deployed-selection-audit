@@ -1,0 +1,68 @@
+{
+  "baseline_id": "paper_v3_frozen_control_eta_20260324",
+  "paper_file": "paper.tex",
+  "canonical_run_root": "paper_rebuild_20260324T065755Z",
+  "tables": {
+    "Table 1": {
+      "label": "tab:validation_selection",
+      "title": "Validation-only eta selection",
+      "canonical_csv": "paper_rebuild_20260324T065755Z/paper_pack/tables/validation_selection.csv",
+      "canonical_md": "paper_rebuild_20260324T065755Z/paper_pack/tables/validation_selection.md"
+    },
+    "Table 2": {
+      "label": "tab:selected_vs_eta1",
+      "title": "Held-out selected eta versus eta=1.0",
+      "canonical_csv": "paper_rebuild_20260324T065755Z/paper_pack/tables/test_selected_vs_eta1.csv",
+      "canonical_md": "paper_rebuild_20260324T065755Z/paper_pack/tables/test_selected_vs_eta1.md"
+    },
+    "Table 3": {
+      "label": "tab:selected_vs_external",
+      "title": "Held-out selected eta versus external baselines",
+      "canonical_csv": "paper_rebuild_20260324T065755Z/paper_pack/tables/test_selected_vs_external_baselines.csv",
+      "canonical_md": "paper_rebuild_20260324T065755Z/paper_pack/tables/test_selected_vs_external_baselines.md"
+    },
+    "Table 4": {
+      "label": "tab:diagnostic_v2",
+      "title": "Held-out executed-path diagnostics",
+      "canonical_csv": "paper_rebuild_20260324T065755Z/paper_pack/tables/diagnostic_selected_eta.csv",
+      "canonical_md": "paper_rebuild_20260324T065755Z/paper_pack/tables/diagnostic_selected_eta.md",
+      "canonical_extended_csv": "paper_rebuild_20260324T065755Z/paper_pack/diagnostics/diagnostic_selected_eta_v2.csv"
+    }
+  },
+  "figures": {
+    "Figure 1": {
+      "label": "fig:misalign",
+      "title": "Representative held-out trace",
+      "canonical_png": "paper_rebuild_20260324T065755Z/paper_pack/figures/fig_selected_trace.png",
+      "paper_png": "fig_misalignment.png",
+      "paper_alias_png": "fig_selected_trace.png"
+    },
+    "Figure 2": {
+      "label": "fig:frontier",
+      "title": "Validation frontier",
+      "canonical_png": "paper_rebuild_20260324T065755Z/paper_pack/figures/fig_validation_frontier.png",
+      "paper_png": "fig_frontier.png",
+      "paper_alias_png": "fig_validation_frontier.png"
+    },
+    "Figure 3": {
+      "label": "fig:seedscatter",
+      "title": "Seed-wise paired delta Sharpe scatter",
+      "canonical_png": "paper_rebuild_20260324T065755Z/paper_pack/figures/fig_seed_scatter.png",
+      "paper_png": "fig_seed_scatter.png"
+    },
+    "Figure 4": {
+      "label": "fig:rollingfrontier",
+      "title": "Rolling-window positive-cost frontier robustness",
+      "canonical_png": "paper_v1_extension_artifacts/figures/fig_rolling_frontier_robustness.png",
+      "paper_png": "fig_rolling_frontier_robustness.png",
+      "source_csv": "outputs/extensions/v1_rolling_origin_windows/20260401T074612Z/frontier_analysis/frontier_split_kappa_summary.csv"
+    },
+    "Figure 5": {
+      "label": "fig:kappacurve",
+      "title": "Dense-kappa benefit curve",
+      "canonical_png": "paper_v1_extension_artifacts/figures/fig_kappa_benefit_curve.png",
+      "paper_png": "fig_kappa_benefit_curve.png",
+      "source_csv": "outputs/extensions/v1_kappa_expansion/20260401T090500Z/analysis/kappa_expansion_summary.csv"
+    }
+  }
+}

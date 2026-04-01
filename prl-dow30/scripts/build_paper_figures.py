@@ -70,12 +70,22 @@ def _format_kappa(kappa: float) -> str:
 
 def _assert_representative_trace_matches_metadata(trace_path: Path, metadata: dict) -> None:
     path_str = str(trace_path)
+    selected_eta = float(metadata["selected_eta"])
+    representative_kappa = float(metadata["representative_kappa"])
     expected_parts = [
-        f"eta_{metadata['selected_eta']}",
-        f"kappa_{metadata['representative_kappa']}",
+        f"eta_{selected_eta}",
+        f"eta_{selected_eta:g}",
+        f"kappa_{representative_kappa}",
+        f"kappa_{representative_kappa:g}",
         f"seed_{metadata['representative_seed']}",
     ]
-    missing = [part for part in expected_parts if part not in path_str]
+    missing = []
+    if not any(part in path_str for part in expected_parts[:2]):
+        missing.append(f"eta_{selected_eta}")
+    if not any(part in path_str for part in expected_parts[2:4]):
+        missing.append(f"kappa_{representative_kappa}")
+    if expected_parts[4] not in path_str:
+        missing.append(expected_parts[4])
     if missing:
         raise ValueError(
             f"Representative trace path {trace_path} does not match metadata; missing path parts: {missing}"

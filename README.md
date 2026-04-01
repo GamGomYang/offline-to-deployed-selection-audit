@@ -3,7 +3,7 @@
 
 Execution-aware RL framework for **multi-asset portfolio management** with a paper-audited **fixed 27-name large-cap U.S. equity snapshot**.
 
-Some repository paths retain legacy `prl-dow30` naming, but the locked paper rebuild itself uses the fixed 27-name universe documented in `paper.tex` and `data/processed_u27`.
+Some repository paths retain legacy `prl-dow30` naming. That directory is still the active source tree for training, evaluation, and paper-build scripts; the paper itself, however, uses the fixed 27-name universe documented in `paper.tex` and `frozen_protocol/paper_v3/`.
 
 Most portfolio-RL formulations implicitly assume the policy's target weights are the same as what gets traded:
 
@@ -62,7 +62,7 @@ For deeper protocol details and definitions, see `docs/spec.md`.
 
 ---
 
-## Paper Rebuild Snapshot
+## Locked Paper Snapshot
 
 The locked paper rebuild is a **frozen-policy execution study**, not a retraining comparison.
 
@@ -74,44 +74,40 @@ The locked paper rebuild is a **frozen-policy execution study**, not a retrainin
 - Locked execution grid: `eta in {1.0, 0.5, 0.2, 0.1, 0.082, 0.05, 0.02}`
 - Validation-selected operating point in the corrected full-window rebuild: `eta = 0.5`
 
-Held-out selected-vs-immediate (`eta=0.5` vs `eta=1.0`) summary:
+Main internal result on the canonical split:
 
 - Median executed turnover falls from `0.02200` to `0.01095`
 - Paired median net Sharpe improves by `+0.0105` at `kappa = 0.0005`
 - Paired median net Sharpe improves by `+0.0213` at `kappa = 0.001`
 - At `kappa = 0`, evidence is negligible rather than strongly favorable
 
-Matched heuristic baseline summary:
+Safe interpretation:
 
-- Stronger than inverse-volatility risk parity and minimum-variance across reported cost regimes
-- Mixed against daily-rebalanced equal weight and long-only mean-variance
-- Does not beat buy-and-hold equal weight on this held-out window
-
-Interpretation:
-
-- The main claim is about **cost-aligned execution control**
-- The selected operating point looks most turnover-efficient relative to **higher-churn heuristic comparators**
-- The paper does **not** claim universal superiority of execution-aware retraining
+- The main claim is about **cost-aligned execution control under a frozen learned policy**
+- The strongest evidence is the existence of an **interior positive-cost execution frontier**
+- The gain is explained by **lower realized turnover and lower realized cost**, not by gross-alpha improvement
+- The paper does **not** claim retraining superiority, universal selected-point transfer across windows, or broad comparator dominance
 
 Primary paper artifacts:
 
 - `paper.tex`
-- `paper.pdf`
+- `paper/` (Overleaf-ready package)
 - `paper_rebuild_20260324T065755Z/validation_eta/selection/validation_eta_selection.md`
 - `paper_rebuild_20260324T065755Z/paper_pack/stats/selected_eta_vs_eta1_stats.md`
-- `paper_rebuild_20260324T065755Z/external_baselines/report.md`
 - `fig_frontier.png`, `fig_misalignment.png`, `fig_seed_scatter.png`
+- `fig_rolling_frontier_robustness.png`, `fig_kappa_benefit_curve.png`
+- `BASELINE_PROTOCOL.md`
 
 ## Broader Repository Experiments
 
-The repository also contains broader exploratory sweeps, including fixed-eta frontiers and adaptive execution schedules. Those experiments are useful for development, but the locked paper claims should be read from the paper rebuild artifacts above rather than from older exploratory runs.
+The repository also contains broader exploratory material. Those runs are useful for development, but the locked v1 paper claims should be read from the paper rebuild artifacts above rather than from older exploratory outputs.
 
 ---
 
 ## Repository Structure
 
 ```
-prl-dow30/
+prl-dow30/              # legacy name, still the active source tree
 - prl/
   - data.py
   - features.py
@@ -158,13 +154,14 @@ Signature hashes are unique across eta / rule-vol configurations.
 ### Install
 
 ```
+cd prl-dow30
 pip install -r requirements.txt
 ```
 
 ### Build Cache (Online)
 
 ```
-python scripts/build_cache.py --config configs/paper.yaml
+python3 -m scripts.build_cache --config configs/paper.yaml
 ```
 
 Paper mode is designed to run without external downloads during training/evaluation.
@@ -172,7 +169,7 @@ Paper mode is designed to run without external downloads during training/evaluat
 ### Train
 
 ```
-python scripts/run_train.py \
+python3 -m scripts.run_train \
   --config configs/default.yaml \
   --model-type prl \
   --seed 0
@@ -181,7 +178,7 @@ python scripts/run_train.py \
 ### Evaluate
 
 ```
-python scripts/run_eval.py \
+python3 -m scripts.run_eval \
   --config configs/default.yaml \
   --model-type prl \
   --seed 0
@@ -190,9 +187,9 @@ python scripts/run_eval.py \
 ### Run Experiment Suites
 
 ```
-python scripts/run_matrix.py --config configs/main_experiment.yaml
-python scripts/run_matrix.py --config configs/eta_sweep.yaml
-python scripts/run_matrix.py --config configs/rule_vol.yaml
+python3 -m scripts.run_matrix --config configs/main_experiment.yaml
+python3 -m scripts.run_matrix --config configs/eta_sweep.yaml
+python3 -m scripts.run_matrix --config configs/rule_vol.yaml
 ```
 
 ---
