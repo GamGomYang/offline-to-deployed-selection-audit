@@ -1,12 +1,14 @@
 # Paper Finishing Sequence Spec
 
+> Historical planning note. The authoritative frozen baseline is now documented in [`BASELINE_PROTOCOL.md`](/workspace/execution-aware-portfolio-rl/BASELINE_PROTOCOL.md) and [`manifests/baselines/paper_v3_frozen.json`](/workspace/execution-aware-portfolio-rl/manifests/baselines/paper_v3_frozen.json).
+
 ## Current Locked State
 
-- Base rebuild run: `prl-dow30/outputs/paper_rebuild_20260324T065755Z`
-- Validation-selected operating point: `eta=0.2`
+- Base rebuild run: `paper_rebuild_20260324T065755Z`
+- Validation-selected operating point: `eta=0.5`
 - Safe main claim:
   - execution-aware formulation is cost-aligned
-  - validation-selected `eta=0.2` remains valid on held-out test
+  - validation-selected `eta=0.5` remains valid on held-out test
   - the selected operating point is competitive in net Sharpe and turnover efficiency
 - Unsafe claim for the current version:
   - general execution-aware training superiority
@@ -25,7 +27,7 @@ Catch any small inconsistency between tables, prose, captions, and generated art
 
 ### Main Files
 
-- `02.17.01.tex`
+- `paper.tex`
 - `prl-dow30/outputs/paper_rebuild_20260324T065755Z/paper_pack/tables/test_selected_vs_eta1.csv`
 - `prl-dow30/outputs/paper_rebuild_20260324T065755Z/paper_pack/tables/test_selected_vs_external_baselines.csv`
 - `prl-dow30/outputs/paper_rebuild_20260324T065755Z/paper_pack/tables/diagnostic_selected_eta.csv`
@@ -41,7 +43,7 @@ Catch any small inconsistency between tables, prose, captions, and generated art
   - trace-definition degeneracy
   - a bug
 - Add a table note clarifying that a marginal median and a paired median are different objects.
-- Check that `eta=0.2` is used consistently in:
+- Check that `eta=0.5` is used consistently in:
   - abstract
   - results
   - discussion
@@ -57,7 +59,7 @@ Catch any small inconsistency between tables, prose, captions, and generated art
 
 ### Output
 
-- Cleaned table notes in `02.17.01.tex`
+- Cleaned table notes in `paper.tex`
 - A short audit note in the working log or commit message summarizing what was checked
 
 ### Done When
@@ -75,7 +77,7 @@ Make the manuscript read like a submission draft rather than an experiment memo.
 
 - Abstract:
   - frozen-policy scope is explicit
-  - `eta=0.2` is consistently described as validation-selected
+  - `eta=0.5` is consistently described as validation-selected
   - “Sharpe stronger than CAGR” is visible
 - Results:
   - positive-cost evidence is clearly strong
@@ -162,7 +164,7 @@ Ensure the paper uses one stable term per concept and that each contribution is 
 - `target portfolio` / `target weights` / `policy output`
 - `executed portfolio` / `realized portfolio` / `executed weights`
 - `immediate execution baseline` / `baseline arm` / `eta=1.0 arm`
-- `selected operating point` / `selected eta` / `validation-selected eta=0.2`
+- `selected operating point` / `selected eta` / `validation-selected eta=0.5`
 - `net Sharpe` / `executed-path Sharpe` / `sharpe_net_lin`
 
 ### Contribution-Limitation Audit
@@ -210,7 +212,7 @@ Make every figure self-contained and immediately interpretable.
 ### Check
 
 - representative seed criterion is short and explicit
-- selected `eta=0.2` is visually easy to find
+- selected `eta=0.5` is visually easy to find
 - captions state:
   - what is being compared
   - which split is shown
@@ -259,7 +261,7 @@ Avoid losing credibility on formatting and polish.
 - axis, legend, and unit consistency
 - reference formatting consistency
 - punctuation consistency in captions
-- notation consistency for `eta=0.2` and `kappa=10^{-3}`
+- notation consistency for `eta=0.5` and `kappa=10^{-3}`
 - no TODO, placeholder, or internal note text
 
 ### Done When
@@ -325,7 +327,7 @@ Upgrade the paper’s scope only if there is time and appetite for a larger empi
 ## Practical Guidance for the Next Interactive Passes
 
 - Next pass should begin with Step 1.
-- Step 1 should update `02.17.01.tex` notes and captions if any numeric ambiguity is found.
+- Step 1 should update `paper.tex` notes and captions if any numeric ambiguity is found.
 - Step 2 should happen immediately after Step 1 while the numbers are still fresh.
 - Steps 3 and 4 can then be treated as one literature-plus-protocol pass.
 - Step 5 should happen after Steps 2 through 4, because terminology consistency is easiest to audit after content has stabilized.
