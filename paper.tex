@@ -16,6 +16,7 @@
 % ---------- Math / Theorems ----------
 \usepackage{amsmath,amssymb,amsthm}
 \newtheorem{proposition}{Proposition}
+\newtheorem{lemma}{Lemma}
 \newtheorem{corollary}{Corollary}
 \newtheorem{remark}{Remark}
 
@@ -78,8 +79,7 @@
 \vspace{-4mm}
 \begin{abstract}
 \vspace{-1mm}
-Most portfolio reinforcement learning (RL) formulations implicitly assume that the portfolio weights output by the policy are immediately executed. Under transaction costs, this conflation misaligns cost accounting and obscures the executed holding path. We formalize a two-stage decomposition: the policy outputs a target portfolio $\wtgt_t$, while a proximal execution controller outputs an executed portfolio $\wexec_t$ via a closed-form update with timescale $\eta_t\in(0,1]$. Costs are charged on executed turnover, not target turnover, so evaluation follows the executed path.
-We study this formulation in a deliberately narrow frozen-policy protocol: one control model over a fixed 27-name large-cap U.S. equity snapshot is trained once on 2010--2021, the same trained policy is reused in every empirical arm, and only the execution mapping changes across a fixed $\eta$ grid scored on validation 2022--2023 before final evaluation on 2024--2025. On the canonical split, the locked validation rule selects $\eta=0.5$. On the held-out window, this selected interior operating point reduces median executed turnover from $0.02200$ to $0.01095$ and improves paired median net Sharpe by $+0.0105$ at $\kappa=5\times10^{-4}$ and $+0.0213$ at $\kappa=10^{-3}$ relative to immediate execution, with $10/10$ seed wins in both positive-cost regimes; at $\kappa=0$, the evidence is negligible. Across rolling windows, conservative selected-point transfer is window-sensitive, but the positive-cost held-out frontier remains interior. On a denser canonical friction grid up to $\kappa=2\times10^{-3}$, the best interior held-out gain increases monotonically with friction. These gains are explained by lower realized turnover and lower realized cost, not by improved gross Sharpe. Our claim is therefore narrow: under a fixed learned trading policy, cost-aligned execution control matters under frictions.
+Most portfolio reinforcement learning (RL) formulations treat the portfolio weights output by the policy as the portfolio that is immediately executed. Under transaction costs, this interface conflates target decisions with the realized holding path and obscures the object on which trading costs are actually incurred. We separate these objects through a two-stage decomposition: the policy outputs a target portfolio $\wtgt_t$, an execution controller produces an executed portfolio $\wexec_t$, and both transaction costs and primary evaluation are attached to executed turnover on the realized path. We evaluate this formulation in a frozen-policy, validation-first protocol that reuses one learned policy across all execution arms and changes only the execution rate $\eta$. On a fixed 27-name U.S. large-cap universe, the validation-selected interior operating point $\eta=0.5$ roughly halves executed turnover and improves net Sharpe in positive-cost regimes, while the $\kappa=0$ effect is negligible. The improvement is explained by lower realized turnover and lower realized cost rather than by higher gross returns, with rolling-window and friction-sensitivity diagnostics showing that the benefit is concentrated in positive-friction settings.
 \end{abstract}
 
 \vspace{-2mm}
@@ -91,80 +91,121 @@ We study this formulation in a deliberately narrow frozen-policy protocol: one c
 
 % ============================================================
 \section{Introduction}
-Portfolio RL has gained attention for optimizing dynamic allocations under complex objectives. However, many formulations implicitly assume that the action produced by the agent (portfolio weights) is executed immediately and exactly. In realistic trading---and even in cost-free simulations where policies can over-react and over-trade---the \emph{target} portfolio and the \emph{executed} portfolio are distinct objects:
-\begin{itemize}[leftmargin=*,itemsep=1pt]
-\item \textbf{Target portfolio} $\wtgt_t$: the policy output at decision time $t$.
-\item \textbf{Executed portfolio} $\wexec_t$: the portfolio actually held over the next return interval and used for cost accounting.
-\end{itemize}
+Portfolio RL is often formulated as if the portfolio weights output by the policy are the portfolio that is immediately held. This direct-action interface is convenient, but under transaction costs it collapses two different objects into one: the target portfolio proposed at decision time and the executed portfolio that is actually carried into the next return interval.
 
-\paragraph{Terminology convention.}
-Throughout the paper, \emph{target portfolio} refers to the policy output $\wtgt_t$, \emph{executed portfolio} refers to the portfolio actually held over the next return interval $\wexec_t$, \emph{immediate-execution baseline} refers to the $\eta=1.0$ comparison arm, \emph{validation-selected operating point} refers to the operating point chosen on the validation window (here $\eta=0.5$), and \emph{net Sharpe} refers to the annualized Sharpe ratio computed from executed net linear returns. The code label \texttt{sharpe\_net\_lin} is simply the implementation name for this same net-Sharpe quantity.
+When execution is gradual, realized turnover, realized cost, and realized net return are determined by the executed path rather than by the raw target action alone. The distinction therefore matters even before one asks whether a different policy should be learned. It changes which portfolio is charged for trading costs, which return path is evaluated, and how one interprets the relation between portfolio choice and trade implementation.
 
-\paragraph{Why this is not ``just smoothing''.}
-Execution-aware modeling changes the realized self-financing path, not just the smoothness of an action sequence. If execution is slower than target updates, charging costs on target turnover implicitly rescales the effective cost by $1/\eta_t$ (Proposition~\ref{prop:cost_misalignment}), creating a biased learning signal and misleading evaluation. Moreover, the execution mapping is a proximal step (Proposition~\ref{prop:prox}), equivalent to a low-pass filter on the target trajectory, which stabilizes the \emph{realized trading path} rather than merely penalizing weights directly.
+The question studied here is therefore: under a fixed learned policy, does separating target and executed portfolios create an interior execution frontier in positive-cost regimes, and are the resulting net-performance changes explained by lower realized turnover and lower realized cost rather than by improved gross returns?
+
+We adopt a frozen-policy protocol because retraining would change both the target generator and the execution interface at the same time. That joint comparison is important, but it answers a different question. Holding the learned policy fixed and varying only the execution mapping lets us identify how execution-aware accounting and partial execution affect realized net performance for the same learned target path.
 
 \paragraph{Contributions.}
 \begin{enumerate}[leftmargin=*,itemsep=2pt]
-\item \textbf{Two-stage decomposition and cost-aligned accounting.} We separate target $\wtgt$ and executed $\wexec$ portfolios, and we define all \emph{core} rewards and performance metrics using $\wexec$ only.
-\item \textbf{Execution mapping and accounting implications.} We specify a closed-form execution update parameterized by timescale $\eta_t$ and summarize its basic properties: proximal interpretation, executed-turnover scaling, tracking-error monotonicity, anchor behavior, and target-cost misalignment.
-\item \textbf{Frozen-policy validation-first evidence.} Using paired-seed evaluation on a reproducible fixed 27-name large-cap U.S. equity snapshot, we isolate the effect of execution by holding the same learned control policy fixed across all arms, varying only the execution mapping, selecting $\eta$ on validation only, and reserving the test window for held-out evaluation. On the canonical split this produces a validation-selected interior operating point $\eta=0.5$ whose positive-cost held-out benefit is strong; across rolling windows, the positive-cost frontier itself is more robust than the transfer of any single conservative selected point.
-\item \textbf{Mechanistic friction-sensitivity diagnostics.} We show that the positive-cost gains are explained primarily by lower realized turnover and lower realized cost rather than by gross-return improvement, and that the same interior frontier becomes more consequential as $\kappa$ increases on a denser canonical friction grid.
+\item \textbf{Execution-aware portfolio interface and accounting.} We separate target and executed portfolios and attach transaction costs and primary evaluation to the realized executed path.
+\item \textbf{Frozen-policy, validation-first identification protocol.} We evaluate one learned policy across fixed execution arms, select the operating point on validation only, and reserve the test window for held-out evaluation so that execution effects are separated from retraining effects.
+\item \textbf{Friction-sensitive empirical evidence and diagnostics.} On the fixed 27-name U.S. large-cap benchmark, interior execution rates reduce turnover and improve net Sharpe in positive-cost regimes, and trace-based diagnostics show that the benefit comes from lower realized cost rather than higher gross returns.
 \end{enumerate}
-This empirical scope is intentionally narrow. Every main empirical result in this paper compares the same trained policy under different fixed execution mappings; no main result is obtained by retraining a different policy under an alternative environment. The paper therefore asks a specific question: under a frozen learned policy, does cost-aligned execution control create an interior positive-cost execution frontier, and are its gains explained primarily by lower realized turnover and lower realized cost rather than by gross-alpha improvement? Correspondingly, the paper does \emph{not} claim retraining superiority, universally transferable selected operating points across windows, broad dominance over classical portfolio strategies, or deployment-grade point-in-time backtest realism. The rolling-window diagnostic further sharpens that scope: the positive-cost execution frontier itself is more stable under rolling windows than the transfer of any single conservative validation-selected operating point. This distinction is also the core gap relative to prior formulations that attach turnover penalties directly to actions while treating actions and holdings as the same object.
+This paper does not propose a stronger portfolio policy. It isolates how execution-aware accounting and partial execution alone change realized net performance under frictions for a fixed learned policy.
 
 % ============================================================
-\section{Background and Related Work}
-Classical portfolio theory studies dynamic allocation under risk/return trade-offs and frictions \cite{markowitz1952,merton1973}. In friction-aware portfolio optimization, transaction costs are modeled explicitly in both single-period and multi-period allocation problems \cite{lobo2007,garleanu2013}. In particular, dynamic trading with costs naturally separates the currently held portfolio from a moving target portfolio and often leads to partial adjustment or no-trade regions around that target \cite{garleanu2013}. This distinction is even more explicit in optimal-execution models, which trade gradually from a current inventory toward a desired terminal position while balancing execution cost and risk \cite{bertsimas1998,almgren2000}. These literatures motivate our emphasis on the executed portfolio and executed turnover as accounting objects rather than as afterthought diagnostics.
+\section{Related Work}
+\paragraph{Classical friction-aware portfolio choice.}
+Classical portfolio theory studies dynamic allocation under risk/return trade-offs \cite{markowitz1952,merton1973}. Once trading frictions are introduced, however, the problem is no longer only which portfolio is desirable in isolation, but how current holdings should be adjusted toward that portfolio over time. Friction-aware portfolio optimization therefore shifts attention from static allocation to dynamic adjustment under transaction costs \cite{lobo2007,garleanu2013}.
 
-Portfolio RL and deep portfolio management typically make a different interface choice: the policy outputs portfolio weights and the environment treats those weights as the portfolio that is immediately held or rebalanced to \cite{moody1998,jiang2017,ye2020}. Even when transaction costs are included, the agent action and the executed portfolio are often coupled at the same step, so action turnover becomes a proxy for executed trading turnover. Related sequential-allocation work outside RL also studies turnover-aware portfolio updates under trading frictions \cite{li2014}. Recent portfolio-RL variants add auxiliary state prediction, reward shaping, or smoothing penalties to improve robustness and generalization \cite{ye2020,lien2023}. These are valuable advances, but they usually improve representation quality or training stability inside a direct-action portfolio interface rather than separating target and executed holdings as first-class accounting objects.
+\paragraph{Dynamic trading, aim portfolios, and partial adjustment.}
+A closer conceptual predecessor is the dynamic-trading literature that separates current holdings from desired holdings and studies how portfolios move toward an aim portfolio under costs. G\^arleanu and Pedersen make that distinction explicit in a dynamic setting with predictable returns and transaction costs \cite{garleanu2013}. More broadly, this literature motivates partial adjustment and inaction-region reasoning once trading is costly. Our paper adopts the same basic separation, but relocates it into the portfolio-RL interface: the contribution is not a new frictional trading concept, but a re-specification of the accounting and evaluation object inside RL backtesting, where a learned target portfolio and the realized executed portfolio should not be conflated.
 
-There is also a broader continuous-control literature on smoothing and regularizing RL policies. Smoothness-inducing policy regularization and action-smoothing methods have been used to improve robustness, stability, and control quality \cite{shen2020,mysore2021}. RL has also been applied directly to trade execution rather than portfolio-weight selection \cite{nevmyvaka2006}. Our execution controller is related in spirit to both strands, but the empirical question here is narrower. The present paper is not primarily about making the policy output look smoother, and it is not a retraining paper about a different RL design. It is about separating target-portfolio decisions from the executed portfolio so that trading costs, net returns, and primary evaluation are attached to the realized executed path under a frozen learned policy.
+\paragraph{Optimal execution.}
+Optimal-execution models also separate a desired position from the path used to reach it. Bertsimas and Lo and Almgren and Chriss study gradual trading that balances execution cost and risk, typically given an inventory objective or liquidation target \cite{bertsimas1998,almgren2000}. Our $\eta$-update is similar in implementation spirit to partial-adjustment rules from that literature, but the setting is different. We do not study an intraday execution optimizer. Instead, we study a daily execution layer that maps portfolio-policy outputs to executed holdings and changes how turnover, cost, and net performance are recorded for a fixed target path.
 
-Our focus is therefore narrower and more specific than a general claim about architecture design. Prior work often treats turnover penalties as part of action regularization, while the present paper treats executed turnover as the quantity that should drive cost accounting and primary evaluation. The resulting contribution is a cost-aligned execution formulation and a frozen-policy empirical study that isolates the execution frontier created by that distinction.
+\paragraph{Portfolio RL, smoothing, and regularization.}
+Most portfolio RL and deep portfolio management papers use a direct-action interface in which the policy output is treated as the portfolio that is immediately held or rebalanced to \cite{moody1998,jiang2017,ye2020}. Even when transaction costs are included, turnover is often computed directly from consecutive actions, so action turnover becomes a proxy for executed turnover. Related turnover-aware sequential-allocation work outside RL likewise studies frictions at the level of portfolio updates \cite{li2014}. Recent portfolio-RL variants improve robustness through richer state construction, auxiliary prediction, or reward shaping \cite{ye2020,lien2023}, and nearby RL work studies execution agents, hierarchical decomposition, or smooth-action regularization \cite{nevmyvaka2006,wang2021hrpm,shen2020,mysore2021}. The distinction in the present paper is therefore not simply ``smoother actions.'' It is that executed holdings are treated as the first-class accounting and evaluation object.
+
+Taken together, the prior literature already contains gradual adjustment, aim portfolios, execution scheduling, and smoothing ideas. What is less explicitly isolated is a portfolio-RL experimental protocol in which target and executed portfolios are separated, primary evaluation is attached to the realized executed path, and the empirical effect of that separation is studied under a frozen learned policy. That narrower identification question is the one addressed here.
 
 % ============================================================
-\section{Problem Setup and Timing (Anti-Lookahead)}
+\section{Problem Formulation}
 \label{sec:setup}
-We consider $N$ risky assets. Let $p_t\in\R^N$ be adjusted close prices and define single-period arithmetic returns over interval $(t,t{+}1]$ by
+We study an episodic daily portfolio-control problem over $N$ risky assets. The action space is the long-only fully invested simplex, there is no explicit cash asset, decisions are made once per trading day, and timing follows a close-to-close convention. At decision time $t$, the agent may use only information available up to close $t$; the portfolio held over $(t,t{+}1]$ is the executed portfolio formed after the decision at $t$.
+
+We denote adjusted close prices by $p_t\in\R^N$. Single-period arithmetic returns over interval $(t,t{+}1]$ are
 \[
 r_{t+1} \triangleq \frac{p_{t+1}-p_t}{p_t}\in\R^N.
 \]
-At decision time $t$, the agent observes state $s_t$ constructed \emph{only} from information available up to time $t$ (e.g., rolling past returns, volatility estimates, and previous executed weights). The policy outputs a target portfolio $\wtgt_t\in\DeltaN$ (long-only, fully invested simplex). An execution controller maps $\wtgt_t$ to executed weights $\wexec_t$, which are held over the next return interval and used for both return realization and transaction cost accounting.
 
-\paragraph{Core definitions.}
-Let the previous executed portfolio be $\wexec_{t-1}$. We define:
+\subsection{State}
+At decision time $t$, the agent observes state $s_t$ constructed only from information available up to time $t$. In the empirical instantiation, $s_t$ contains a rolling return window, per-asset volatility estimates, previous executed weights, and optional frozen signal channels; Section~\ref{sec:exp} gives the exact window lengths and feature counts.
+
+\subsection{Action}
+The policy outputs a target portfolio $\wtgt_t=\pi_\theta(s_t)$ in the long-only fully invested simplex
+\[
+\DeltaN \triangleq \{w\in\R^N_+:\mathbf{1}^\top w=1\}.
+\]
+Thus the MDP action is a \emph{target} portfolio rather than the realized holding vector. In the empirical implementation, the actor emits unconstrained real-valued logits that are mapped into $\DeltaN$ by a stable softmax; Section~\ref{sec:exp} records that concrete parameterization.
+
+\subsection{Execution Mapping}
+Let the previous executed portfolio be $\wexec_{t-1}$. The execution layer maps the target portfolio to an executed portfolio according to
 \begin{align}
 \wtgt_t &= \pi_\theta(s_t)\in\DeltaN, \label{eq:tgt_policy}\\
 \wexec_t &= (1-\eta_t)\wexec_{t-1} + \eta_t \wtgt_t,\quad \eta_t\in(0,1], \label{eq:exec_update}\\
-\TOtgt_t &= \normone{\wtgt_t - \wexec_{t-1}}\quad\text{(diagnostic)}, \label{eq:turnover_tgt}\\
-\TOexec_t &= \normone{\wexec_t - \wexec_{t-1}}\quad\text{(core)}, \label{eq:turnover_exec}\\
-\mathrm{cost}_{t} &= \kappaTC \, \TOexec_t \quad\text{(core)}, \label{eq:cost_exec}\\
-R_{t+1} &= (\wexec_t)^\top r_{t+1} - \mathrm{cost}_t \quad\text{(core)}.\label{eq:reward}
+\TOtgt_t &= \normone{\wtgt_t - \wexec_{t-1}}, \label{eq:turnover_tgt}\\
+\TOexec_t &= \normone{\wexec_t - \wexec_{t-1}}. \label{eq:turnover_exec}
 \end{align}
-\textbf{Core metrics} (Sharpe/CAGR/MDD) are computed from realized returns $\{R_{t+1}\}$ using $\wexec$ only. \textbf{Diagnostics} may also compute hypothetical quantities involving $\wtgt$ (e.g., misalignment), but these are explicitly labeled and not used as the primary evaluation metric.
+Here $\TOtgt_t$ is the turnover implied by an immediate move to the target portfolio, while $\TOexec_t$ is the turnover actually realized on the executed path.
 
-\paragraph{Optional extension (cash).}
-The present study does not include an explicit cash asset; all experiments use a long-only fully invested simplex over the fixed 27-name universe.
+\subsection{Reward and Realized Return}
+Transaction costs are charged on executed turnover, and realized reward is attached to the executed portfolio:
+\begin{align}
+\mathrm{cost}_{t} &= \kappaTC \, \TOexec_t, \label{eq:cost_exec}\\
+R_{t+1} &= (\wexec_t)^\top r_{t+1} - \mathrm{cost}_t, \label{eq:reward}\\
+R^{\mathrm{tgt}}_{t+1} &= (\wtgt_t)^\top r_{t+1} - \kappaTC \TOtgt_t. \label{eq:reward_tgt_diag}
+\end{align}
+The quantity $R_{t+1}$ is the realized executed-path return used for primary evaluation. The quantity $R^{\mathrm{tgt}}_{t+1}$ is a hypothetical target-path return used only for diagnostics. The MDP action is therefore $\wtgt_t$, while realized portfolio dynamics and primary reward are governed by the executed path $\wexec_t$ and \eqref{eq:reward}.
+
+\subsection{Terminology and Evaluation Objects}
+Throughout the paper, \emph{target portfolio} denotes the policy output $\wtgt_t$, \emph{executed portfolio} denotes the realized holdings $\wexec_t$, \emph{immediate-execution baseline} denotes the comparison arm $\eta=1.0$, \emph{validation-selected operating point} denotes the execution rate chosen on the validation window, and \emph{net Sharpe} denotes the annualized Sharpe ratio computed from executed net linear returns. The code label \texttt{sharpe\_net\_lin} is the implementation name for this same net-Sharpe quantity.
+
+\begin{table}[t]
+\centering
+\scriptsize
+\caption{Core versus diagnostic quantities.}
+\label{tab:core_vs_diag}
+\begin{tabular}{@{}lll@{}}
+\toprule
+Quantity & Role & Primary evaluation \\
+\midrule
+$\TOtgt_t$ & target-turnover diagnostic & No \\
+$\TOexec_t$ & executed turnover & Yes \\
+$R^{\mathrm{tgt}}_{t+1}$ & hypothetical target-path return & No \\
+$R_{t+1}$ & realized executed-path return & Yes \\
+$\normtwo{\wexec_t-\wtgt_t}$ & tracking diagnostic & No \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Primary portfolio metrics such as Sharpe, CAGR, and max drawdown are computed from the realized executed-path returns $\{R_{t+1}\}$. Diagnostics may additionally use $\wtgt_t$, $\TOtgt_t$, $R^{\mathrm{tgt}}_{t+1}$, or target--executed tracking discrepancies, but these objects are explicitly labeled and never serve as the primary evaluation metric.
 
 % ============================================================
-\section{Method: Execution Mapping and Cost-Aligned Evaluation}
+\section{Execution-Aware Control and Accounting}
+This section defines the execution-aware interface and the frozen-policy accounting protocol used throughout the experiments. The theoretical section that follows is narrower: it records simple analytical properties of the execution map that help interpret the empirical results without overstating the depth of the theory contribution.
 \subsection{Two-stage control}
 We interpret portfolio RL under frictions as a two-stage control problem:
 \begin{enumerate}[leftmargin=*,itemsep=1pt]
-\item \textbf{Target decision (agent):} $\wtgt_t=\pi_\theta(s_t)$.
-\item \textbf{Execution decision (controller):} $\wexec_t$ via \eqref{eq:exec_update}.
+\item \textbf{Policy layer:} the agent chooses a desired allocation $\wtgt_t=\pi_\theta(s_t)$.
+\item \textbf{Execution layer:} the controller maps that desired allocation into realized holdings $\wexec_t$ via \eqref{eq:exec_update}.
 \end{enumerate}
-The formulation naturally supports learning under the executed dynamics \eqref{eq:reward}. In the present empirical study, however, the policy is trained exactly once and then held fixed; every empirical arm reuses that same trained policy and varies only the execution mapping so that observed differences are attributable to execution rather than retraining.
+The formulation naturally supports learning under the executed dynamics \eqref{eq:reward}. In the present empirical study, however, the policy layer is trained exactly once and then held fixed; every empirical arm reuses that same trained policy and varies only the execution layer. The resulting comparison isolates how execution-aware accounting changes realized performance for the same learned target path.
 
 \subsection{Fixed execution timescale}
-The execution update \eqref{eq:exec_update} is fixed, and the present paper studies only constant timescales $\eta_t\equiv\eta$. This restriction keeps the empirical object clean: once $\eta_t$ becomes rule-based, execution design and schedule selection become entangled. We therefore treat adaptive schedules as future work rather than part of the main method.
+The execution update \eqref{eq:exec_update} is fixed, and the present paper studies only constant timescales $\eta_t\equiv\eta$. This is an identification choice rather than only a simplification. Once $\eta_t$ becomes rule-based or learned, the object of study shifts from execution accounting to adaptive controller design. Fixed $\eta$ removes schedule-design confounds and keeps the empirical question at the level of how partial execution alone changes realized turnover, realized cost, and net performance.
 
 \subsection{Cost alignment (core principle)}
-Transaction costs must be charged on executed turnover \eqref{eq:cost_exec}. Charging costs on target turnover $\TOtgt_t$ induces systematic mis-estimation when $\eta_t<1$ (Proposition~\ref{prop:cost_misalignment}) and, in a retrained setting, can bias learning as well as evaluation. The present paper studies the accounting implication under a frozen-policy protocol rather than running alternative retraining experiments.
+Cost should be attached to what is actually traded, not to what was merely proposed. The primary accounting object is therefore executed turnover $\TOexec_t$ and the realized executed-path return \eqref{eq:reward}. Target-based cost and target-path return remain useful as counterfactual diagnostics, but they are not the primary accounting object because they describe a hypothetical immediate move that was not actually executed. Charging costs on target turnover $\TOtgt_t$ induces systematic friction mis-scaling when $\eta_t<1$ (Proposition~\ref{prop:cost_misalignment}); the present paper studies that accounting implication under a frozen-policy protocol rather than running alternative retraining experiments.
 
 % ============================================================
-\section{Theory: Accounting Implications and Basic Properties of the Execution Mapping}
+\section{Theoretical Analysis}
 \label{sec:theory}
+This section collects simple analytical properties needed for interpretation: the proximal form of the update, realized-turnover scaling, tracking and low-pass behavior, and the accounting distortion induced by target-based cost charging.
 
 \begin{proposition}[Proximal interpretation]\label{prop:prox}
 For constant $\eta\in(0,1)$, the execution update \eqref{eq:exec_update} is the unique minimizer of:
@@ -181,54 +222,53 @@ For constant $\eta\in(0,1)$, the execution update \eqref{eq:exec_update} is the 
 Execution is a proximal step that penalizes \emph{changes from the previous executed portfolio}, regularizing the trading path while still tracking the target.
 \end{remark}
 
-\begin{proposition}[Executed turnover scaling]\label{prop:turnover_scaling}
+\begin{lemma}[Turnover scaling and cumulative bound]\label{lem:turnover_scaling}
 Under \eqref{eq:exec_update}--\eqref{eq:turnover_exec}, for any $\eta_t\in(0,1]$:
 \[
 \TOexec_t = \eta_t \TOtgt_t.
 \]
-\end{proposition}
-\noindent\textbf{Proof sketch.} From \eqref{eq:exec_update},
-$\wexec_t-\wexec_{t-1}=\eta_t(\wtgt_t-\wexec_{t-1})$.
-Taking $\ell_1$ norms gives the claim. \hfill$\square$
-
-\begin{corollary}[Cumulative turnover bound]\label{cor:cum_turnover}
-If $\eta_t\le \eta_{\max}$ for all $t$, then
+If additionally $\eta_t\le \eta_{\max}$ for all $t$, then
 \[
 \sum_{t=1}^T \TOexec_t \le \eta_{\max}\sum_{t=1}^T \TOtgt_t.
 \]
-\end{corollary}
+\end{lemma}
+\noindent\textbf{Proof sketch.} From \eqref{eq:exec_update},
+$\wexec_t-\wexec_{t-1}=\eta_t(\wtgt_t-\wexec_{t-1})$.
+Taking $\ell_1$ norms gives the one-step identity. Summing over $t$ and using $\eta_t\le \eta_{\max}$ yields the cumulative bound. \hfill$\square$
 
-\begin{proposition}[Tracking error monotonicity]\label{prop:tracking}
+\begin{lemma}[Tracking and low-pass behavior]\label{lem:tracking_lowpass}
 Define instantaneous tracking discrepancy by $\normtwo{\wexec_t-\wtgt_t}$. Then
 \[
 \wexec_t-\wtgt_t = (1-\eta_t)(\wexec_{t-1}-\wtgt_t),
 \]
 so for fixed $(\wexec_{t-1},\wtgt_t)$, smaller $\eta_t$ increases discrepancy whenever $\wexec_{t-1}\neq \wtgt_t$.
-\end{proposition}
-\noindent\textbf{Proof sketch.} Rearranging \eqref{eq:exec_update} yields the identity. \hfill$\square$
-
-\begin{proposition}[Anchor / low-pass behavior for constant $\eta$]\label{prop:anchor}
 For constant $\eta\in(0,1]$, the executed sequence has the closed form:
 \[
 \wexec_t = (1-\eta)^t \wexec_0 + \eta\sum_{i=1}^{t} (1-\eta)^{t-i}\wtgt_i.
 \]
 For fixed horizon $t$, $\eta\to0$ implies $\wexec_t\to \wexec_0$ (anchor convergence).
-\end{proposition}
-\noindent\textbf{Proof sketch.} Unroll the recursion \eqref{eq:exec_update}. \hfill$\square$
-\begin{remark}
-Thus, execution applies an exponential smoothing (a first-order low-pass filter) to the target trajectory, attenuating high-frequency target changes that can inflate realized variance in weak-signal regimes.
-\end{remark}
+\end{lemma}
+\noindent\textbf{Proof sketch.} Rearranging \eqref{eq:exec_update} yields the tracking identity. Unrolling the constant-$\eta$ recursion yields the closed form, which is an exponential smoothing of the target path. \hfill$\square$
 
 \begin{proposition}[Cost misalignment rescaling]\label{prop:cost_misalignment}
 If one incorrectly charges costs using target turnover $\TOtgt_t$ while execution obeys \eqref{eq:exec_update}, then the charged cost overestimates realized cost by factor $1/\eta_t$:
 \[
 \kappaTC \TOtgt_t \;=\; \frac{\kappaTC}{\eta_t}\TOexec_t.
 \]
+Equivalently, the target-based cost distortion is
+\[
+\begin{aligned}
+\kappaTC \TOtgt_t - \kappaTC \TOexec_t
+&= \kappaTC(\TOtgt_t-\TOexec_t) \\
+&= \kappaTC\left(\frac{1}{\eta_t}-1\right)\TOexec_t.
+\end{aligned}
+\]
 \end{proposition}
-\noindent\textbf{Proof sketch.} Substitute Proposition~\ref{prop:turnover_scaling} into $\kappaTC\TOtgt_t$. \hfill$\square$
-\begin{remark}
-If this incorrect target-based cost is inserted into training rewards, the distortion is not only ex-post evaluative. It also changes critic targets and policy updates by overweighting trading costs relative to the realized executed path. The present paper does not retrain policies under alternative reward definitions; we record this as an accounting implication and leave explicit training-time alignment tests to future work.
-\end{remark}
+\noindent\textbf{Proof sketch.} Substitute Lemma~\ref{lem:turnover_scaling} into $\kappaTC\TOtgt_t$ and subtract the executed cost term. \hfill$\square$
+
+\noindent\textbf{Interpretation.} Target-based charging inflates the effective friction scale whenever $\eta_t<1$. If that target-based cost is inserted into training rewards, the friction coefficient appearing in critic targets and policy updates is larger than the one actually realized on the executed path. The present paper does not quantify full policy-gradient bias or retrain under alternative rewards; it records the accounting distortion and its direction.
+
+These properties are simple but useful: they clarify what quantity is actually being regularized, what turnover is actually realized, and how target-based accounting distorts the friction scale when $\eta<1$.
 
 % ============================================================
 \section{Experimental Setup}
@@ -243,14 +283,18 @@ We use a fixed 27-name large-cap U.S. equity snapshot with daily adjusted close 
 \item Decision frequency: daily rebalancing.
 \end{itemize}
 Because the state uses 30-day rolling features, the realized validation trace spans 2022-02-15 to 2023-12-29 and the realized held-out test trace spans 2024-02-14 to 2025-12-31. Matched external baselines are evaluated on these same effective held-out dates.
-Timing follows a close-to-close convention: features at time $t$ use information available by close $t$, the execution update forms $\wexec_t$ after the decision at $t$, and realized portfolio return uses $r_{t+1}$ over $(t,t+1]$. This fixed 27-name large-cap U.S. equity snapshot is reproducible but not a point-in-time constituent reconstruction, so the empirical claims should be read as controlled benchmark evidence rather than as a survivorship-bias-free deployment backtest. Internal 2026 forward checks were used for engineering sanity only and are not part of the main paper tables. Appendix~\ref{app:data_protocol} collects the data and protocol details in one place for auditability.
+Timing follows a close-to-close convention: features at time $t$ use information available by close $t$, the execution update forms $\wexec_t$ after the decision at $t$, and realized portfolio return uses $r_{t+1}$ over $(t,t+1]$. This fixed 27-name large-cap U.S. equity snapshot is reproducible but not a point-in-time constituent reconstruction, so the empirical claims should be read as controlled benchmark evidence rather than as a survivorship-bias-free deployment backtest. Survivorship-related bias may affect the absolute performance level. Because all $\eta$-arms share the same universe, dates, and frozen target policy, the within-policy execution comparison is less sensitive to this bias than absolute cross-strategy comparisons, though it is not immune. Internal 2026 forward checks were used for engineering sanity only and are not part of the main paper tables. Appendix~\ref{app:data_protocol} collects the data and protocol details in one place for auditability.
 
 \subsection{Observations and environment}
-State $s_t$ includes: (i) rolling past returns, (ii) per-asset volatility estimates, and (iii) previous executed weights $\wexec_{t-1}$. Anti-lookahead is enforced by using only information up to time $t$ to form $s_t$ and applying $\wexec_t$ to interval return $r_{t+1}$.
+The empirical instantiation uses a 30-day return window ($L=30$), a 30-day volatility window ($L_v=30$), previous executed weights $\wexec_{t-1}$, and two frozen signal channels: \texttt{reversal\_5d} and \texttt{short\_term\_reversal}. The return block stores flattened per-asset log returns computed from adjusted-close ratios. The volatility block stores the 30-day rolling standard deviation (ddof $=0$) of those same log returns. The previous-weight block stores the simplex-valued executed holdings from time $t-1$, and the signal channels are appended in the same asset order. For the fixed 27-asset universe, this yields $30\times27 + 27 + 27 + 2\times27 = 918$ observation dimensions, matching the stored run metadata.
+
+No additional online whitening or environment-level normalization is applied beyond the upstream feature construction. Realized portfolio return is evaluated on arithmetic returns obtained from the stored log-return frame, and anti-lookahead is enforced by forming $s_t$ only from information available up to time $t$ and applying $\wexec_t$ to interval return $r_{t+1}$.
+
+The actor outputs a 27-dimensional real-valued action vector. In the environment, that vector is clipped elementwise to $[-1,1]$ and mapped to long-only fully invested target weights by a stable softmax with logit scale 10.0. This implementation detail matters because it makes the simplex constraint operational: the learned action parameterization always produces a valid target portfolio before the execution layer is applied.
 
 \subsection{Frozen controller and execution arms}
 \begin{itemize}[leftmargin=*,itemsep=1pt]
-\item \textbf{PRL-SAC control model:} a SAC-based long-only portfolio policy with volatility-conditioned plasticity parameters, trained once and reused across all execution arms.
+\item \textbf{PRL-SAC control model:} a Stable-Baselines3 SAC controller with an \texttt{MlpPolicy} actor-critic backbone and volatility-conditioned PRL plasticity schedule. For each seed, the controller is trained once on the training window, producing one frozen checkpoint. Evaluation then reuses that same checkpoint across all $\eta$-arms for that seed. The policy outputs target-allocation logits; the environment maps them to simplex weights before the execution layer applies partial adjustment. The exact training hyperparameters and frozen scheduler settings are summarized in Appendix~\ref{app:implementation_details}.
 \item \textbf{Execution-control arms:} the same trained policy is evaluated under the \emph{a priori} fixed grid $\eta\in\{1.0, 0.5, 0.2, 0.1, 0.082, 0.05, 0.02\}$, with $\eta=1.0$ as the immediate-execution baseline.
 \end{itemize}
 
@@ -267,7 +311,7 @@ Sweep $\kappaTC\in\{0,\;5\times10^{-4},\;10^{-3}\}$ and evaluate the fixed $\eta
 
 \subsection{A priori \texorpdfstring{$\eta$}{eta} grid and validation-only selection}
 \label{sec:validation_selection}
-The $\eta$ grid is fixed before evaluation and is not adapted after looking at test outcomes. Let the positive-cost validation set be $\mathcal{K}^{+}=\{5\times10^{-4},10^{-3}\}$. For each $\eta$ in the fixed grid, we define the validation score
+The $\eta$ grid is fixed before evaluation and is not adapted after looking at test outcomes. It combines the immediate-execution boundary $\eta=1.0$, coarse interior values $\{0.5,0.2,0.1\}$, and finer low-$\eta$ probes $\{0.082,0.05,0.02\}$ to inspect frontier curvature in the low-adjustment region. The value $\eta=0.082$ is included because it is the incumbent \texttt{rebalance\_eta} of the frozen control snapshot used to train the reference policy; it is therefore a pre-existing control operating point rather than a post-hoc addition after inspecting validation or test performance. Let the positive-cost validation set be $\mathcal{K}^{+}=\{5\times10^{-4},10^{-3}\}$. For each $\eta$ in the fixed grid, we define the validation score
 \[
 \mathrm{Score}(\eta)\triangleq \frac{1}{|\mathcal{K}^{+}|}\sum_{\kappa\in\mathcal{K}^{+}}\mathrm{median}_{s\in\mathcal{S}}\;\mathrm{Sharpe}^{\mathrm{net,lin}}_{\kappa,\eta,s}.
 \]
@@ -295,13 +339,14 @@ Report:
 \item Paired differences (e.g., $\Delta$Sharpe) and win-rate (\% seeds improved) versus the immediate-execution baseline $\eta=1.0$.
 \item For the selected-$\eta$ vs.\ immediate-execution comparison, also report paired dispersion (IQR), exact one-sided sign-test $p$-values, two-sided Wilcoxon signed-rank $p$-values, and percentile-bootstrap $95\%$ confidence intervals for the paired median $\Delta$Sharpe and $\Delta$CAGR.
 \end{itemize}
+These seed-level tests quantify optimization-level variability conditional on a fixed historical window, not independent market-sample uncertainty.
 
 \subsection{Secondary matched-heuristic context under aligned definitions}
-To provide limited non-RL context without changing the main question, the rebuilt protocol also includes five heuristic baselines on the same effective held-out dates within the test split: buy-and-hold equal weight, daily-rebalanced equal weight, inverse-volatility risk parity, minimum-variance, and a simple long-only mean-variance heuristic. The two optimization-style heuristics use a trailing 252-day window with a minimum 30-day warm-up, and the mean-variance heuristic fixes risk aversion at 10.0. These baselines are not allowed to use a different accounting convention. They must use the same transaction-cost regime $\kappaTC$, the same realized-path net-return definition, the same Sharpe annualization $\sqrt{252}$, the same risk-free assumption $r_f=0$, the same executed-path primary metric definitions as the RL arms, and the same effective evaluation dates induced by the frozen split and rolling-feature availability. They are reported only as secondary matched context; they are not used for model selection and they are not part of the paper's main frozen-policy claim.
+To provide limited non-RL context without changing the main question, the rebuilt protocol also includes five heuristic baselines on the same effective held-out dates within the test split: buy-and-hold equal weight, daily-rebalanced equal weight, inverse-volatility risk parity, minimum-variance, and a simple long-only mean-variance heuristic. The two optimization-style heuristics use a trailing 252-day window with a minimum 30-day warm-up, and the mean-variance heuristic fixes risk aversion at 10.0. These baselines are not allowed to use a different accounting convention. They must use the same transaction-cost regime $\kappaTC$, the same realized-path net-return definition, the same Sharpe annualization $\sqrt{252}$, the same risk-free assumption $r_f=0$, the same executed-path primary metric definitions as the RL arms, and the same effective evaluation dates induced by the frozen split and rolling-feature availability. They are included only to calibrate external performance scale under aligned accounting. They are not part of the identification strategy, and they are not used for selection, validation, or the paper's core causal interpretation.
 
 \subsection{Metrics}
 \paragraph{Core metrics (exec only).}
-Sharpe, CAGR, max drawdown, average executed turnover $\overline{\TOexec}$, and realized cost are computed from $\wexec$ and realized returns \eqref{eq:reward}. Specify annualization and risk-free assumption:
+Sharpe, CAGR, max drawdown, average executed turnover $\overline{\TOexec}$, and realized cost are computed from the executed-path quantities in Table~\ref{tab:core_vs_diag}. Specify annualization and risk-free assumption:
 \begin{itemize}[leftmargin=*,itemsep=1pt]
 \item Sharpe annualization: $\sqrt{252}$.
 \item Risk-free rate: 0.
@@ -314,12 +359,8 @@ These same definitions are used for both RL arms and external heuristic baseline
 \item Tracking error / misalignment measures (defined below).
 \end{itemize}
 
-\paragraph{Misalignment diagnostic.}
-Define a hypothetical immediate-execution net return for diagnostics:
-\[
-R^{\mathrm{tgt}}_{t+1} \triangleq (\wtgt_t)^\top r_{t+1} - \kappaTC \normone{\wtgt_t-\wexec_{t-1}}.
-\]
-A signed mean-gap diagnostic can then be written as
+\paragraph{Diagnostic path comparisons.}
+Using the diagnostic target-path return $R^{\mathrm{tgt}}_{t+1}$ from Section~\ref{sec:setup}, we compute path-space comparisons between the realized executed path and the hypothetical immediate target path. A signed mean-gap diagnostic can then be written as
 \[
 \Delta_{\mathrm{mis}} \triangleq \frac{1}{T}\sum_{t=0}^{T-1}\left(R_{t+1} - R^{\mathrm{tgt}}_{t+1}\right).
 \]
@@ -336,7 +377,7 @@ In our runs, this signed average is numerically small and less informative than 
 \label{sec:results}
 
 \subsection{Protocol framing: validation selection, then held-out evaluation}
-The empirical protocol is intentionally two-stage. First, the fixed $\eta$ grid is scored on the validation window and one operating point is selected using the rule from Section~\ref{sec:validation_selection}. Second, the held-out test window is used only for final evaluation of that validation-selected operating point and the immediate-execution baseline. No test statistic is used to choose $\eta$. Crucially, every result in this section reuses the same trained policy and changes only the execution mapping applied to that frozen target path. Accordingly, the main paper evidence is organized around: (i) a validation frontier plus selection report, (ii) a held-out selected-$\eta$ vs.\ $\eta=1.0$ table, (iii) trace-based mechanism diagnostics, (iv) a rolling-window frontier robustness diagnostic, and (v) a denser canonical friction-grid diagnostic. The full held-out $\eta$ frontier is still useful, but only as a post-selection diagnostic rather than as model-selection evidence. A small matched-heuristic comparison is retained in the appendix only as secondary context. In the rolling-window extension reported later in this section, the distinction between selected-point transfer and frontier robustness becomes especially important: the selected operating point is window-sensitive, whereas the positive-cost held-out frontier itself is more stable.
+The empirical protocol is two-stage. First, the fixed $\eta$ grid is scored on the validation window and one operating point is selected using the rule from Section~\ref{sec:validation_selection}. Second, the held-out test window is used only for final evaluation of that validation-selected operating point and the immediate-execution baseline. No test statistic is used to choose $\eta$. Every result in this section reuses the same trained policy and changes only the execution mapping applied to that frozen target path. The main paper evidence is therefore organized around: (i) a validation frontier plus selection report, (ii) a held-out selected-$\eta$ vs.\ $\eta=1.0$ table, (iii) trace-based mechanism diagnostics, (iv) a rolling-window frontier robustness diagnostic, and (v) a denser canonical friction-grid diagnostic. The full held-out $\eta$ frontier is still useful, but only as a post-selection diagnostic rather than as model-selection evidence. A small matched-heuristic comparison is retained in the appendix only as secondary context. In the rolling-window extension reported later in this section, the distinction between selected-point transfer and frontier robustness becomes especially important: the selected operating point is window-sensitive, whereas the positive-cost held-out frontier itself is more stable.
 
 \subsection{Validation selection locks the operating point at \texorpdfstring{$\eta=0.5$}{eta=0.5}}
 Table~\ref{tab:validation_selection} reports the validation-only selection object. All positive-cost validation scores are positive in this rebuilt run, so the selection problem is about taking the largest $\eta$ that remains close to the best validation frontier point. The raw best validation score is attained at $\eta=0.02$ with $0.5213$, but the locked $95\%$ rule qualifies six interior grid points and then selects the \emph{largest} qualifying value. The resulting validation-selected operating point is therefore $\eta=0.5$, while the immediate-execution baseline $\eta=1.0$ narrowly fails the qualification threshold.
@@ -373,7 +414,7 @@ $\eta$ & Score & Avg.\ paired-median $\Delta$Sharpe ($\kappa>0$) & Avg.\ seed-me
 \subsection{Held-out test: selected \texorpdfstring{$\eta=0.5$}{eta=0.5} vs.\ immediate execution}
 Table~\ref{tab:selected_vs_eta1} gives the held-out paired comparison between the validation-selected operating point and the immediate-execution baseline. The main evidence is again concentrated in the positive-cost regimes. At $\kappa=5\times10^{-4}$ and $\kappa=10^{-3}$, the selected operating point improves paired median net Sharpe by $+0.0105$ and $+0.0213$, respectively, and wins on all $10/10$ paired seeds in both cases (exact one-sided sign test $p=9.77\times10^{-4}$ for each regime). The corresponding two-sided Wilcoxon signed-rank $p$-values are $1.95\times10^{-3}$ in both regimes, and the bootstrap $95\%$ confidence intervals for the paired median $\Delta$Sharpe remain strictly positive: $[0.0073,\,0.0129]$ at $\kappa=5\times10^{-4}$ and $[0.0167,\,0.0233]$ at $\kappa=10^{-3}$. Median executed turnover falls from $0.02200$ to $0.01095$ in all three reported rows, roughly halving executed trading intensity.
 
-At $\kappa=0$, the picture is negligible. The paired median Sharpe delta is $-0.00025$ with a $50\%$ win-rate, sign-test $p=0.623$, Wilcoxon $p=0.770$, and a bootstrap $95\%$ confidence interval of $[-0.0022,\,0.0028]$ for the paired median $\Delta$Sharpe. This is consistent with little difference in the realized trading path once explicit transaction costs are removed, and it does not support a strong regularization or training-superiority claim. The safe interpretation is therefore intentionally asymmetric across regimes: evidence is strong for cost-aligned improvement when $\kappaTC>0$, and absent when $\kappaTC=0$. Because the first two Sharpe columns report marginal arm medians while $\Delta$Sharpe reports the median of seed-wise paired differences, the paired median need not equal the arithmetic difference between the two marginal medians.
+At $\kappa=0$, the picture is negligible. The paired median Sharpe delta is $-0.00025$ with a $50\%$ win-rate, sign-test $p=0.623$, Wilcoxon $p=0.770$, and a bootstrap $95\%$ confidence interval of $[-0.0022,\,0.0028]$ for the paired median $\Delta$Sharpe. This is consistent with little difference in the realized trading path once explicit transaction costs are removed, and it does not support a strong regularization or training-superiority interpretation. The regime contrast is therefore clear: evidence is strong for cost-aligned improvement when $\kappaTC>0$, and absent when $\kappaTC=0$. Because the first two Sharpe columns report marginal arm medians while $\Delta$Sharpe reports the median of seed-wise paired differences, the paired median need not equal the arithmetic difference between the two marginal medians.
 
 \begin{table*}[t]
 \centering
@@ -419,7 +460,7 @@ $10^{-3}$ & 0.01095 & 0.02190 & 2.00 & 0.00259 & 3.15e-05 & 0.00739 & 3.18e-04 \
 To test whether the canonical 2022--2025 result is specific to that recent window, we repeated the same frozen-policy evaluation on two additional rolling splits: Split A trains on 2010--2017, validates on 2018--2019, and tests on 2020--2021; Split B trains on 2010--2019, validates on 2020--2021, and tests on 2022--2023; Split C is the canonical 2010--2021 / 2022--2023 / 2024--2025 split. Read narrowly as a selected-$\eta$ transfer test, this exercise is mixed. Under the locked $95\%$ largest-qualifying rule, Splits A and B both keep $\eta=1.0$ because the immediate-execution validation score still retains $98.17\%$ and $97.94\%$ of the split-wise best score, respectively. In those two windows, the selected-vs.-baseline held-out delta is therefore identically zero by construction. Split C retains the original selected point $\eta=0.5$ and the positive-cost gains reported above.
 These are different objects: selected-point transfer asks whether one locked operating point survives unchanged across windows, whereas frontier robustness asks whether the held-out positive-cost frontier still contains beneficial interior points somewhere along the fixed $\eta$ grid.
 
-Read as a frontier-robustness diagnostic, however, the picture is stronger. In all three rolling windows, the held-out positive-cost frontier still contains interior execution rates $\eta<1$ that improve net Sharpe and reduce executed turnover relative to $\eta=1.0$. Using the best interior held-out point only as a post-selection diagnostic, Split A improves median net Sharpe by $+0.0082$ at $\kappa=5\times10^{-4}$ and $+0.0165$ at $\kappa=10^{-3}$ while lowering median executed turnover by $0.01936$; Split B improves median net Sharpe by $+0.0163$ and $+0.0308$ while lowering median executed turnover by $0.01879$; and Split C improves median net Sharpe by $+0.0231$ and $+0.0439$ while lowering median executed turnover by $0.02141$. The safe rolling-window conclusion is therefore not that one validation-selected operating point transfers unchanged in every window, but that under positive costs the held-out execution frontier itself remains interior across windows while the conservative selector can still remain at $\eta=1.0$ in some regimes. Figure~\ref{fig:rollingfrontier} makes this distinction visual: Split A and Split B retain clear interior frontiers even though their locked selected points remain at the immediate-execution boundary.
+Read as a frontier-robustness diagnostic, however, the picture is stronger. In all three rolling windows, the held-out positive-cost frontier still contains interior execution rates $\eta<1$ that improve net Sharpe and reduce executed turnover relative to $\eta=1.0$. Using the best interior held-out point only as a post-selection diagnostic, Split A improves median net Sharpe by $+0.0082$ at $\kappa=5\times10^{-4}$ and $+0.0165$ at $\kappa=10^{-3}$ while lowering median executed turnover by $0.01936$; Split B improves median net Sharpe by $+0.0163$ and $+0.0308$ while lowering median executed turnover by $0.01879$; and Split C improves median net Sharpe by $+0.0231$ and $+0.0439$ while lowering median executed turnover by $0.02141$. The rolling-window conclusion is therefore not that one validation-selected operating point transfers unchanged in every window, but that under positive costs the held-out execution frontier itself remains interior across windows while the conservative selector can still remain at $\eta=1.0$ in some regimes. Figure~\ref{fig:rollingfrontier} makes this distinction visual: Split A and Split B retain clear interior frontiers even though their locked selected points remain at the immediate-execution boundary.
 
 \begin{figure*}[!b]
 \centering
@@ -459,7 +500,7 @@ The rolling-window diagnostic should be read carefully. It does not show that on
 The matched heuristic baselines provide only secondary context. Under aligned executed-path accounting, the selected operating point is competitive against several higher-churn comparators such as inverse-volatility risk parity and minimum-variance, mixed against daily-rebalanced equal weight and long-only mean-variance, and weaker than buy-and-hold equal weight on this window. These results help locate the empirical scale of the effect, but they do not define the paper's main claim, which remains the internal frozen-policy execution comparison.
 
 \paragraph{Limitations.}
-The limitation structure mirrors the contribution structure. The paper contributes executed-path accounting, a fixed-$\eta$ execution frontier analysis, and a frozen-policy empirical study; correspondingly, the present evidence is bounded by the market abstraction used for accounting, the fixed-timescale design, and the absence of retraining comparisons.
+The limitation structure mirrors the contribution structure. The paper contributes executed-path accounting, a fixed-$\eta$ execution frontier analysis, and a frozen-policy empirical study. The present evidence is therefore bounded by the market abstraction used for accounting, the fixed-timescale design, and the absence of retraining comparisons.
 \begin{itemize}[leftmargin=*,itemsep=1pt]
 \item The executed-path accounting contribution is established under a daily close-to-close abstraction on a fixed 27-name large-cap U.S. equity snapshot with a no-cash long-only simplex. These choices make the accounting object transparent, but they also limit market realism and leave survivorship-related bias unresolved.
 \item The execution-mapping contribution is established only for fixed $\eta$ schedules. Adaptive schedules and richer execution-control laws are intentionally excluded so that execution design is not confounded with schedule-selection effects.
@@ -469,11 +510,11 @@ The limitation structure mirrors the contribution structure. The paper contribut
 
 % ============================================================
 \section{Conclusion}
-We formulate execution-aware portfolio reinforcement learning by separating target and executed portfolios and attaching both trading costs and primary evaluation to the realized executed path. Empirically, the paper is intentionally narrow: one trained policy is reused throughout, only the execution mapping varies over a fixed \emph{a priori} $\eta$ grid, $\eta$ is selected on validation only, and the test split is reserved for held-out evaluation.
+We formulate execution-aware portfolio reinforcement learning by separating target and executed portfolios and attaching both trading costs and primary evaluation to the realized executed path. Empirically, one trained policy is reused throughout, only the execution mapping varies over a fixed \emph{a priori} $\eta$ grid, $\eta$ is selected on validation only, and the test split is reserved for held-out evaluation.
 
 On the canonical 2022--2025 split, the validation-selected operating point $\eta=0.5$ roughly halves median executed turnover and improves paired median net Sharpe in both positive-cost regimes, while the $\kappa=0$ evidence remains negligible. Across three rolling windows, the positive-cost held-out frontier remains interior even when conservative selected-point transfer does not persist. On a denser canonical friction grid, the same global selected operating point remains $\eta=0.5$, while the best interior held-out gain increases monotonically with friction. Mechanistically, these gains are explained by lower realized turnover and lower realized cost rather than by improved gross Sharpe.
 
-The safe claim is therefore narrow. Under a fixed learned trading policy, cost-aligned execution control creates an interior positive-cost execution frontier whose gains are driven primarily by lower realized turnover and lower realized cost, while selected-point transfer remains window-sensitive. This is not a claim about retraining superiority, universal selected-point transfer across windows, broad dominance over classical portfolio strategies, or deployment-grade point-in-time backtesting. Future work should therefore focus on explicit training-time alignment comparisons, broader comparator studies, and adaptive execution schedules built on top of this locked frozen-policy protocol.
+Under a fixed learned trading policy, cost-aligned execution control creates an interior positive-cost execution frontier whose gains are driven primarily by lower realized turnover and lower realized cost, while selected-point transfer remains window-sensitive. This version is limited to frozen-policy identification rather than retraining comparisons, broad benchmark dominance claims, or deployment-grade point-in-time backtesting. Future work should focus on explicit training-time alignment comparisons, broader comparator studies, and adaptive execution schedules built on top of this locked frozen-policy protocol.
 
 % ============================================================
 \clearpage
@@ -511,6 +552,23 @@ The backtest uses a close-to-close convention. At decision time $t$:
 \end{enumerate}
 Thus the paper uses the convention ``decide at close $t$, then hold $\wexec_t$ over $(t,t+1]$.'' This ordering is important because both return realization and cost accounting are attached to the executed portfolio rather than to the raw target action.
 
+\subsection{Anti-lookahead timing schematic}
+The timing logic can be summarized as
+\[
+\text{state through close } t
+\;\rightarrow\;
+\wtgt_t
+\;\rightarrow\;
+\wexec_t
+\;\rightarrow\;
+\kappaTC \TOexec_t
+\;\rightarrow\;
+\text{hold over }(t,t+1]
+\;\rightarrow\;
+R_{t+1}.
+\]
+This schematic is the implementation counterpart of the formal definitions in Section~\ref{sec:setup}: the target portfolio is proposed at time $t$, the execution layer forms the realized holdings, costs are charged on executed turnover, and only then is the next-period return realized.
+
 \subsection{Frozen split and model-selection lock}
 The locked rebuild materializes the experiment configuration before evaluation. The train, validation, and held-out test windows are frozen as 2010--2021, 2022--2023, and 2024--2025, respectively. Because the state uses 30-day rolling features, the realized validation/test traces begin on 2022-02-15 and 2024-02-14 inside those split boundaries. The selected signal snapshot is also frozen before validation and test evaluation; in the rebuilt run, the frozen signal list is \texttt{reversal\_5d} and \texttt{short\_term\_reversal}. The $\eta$ grid is fixed \emph{a priori}, validation selects one operating point, and the test window is then used only for final evaluation of that selected operating point and matched comparators. Internal forward checks for 2026 were used only for engineering sanity and are not included in the paper tables or in $\eta$ selection.
 
@@ -530,16 +588,33 @@ These limitations do not invalidate the execution-accounting contribution, but t
 
 \section{Implementation Details}
 \label{app:implementation_details}
+\subsection{Observation and action instantiation}
 \begin{itemize}[leftmargin=*,itemsep=1pt]
 \item Data source and cache: daily adjusted close prices retrieved via \texttt{yfinance} are materialized once and then reused in cache-only paper mode for training and evaluation.
-\item Universe treatment: the present paper uses a fixed 27-name snapshot rather than a point-in-time constituent reconstruction.
-\item Timing convention: features at time $t$ use information available by close $t$, and realized returns are applied over the next close-to-close interval $(t,t+1]$.
-\item Anti-lookahead: observations use rolling historical returns, contemporaneous volatility estimates, and previous executed weights only.
+\item Universe treatment: the paper rebuild uses the fixed 27-name snapshot rather than a point-in-time constituent reconstruction.
+\item Observation schema: $L=30$ return history, $L_v=30$ volatility features, previous executed weights, and two signal channels (\texttt{reversal\_5d}, \texttt{short\_term\_reversal}).
+\item Observation dimension: for 27 assets, the instantiated observation size is $30\times27 + 27 + 27 + 2\times27 = 918$, matching the stored run metadata.
+\item Action parameterization: the actor emits one real-valued logit per asset; the environment clips the action vector to $[-1,1]$ and maps it to the simplex with a stable softmax using logit scale 10.0.
+\end{itemize}
+
+\subsection{Frozen controller configuration}
+\begin{itemize}[leftmargin=*,itemsep=1pt]
+\item RL backend: Stable-Baselines3 SAC (\texttt{sb3\_version}=2.7.1 in the stored metadata).
+\item SAC hyperparameters: learning rate $10^{-4}$, batch size 256, discount $\gamma=0.99$, target-update rate $\tau=0.005$, replay buffer size 100000, total timesteps 100000, entropy coefficient 0.2.
+\item PRL scheduler parameters: $\alpha_0=0.2$, $\beta=1.0$, $\lambda_v=2.0$, bias $=-2.0$, $\alpha_{\min}=0.01$, $\alpha_{\max}=1.0$, mid-plasticity multiplier 0.7, CVaR-penalty gamma 0.3.
+\item Frozen signals: \texttt{reversal\_5d} and \texttt{short\_term\_reversal}, loaded from the locked selected-signals snapshot.
+\end{itemize}
+
+\subsection{Execution-grid provenance}
+\begin{itemize}[leftmargin=*,itemsep=1pt]
+\item The evaluation grid is fixed to $\eta\in\{1.0, 0.5, 0.2, 0.1, 0.082, 0.05, 0.02\}$ before validation and test evaluation.
+\item The value $\eta=0.082$ is not a post-hoc insertion: it is the incumbent \texttt{rebalance\_eta} stored in the frozen control snapshot used to train the reference policy.
+\item Validation selects one operating point from that fixed grid, and the held-out test split is then reserved for final evaluation only.
 \end{itemize}
 
 \section{Secondary Matched-Heuristic Context}
 \label{app:secondary_heuristics}
-Table~\ref{tab:selected_vs_external} is reported only as secondary context and is not part of the main identification strategy. Under the same effective held-out dates, the same transaction-cost definition $\kappaTC\cdot\TOexec$, the same annualization $\sqrt{252}$, and the same $r_f=0$ convention, the selected operating point is stronger than inverse-volatility risk parity and minimum-variance, mixed against daily-rebalanced equal weight and long-only mean-variance, and weaker than buy-and-hold equal weight on this window. The safe reading is therefore limited: matched heuristics show that the selected operating point can look competitive against several higher-churn comparators under aligned accounting, but these comparisons do not define the paper's main claim and do not change the frozen-policy interpretation of the internal execution frontier.
+Table~\ref{tab:selected_vs_external} is reported only as secondary context and is not part of the main identification strategy. Under the same effective held-out dates, the same transaction-cost definition $\kappaTC\cdot\TOexec$, the same annualization $\sqrt{252}$, and the same $r_f=0$ convention, the selected operating point is stronger than inverse-volatility risk parity and minimum-variance, mixed against daily-rebalanced equal weight and long-only mean-variance, and weaker than buy-and-hold equal weight on this window. These matched heuristics help calibrate the empirical scale of the result under aligned accounting, but they do not define the paper's main claim and they do not change the frozen-policy interpretation of the internal execution frontier.
 
 \begin{center}
 \captionsetup{type=table}
@@ -624,6 +699,9 @@ N. G\^arleanu and L. H. Pedersen, ``Dynamic Trading with Predictable Returns and
 
 \bibitem{almgren2000}
 R. Almgren and N. Chriss, ``Optimal Execution of Portfolio Transactions,'' \emph{Journal of Risk}, 3(2):5--39, 2000.
+
+\bibitem{wang2021hrpm}
+R. Wang, H. Wei, B. An, Z. Feng, and J. Yao, ``Commission Fee is not Enough: A Hierarchical Reinforced Framework for Portfolio Management,'' \emph{Proceedings of the AAAI Conference on Artificial Intelligence}, 35(1):626--633, 2021.
 
 \bibitem{shen2020}
 Q. Shen, Y. Li, H. Jiang, Z. Wang, and T. Zhao, ``Deep Reinforcement Learning with Robust and Smooth Policy,'' \emph{Proceedings of the 37th International Conference on Machine Learning}, \emph{PMLR} 119:8707--8718, 2020.
