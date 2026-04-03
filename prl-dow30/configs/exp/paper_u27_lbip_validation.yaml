@@ -1,0 +1,82 @@
+mode: paper
+dates:
+  train_start: '2010-01-01'
+  train_end: '2021-12-31'
+  test_start: '2022-01-01'
+  test_end: '2023-12-31'
+data:
+  raw_dir: data/raw
+  processed_dir: data/processed_u27
+  source: yfinance_only
+  universe_policy: fixed_list
+  min_assets: 27
+  force_refresh: false
+  offline: true
+  require_cache: true
+  paper_mode: true
+  min_history_days: 500
+  history_tolerance_days: 30
+  ticker_substitutions: {}
+  quality_params:
+    min_vol_std: 0.005
+    min_max_abs_return: 0.02
+    max_flat_fraction: 0.20
+    max_missing_fraction: 0.01
+universe:
+  min_assets: 27
+  policy: fixed_list
+  fixed_asset_list:
+    - AAPL
+    - AMGN
+    - AXP
+    - BA
+    - CAT
+    - CRM
+    - CSCO
+    - CVX
+    - DIS
+    - GS
+    - HD
+    - HON
+    - IBM
+    - INTC
+    - JNJ
+    - JPM
+    - KO
+    - MCD
+    - MMM
+    - MRK
+    - MSFT
+    - NKE
+    - PG
+    - UNH
+    - V
+    - VZ
+    - WMT
+signals:
+  enabled: true
+  signal_state: true
+  signal_names:
+    - reversal_5d
+    - short_term_reversal
+  selected_signals_path: ../../../frozen_protocol/paper_v3/selected_signals_snapshot.json
+  selection_policy: paper_control_frozen
+  allow_nonfixed_selection: false
+env:
+  L: 30
+  Lv: 30
+  c_tc: 0.0005
+  logit_scale: 10.0
+lbip:
+  ridge_alpha: 30.0
+  fit_passes: 2
+  training_eta: 0.05
+  covariance_lookback: 252
+  covariance_history_min: 30
+  mean_variance_risk_aversion: 10.0
+  include_prev_weights: true
+output:
+  experiment_name: paper_u27_lbip_validation
+  root: outputs/v2_u27_lbip_validation
+seeds:
+  - 0
