@@ -1,0 +1,7 @@
+{
+  "rolling_experiment_root": "/workspace/execution-aware-portfolio-rl/outputs/extensions/v1_rolling_origin_windows/20260401T074612Z",
+  "rolling_frontier_csv": "/workspace/execution-aware-portfolio-rl/outputs/extensions/v1_rolling_origin_windows/20260401T074612Z/frontier_analysis/frontier_split_kappa_summary.csv",
+  "kappa_summary_csv": "/workspace/execution-aware-portfolio-rl/outputs/extensions/v1_kappa_expansion/20260401T090500Z/analysis/kappa_expansion_summary.csv",
+  "fig_rolling_frontier_robustness": "/workspace/execution-aware-portfolio-rl/paper_v1_extension_artifacts/figures/fig_rolling_frontier_robustness.png",
+  "fig_kappa_benefit_curve": "/workspace/execution-aware-portfolio-rl/paper_v1_extension_artifacts/figures/fig_kappa_benefit_curve.png"
+}
