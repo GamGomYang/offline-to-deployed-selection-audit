@@ -25,11 +25,16 @@
 \usepackage{booktabs}
 \usepackage{multirow}
 \usepackage{array}
+\usepackage{tabularx}
+\usepackage{pgfplots}
 \usepackage{caption}
 \usepackage{subcaption}
 \usepackage{float}        % for [H]
 \usepackage{dblfloatfix}  % improve placement of figure* / table* in twocolumn
 \usepackage[section]{placeins}
+\usepgfplotslibrary{groupplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{positioning,arrows.meta}
 \setlength{\textfloatsep}{8pt plus 1pt minus 2pt}
 \setlength{\dbltextfloatsep}{8pt plus 1pt minus 2pt}
 \setlength{\floatsep}{8pt plus 1pt minus 2pt}
@@ -79,12 +84,12 @@
 \vspace{-4mm}
 \begin{abstract}
 \vspace{-1mm}
-Most portfolio reinforcement learning (RL) formulations treat the portfolio weights output by the policy as the portfolio that is immediately executed. Under transaction costs, this interface conflates target decisions with the realized holding path and obscures the object on which trading costs are actually incurred. We separate these objects through a two-stage decomposition: the policy outputs a target portfolio $\wtgt_t$, an execution controller produces an executed portfolio $\wexec_t$, and both transaction costs and primary evaluation are attached to executed turnover on the realized path. We evaluate this formulation in a frozen-policy, validation-first protocol that reuses one learned policy across all execution arms and changes only the execution rate $\eta$. On a fixed 27-name U.S. large-cap universe, the validation-selected interior operating point $\eta=0.5$ roughly halves executed turnover and improves net Sharpe in positive-cost regimes, while the $\kappa=0$ effect is negligible. The improvement is explained by lower realized turnover and lower realized cost rather than by higher gross returns, with rolling-window and friction-sensitivity diagnostics showing that the benefit is concentrated in positive-friction settings.
+Most portfolio reinforcement learning (RL) formulations treat the portfolio weights output by the policy as the portfolio that is immediately executed. Under transaction costs, this interface conflates target decisions with realized holdings and obscures the object on which trading costs are actually incurred. We separate these objects through a two-stage decomposition: the policy outputs a target portfolio $\wtgt_t$, an execution controller maps it to an executed portfolio $\wexec_t$, and both transaction costs and primary evaluation are attached to executed turnover on the realized path. We study this interface in a frozen-policy, validation-first protocol that reuses one learned policy across execution arms and varies only the execution rate $\eta$. On a fixed 27-name U.S. large-cap universe, the validation-selected interior point $\eta=0.5$ roughly halves executed turnover and improves net Sharpe in positive-cost regimes, while the $\kappa=0$ effect is negligible. The gain is explained by lower realized turnover and lower realized cost rather than by higher gross returns, and auxiliary retraining, second-universe, and cost-calibrated linear-convex comparator checks all point in the same friction-sensitive direction.
 \end{abstract}
 
-\vspace{-2mm}
+\vspace{2mm}
 \noindent\textbf{Keywords:} portfolio RL, transaction costs, execution, turnover, proximal control, reproducible backtesting
-\vspace{1mm}
+\vspace{2mm}
 \hrule
 \vspace{2mm}
 }]
@@ -93,27 +98,27 @@ Most portfolio reinforcement learning (RL) formulations treat the portfolio weig
 \section{Introduction}
 Portfolio RL is often formulated as if the portfolio weights output by the policy are the portfolio that is immediately held. This direct-action interface is convenient, but under transaction costs it collapses two different objects into one: the target portfolio proposed at decision time and the executed portfolio that is actually carried into the next return interval.
 
-When execution is gradual, realized turnover, realized cost, and realized net return are determined by the executed path rather than by the raw target action alone. The distinction therefore matters even before one asks whether a different policy should be learned. It changes which portfolio is charged for trading costs, which return path is evaluated, and how one interprets the relation between portfolio choice and trade implementation.
+When execution is gradual, realized turnover, realized cost, and realized net return are determined by the executed path rather than by the raw target action alone. The distinction therefore matters even before one asks whether a different policy should be learned. It changes which portfolio is charged for trading costs, which return path is evaluated, and how one should interpret the relation between portfolio choice and trade implementation.
 
-The question studied here is therefore: under a fixed learned policy, does separating target and executed portfolios create an interior execution frontier in positive-cost regimes, and are the resulting net-performance changes explained by lower realized turnover and lower realized cost rather than by improved gross returns?
+This paper studies a focused identification question: under a fixed learned policy, does separating target and executed portfolios create an interior execution frontier in positive-cost regimes, and are the resulting net-performance changes explained by lower realized turnover and lower realized cost rather than by improved gross returns?
 
-We adopt a frozen-policy protocol because retraining would change both the target generator and the execution interface at the same time. That joint comparison is important, but it answers a different question. Holding the learned policy fixed and varying only the execution mapping lets us identify how execution-aware accounting and partial execution affect realized net performance for the same learned target path.
+We adopt a frozen-policy protocol because retraining would change both the target generator and the execution interface at the same time. That joint comparison is important, but it answers a different question. Holding the learned policy fixed and varying only the execution mapping isolates how execution-aware accounting and partial execution affect realized net performance for the same learned target path.
 
 \paragraph{Contributions.}
 \begin{enumerate}[leftmargin=*,itemsep=2pt]
 \item \textbf{Execution-aware portfolio interface and accounting.} We separate target and executed portfolios and attach transaction costs and primary evaluation to the realized executed path.
 \item \textbf{Frozen-policy, validation-first identification protocol.} We evaluate one learned policy across fixed execution arms, select the operating point on validation only, and reserve the test window for held-out evaluation so that execution effects are separated from retraining effects.
-\item \textbf{Friction-sensitive empirical evidence and diagnostics.} On the fixed 27-name U.S. large-cap benchmark, interior execution rates reduce turnover and improve net Sharpe in positive-cost regimes, and trace-based diagnostics show that the benefit comes from lower realized cost rather than higher gross returns.
+\item \textbf{Friction-sensitive empirical evidence and scope checks.} On the fixed 27-name U.S. large-cap benchmark, interior execution rates reduce turnover and improve net Sharpe in positive-cost regimes; $\eta$-aligned retraining, a second 36-name benchmark, and a cost-calibrated linear-convex information-parity comparator all point in the same implementation-driven direction.
 \end{enumerate}
-This paper does not propose a stronger portfolio policy. It isolates how execution-aware accounting and partial execution alone change realized net performance under frictions for a fixed learned policy.
+The contribution is therefore not a stronger target generator, but an execution-aware accounting study of how partial execution changes realized net performance under frictions for a fixed learned policy.
 
 % ============================================================
 \section{Related Work}
 \paragraph{Classical friction-aware portfolio choice.}
-Classical portfolio theory studies dynamic allocation under risk/return trade-offs \cite{markowitz1952,merton1973}. Once trading frictions are introduced, however, the problem is no longer only which portfolio is desirable in isolation, but how current holdings should be adjusted toward that portfolio over time. Friction-aware portfolio optimization therefore shifts attention from static allocation to dynamic adjustment under transaction costs \cite{lobo2007,garleanu2013}.
+Classical portfolio theory studies dynamic allocation under risk/return trade-offs \cite{markowitz1952,merton1973}. Once trading frictions are introduced, however, the problem is no longer only which portfolio is desirable in isolation, but how current holdings should be adjusted toward that portfolio over time. Friction-aware portfolio optimization therefore shifts attention from static allocation to dynamic adjustment under transaction costs \cite{lobo2007,garleanu2013}. In practice, that literature also motivates turnover-aware convex updates and linear prediction-to-portfolio mappings, which provide a natural non-RL comparison class for the execution-aware accounting layer studied here.
 
 \paragraph{Dynamic trading, aim portfolios, and partial adjustment.}
-A closer conceptual predecessor is the dynamic-trading literature that separates current holdings from desired holdings and studies how portfolios move toward an aim portfolio under costs. G\^arleanu and Pedersen make that distinction explicit in a dynamic setting with predictable returns and transaction costs \cite{garleanu2013}. More broadly, this literature motivates partial adjustment and inaction-region reasoning once trading is costly. Our paper adopts the same basic separation, but relocates it into the portfolio-RL interface: the contribution is not a new frictional trading concept, but a re-specification of the accounting and evaluation object inside RL backtesting, where a learned target portfolio and the realized executed portfolio should not be conflated.
+A closer conceptual predecessor is the dynamic-trading literature that separates current holdings from desired holdings and studies how portfolios move toward an aim portfolio under costs. G\^arleanu and Pedersen make that distinction explicit in a dynamic setting with predictable returns and transaction costs \cite{garleanu2013}. This literature also motivates partial adjustment and inaction-region reasoning once trading is costly. Our paper adopts the same basic separation, but relocates it into the portfolio-RL interface: the contribution is not a new frictional trading concept, but a re-specification of the accounting and evaluation object inside RL backtesting, where a learned target portfolio and the realized executed portfolio should not be conflated.
 
 \paragraph{Optimal execution.}
 Optimal-execution models also separate a desired position from the path used to reach it. Bertsimas and Lo and Almgren and Chriss study gradual trading that balances execution cost and risk, typically given an inventory objective or liquidation target \cite{bertsimas1998,almgren2000}. Our $\eta$-update is similar in implementation spirit to partial-adjustment rules from that literature, but the setting is different. We do not study an intraday execution optimizer. Instead, we study a daily execution layer that maps portfolio-policy outputs to executed holdings and changes how turnover, cost, and net performance are recorded for a fixed target path.
@@ -121,7 +126,7 @@ Optimal-execution models also separate a desired position from the path used to 
 \paragraph{Portfolio RL, smoothing, and regularization.}
 Most portfolio RL and deep portfolio management papers use a direct-action interface in which the policy output is treated as the portfolio that is immediately held or rebalanced to \cite{moody1998,jiang2017,ye2020}. Even when transaction costs are included, turnover is often computed directly from consecutive actions, so action turnover becomes a proxy for executed turnover. Related turnover-aware sequential-allocation work outside RL likewise studies frictions at the level of portfolio updates \cite{li2014}. Recent portfolio-RL variants improve robustness through richer state construction, auxiliary prediction, or reward shaping \cite{ye2020,lien2023}, and nearby RL work studies execution agents, hierarchical decomposition, or smooth-action regularization \cite{nevmyvaka2006,wang2021hrpm,shen2020,mysore2021}. The distinction in the present paper is therefore not simply ``smoother actions.'' It is that executed holdings are treated as the first-class accounting and evaluation object.
 
-Taken together, the prior literature already contains gradual adjustment, aim portfolios, execution scheduling, and smoothing ideas. What is less explicitly isolated is a portfolio-RL experimental protocol in which target and executed portfolios are separated, primary evaluation is attached to the realized executed path, and the empirical effect of that separation is studied under a frozen learned policy. That narrower identification question is the one addressed here.
+Taken together, the prior literature already contains gradual adjustment, aim portfolios, execution scheduling, and smoothing ideas. What is less explicitly isolated is a portfolio-RL experimental protocol in which target and executed portfolios are separated, primary evaluation is attached to the realized executed path, and the empirical effect of that separation is studied under a frozen learned policy. That focused identification question is the one addressed here.
 
 % ============================================================
 \section{Problem Formulation}
@@ -165,7 +170,7 @@ The quantity $R_{t+1}$ is the realized executed-path return used for primary eva
 \subsection{Terminology and Evaluation Objects}
 Throughout the paper, \emph{target portfolio} denotes the policy output $\wtgt_t$, \emph{executed portfolio} denotes the realized holdings $\wexec_t$, \emph{immediate-execution baseline} denotes the comparison arm $\eta=1.0$, \emph{validation-selected operating point} denotes the execution rate chosen on the validation window, and \emph{net Sharpe} denotes the annualized Sharpe ratio computed from executed net linear returns. The code label \texttt{sharpe\_net\_lin} is the implementation name for this same net-Sharpe quantity.
 
-\begin{table}[t]
+\begin{table}[H]
 \centering
 \scriptsize
 \caption{Core versus diagnostic quantities.}
@@ -197,7 +202,7 @@ We interpret portfolio RL under frictions as a two-stage control problem:
 The formulation naturally supports learning under the executed dynamics \eqref{eq:reward}. In the present empirical study, however, the policy layer is trained exactly once and then held fixed; every empirical arm reuses that same trained policy and varies only the execution layer. The resulting comparison isolates how execution-aware accounting changes realized performance for the same learned target path.
 
 \subsection{Fixed execution timescale}
-The execution update \eqref{eq:exec_update} is fixed, and the present paper studies only constant timescales $\eta_t\equiv\eta$. This is an identification choice rather than only a simplification. Once $\eta_t$ becomes rule-based or learned, the object of study shifts from execution accounting to adaptive controller design. Fixed $\eta$ removes schedule-design confounds and keeps the empirical question at the level of how partial execution alone changes realized turnover, realized cost, and net performance.
+The execution update \eqref{eq:exec_update} is fixed, and the present paper studies only constant timescales $\eta_t\equiv\eta$. This is an identification choice rather than only a simplification. Once $\eta_t$ becomes rule-based or learned, the object of study shifts from execution accounting to adaptive controller design. Fixed $\eta$ removes schedule-design confounds, preserves a one-parameter execution frontier, and keeps the empirical question at the level of how partial execution alone changes realized turnover, realized cost, and net performance.
 
 \subsection{Cost alignment (core principle)}
 Cost should be attached to what is actually traded, not to what was merely proposed. The primary accounting object is therefore executed turnover $\TOexec_t$ and the realized executed-path return \eqref{eq:reward}. Target-based cost and target-path return remain useful as counterfactual diagnostics, but they are not the primary accounting object because they describe a hypothetical immediate move that was not actually executed. Charging costs on target turnover $\TOtgt_t$ induces systematic friction mis-scaling when $\eta_t<1$ (Proposition~\ref{prop:cost_misalignment}); the present paper studies that accounting implication under a frozen-policy protocol rather than running alternative retraining experiments.
@@ -217,9 +222,9 @@ For constant $\eta\in(0,1)$, the execution update \eqref{eq:exec_update} is the 
 \end{aligned}
 \]
 \end{proposition}
-\noindent\textbf{Proof sketch.} The objective is strongly convex in $w$. Setting the gradient to zero yields a convex combination of $\wexec_{t-1}$ and $\wtgt_t$; the simplex constraint is preserved by convexity of $\DeltaN$. \hfill$\square$
+\noindent\textbf{Proof sketch.} The objective is strongly convex in $w$. Setting the gradient to zero yields a convex combination of $\wexec_{t-1}$ and $\wtgt_t$; the simplex constraint is preserved by convexity of $\DeltaN$. Since both $\wtgt_t$ and $\wexec_{t-1}$ lie in the simplex, their convex combination is naturally feasible without further projection. \hfill$\square$
 \begin{remark}
-Execution is a proximal step that penalizes \emph{changes from the previous executed portfolio}, regularizing the trading path while still tracking the target.
+Execution is a proximal step that penalizes \emph{changes from the previous executed portfolio}, regularizing the trading path while still tracking the target. That same convex-combination form also makes the rule computationally light and feasibility-preserving under the simplex constraint.
 \end{remark}
 
 \begin{lemma}[Turnover scaling and cumulative bound]\label{lem:turnover_scaling}
@@ -329,7 +334,7 @@ b/0.95, & b<0,\\
 0, & b=0.
 \end{cases}
 \]
-Thus, $\eta$ selection is based on the validation window only and intentionally favors the least aggressive execution smoothing among near-best validation operating points. The 2024--2025 test window is used only for final held-out evaluation of the selected operating point and is never used for $\eta$ selection.
+Thus, $\eta$ selection is based on the validation window only and favors the least aggressive execution smoothing among near-best validation operating points. The 2024--2025 test window is used only for final held-out evaluation of the selected operating point and is never used for $\eta$ selection.
 
 \subsection{Evaluation protocol (paired seeds)}
 Let $\mathcal{S}=\{0,1,\dots,9\}$. For each seed $s\in\mathcal{S}$, evaluate all arms (different $\eta$ values) with identical data splits and the same frozen trained policy per seed.
@@ -341,8 +346,20 @@ Report:
 \end{itemize}
 These seed-level tests quantify optimization-level variability conditional on a fixed historical window, not independent market-sample uncertainty.
 
-\subsection{Secondary matched-heuristic context under aligned definitions}
+\subsection{Matched heuristic context}
 To provide limited non-RL context without changing the main question, the rebuilt protocol also includes five heuristic baselines on the same effective held-out dates within the test split: buy-and-hold equal weight, daily-rebalanced equal weight, inverse-volatility risk parity, minimum-variance, and a simple long-only mean-variance heuristic. The two optimization-style heuristics use a trailing 252-day window with a minimum 30-day warm-up, and the mean-variance heuristic fixes risk aversion at 10.0. These baselines are not allowed to use a different accounting convention. They must use the same transaction-cost regime $\kappaTC$, the same realized-path net-return definition, the same Sharpe annualization $\sqrt{252}$, the same risk-free assumption $r_f=0$, the same executed-path primary metric definitions as the RL arms, and the same effective evaluation dates induced by the frozen split and rolling-feature availability. They are included only to calibrate external performance scale under aligned accounting. They are not part of the identification strategy, and they are not used for selection, validation, or the paper's core causal interpretation.
+
+\subsection{CC-TA-LBIP baseline}
+As a stronger non-RL comparator, we also include a \emph{Cost-Calibrated Turnover-Aware Linear Information-Parity Baseline} (CC-TA-LBIP). CC-TA-LBIP uses the same 918-dimensional state as the RL controller---the 30-day return window, the current volatility vector, the previous executed weights, and the same two frozen signal channels---but replaces the nonlinear policy map with per-asset ridge regressions that produce a linear expected-return estimate $\hat\mu_t$. Those linear predictions are then passed to a long-only convex optimizer with an explicit turnover anchor,
+\[
+\max_{w\in\Delta}\;
+\hat\mu_t^\top w
+- \frac{\gamma}{2}w^\top\hat\Sigma_t w
+- \frac{c\,\kappa}{2}\|w-w^{\mathrm{exec}}_{t-1}\|_2^2.
+\]
+Unlike the main RL experiment, this auxiliary comparator does not add a second PEC layer on top of the target weights. The turnover penalty is internalized directly inside the classical optimizer, and the resulting portfolio is executed immediately.
+
+The accounting rules are still matched to the RL experiments. CC-TA-LBIP is evaluated under the same proportional cost grid, the same executed-path net-return definition, and the same annualization convention as the RL arms. To keep this comparator narrow and interpretable, we fix the linear forecast map at $\texttt{ridge\_alpha}=30$ and tune only the cost-scaling constant on validation. A small validation-only development grid over $c\in\{0,2000,3000,4000,6000,8000,12000\}$ selects $c=3000$ under the same conservative ``near-best then least aggressive'' logic used elsewhere in the paper: we take the smallest positive $c$ within 95\% of the best positive-cost validation score. Because the integrated turnover anchor is proportional to $\kappa$, the comparator collapses exactly to the unregularized $c=0$ baseline when $\kappa=0$, which avoids any free zero-cost smoothing effect. This comparator remains auxiliary. It broadens the external baseline set under information parity, but it is not part of the frozen-policy identification strategy.
 
 \subsection{Metrics}
 \paragraph{Core metrics (exec only).}
@@ -377,7 +394,7 @@ In our runs, this signed average is numerically small and less informative than 
 \label{sec:results}
 
 \subsection{Protocol framing: validation selection, then held-out evaluation}
-The empirical protocol is two-stage. First, the fixed $\eta$ grid is scored on the validation window and one operating point is selected using the rule from Section~\ref{sec:validation_selection}. Second, the held-out test window is used only for final evaluation of that validation-selected operating point and the immediate-execution baseline. No test statistic is used to choose $\eta$. Every result in this section reuses the same trained policy and changes only the execution mapping applied to that frozen target path. The main paper evidence is therefore organized around: (i) a validation frontier plus selection report, (ii) a held-out selected-$\eta$ vs.\ $\eta=1.0$ table, (iii) trace-based mechanism diagnostics, (iv) a rolling-window frontier robustness diagnostic, and (v) a denser canonical friction-grid diagnostic. The full held-out $\eta$ frontier is still useful, but only as a post-selection diagnostic rather than as model-selection evidence. A small matched-heuristic comparison is retained in the appendix only as secondary context. In the rolling-window extension reported later in this section, the distinction between selected-point transfer and frontier robustness becomes especially important: the selected operating point is window-sensitive, whereas the positive-cost held-out frontier itself is more stable.
+The empirical protocol is two-stage. First, the fixed $\eta$ grid is scored on the validation window and one operating point is selected using the rule from Section~\ref{sec:validation_selection}. Second, the held-out test window is used only for final evaluation of that validation-selected operating point and the immediate-execution baseline. No test statistic is used to choose $\eta$. Every result in this section reuses the same trained policy and changes only the execution mapping applied to that frozen target path. The main paper evidence is therefore organized around: (i) a validation frontier plus selection report, (ii) a held-out selected-$\eta$ vs.\ $\eta=1.0$ table, (iii) trace-based mechanism diagnostics, (iv) a rolling-window frontier robustness diagnostic, and (v) a denser canonical friction-grid diagnostic. We then add two scope checks: an $\eta$-aligned retraining comparison on the canonical U27 benchmark and a second-universe replication on a nearby 36-name large-cap benchmark. The full held-out $\eta$ frontier is still useful, but only as a post-selection diagnostic rather than as model-selection evidence. Matched heuristics are reported in the appendix for scale only. In the rolling-window extension reported later in this section, the distinction between selected-point transfer and frontier robustness becomes especially important: the selected operating point is window-sensitive, whereas the positive-cost held-out frontier itself is more stable.
 
 \subsection{Validation selection locks the operating point at \texorpdfstring{$\eta=0.5$}{eta=0.5}}
 Table~\ref{tab:validation_selection} reports the validation-only selection object. All positive-cost validation scores are positive in this rebuilt run, so the selection problem is about taking the largest $\eta$ that remains close to the best validation frontier point. The raw best validation score is attained at $\eta=0.02$ with $0.5213$, but the locked $95\%$ rule qualifies six interior grid points and then selects the \emph{largest} qualifying value. The resulting validation-selected operating point is therefore $\eta=0.5$, while the immediate-execution baseline $\eta=1.0$ narrowly fails the qualification threshold.
@@ -406,15 +423,15 @@ $\eta$ & Score & Avg.\ paired-median $\Delta$Sharpe ($\kappa>0$) & Avg.\ seed-me
 
 \begin{figure*}[t!]
 \centering
-\includegraphics[width=0.95\textwidth]{fig_frontier.png}
-\caption{Validation frontier on the effective validation dates 2022-02-15 to 2023-12-29 within the 2022--2023 split. Each colored line corresponds to one transaction-cost regime $\kappa\in\{0,5\times10^{-4},10^{-3}\}$, and each labeled point is one $\eta$ value. Horizontal position is seed-median executed turnover across the 10 validation seeds, vertical position is the median net Sharpe, and vertical bars show half-IQR of seedwise net Sharpe. The validation-selected operating point $\eta=0.5$ is emphasized with enlarged black-edged markers.}
+\includegraphics[width=0.92\textwidth]{paper/submission_figures/fig_frontier_submission.pdf}
+\caption{Validation frontier on the effective validation dates 2022-02-15 to 2023-12-29 within the 2022--2023 split. Each line corresponds to one transaction-cost regime $\kappa\in\{0,5\times10^{-4},10^{-3}\}$, with vertical bars showing half-IQR of seedwise net Sharpe. The selected operating point $\eta=0.5$ is highlighted, while the immediate-execution boundary $\eta=1.0$ and the raw best tiny-$\eta$ point are annotated only once to keep the frontier readable at print scale.}
 \label{fig:frontier}
 \end{figure*}
 
 \subsection{Held-out test: selected \texorpdfstring{$\eta=0.5$}{eta=0.5} vs.\ immediate execution}
 Table~\ref{tab:selected_vs_eta1} gives the held-out paired comparison between the validation-selected operating point and the immediate-execution baseline. The main evidence is again concentrated in the positive-cost regimes. At $\kappa=5\times10^{-4}$ and $\kappa=10^{-3}$, the selected operating point improves paired median net Sharpe by $+0.0105$ and $+0.0213$, respectively, and wins on all $10/10$ paired seeds in both cases (exact one-sided sign test $p=9.77\times10^{-4}$ for each regime). The corresponding two-sided Wilcoxon signed-rank $p$-values are $1.95\times10^{-3}$ in both regimes, and the bootstrap $95\%$ confidence intervals for the paired median $\Delta$Sharpe remain strictly positive: $[0.0073,\,0.0129]$ at $\kappa=5\times10^{-4}$ and $[0.0167,\,0.0233]$ at $\kappa=10^{-3}$. Median executed turnover falls from $0.02200$ to $0.01095$ in all three reported rows, roughly halving executed trading intensity.
 
-At $\kappa=0$, the picture is negligible. The paired median Sharpe delta is $-0.00025$ with a $50\%$ win-rate, sign-test $p=0.623$, Wilcoxon $p=0.770$, and a bootstrap $95\%$ confidence interval of $[-0.0022,\,0.0028]$ for the paired median $\Delta$Sharpe. This is consistent with little difference in the realized trading path once explicit transaction costs are removed, and it does not support a strong regularization or training-superiority interpretation. The regime contrast is therefore clear: evidence is strong for cost-aligned improvement when $\kappaTC>0$, and absent when $\kappaTC=0$. Because the first two Sharpe columns report marginal arm medians while $\Delta$Sharpe reports the median of seed-wise paired differences, the paired median need not equal the arithmetic difference between the two marginal medians.
+At $\kappa=0$, the picture is negligible. The paired median Sharpe delta is $-0.00025$ with a $50\%$ win-rate, sign-test $p=0.623$, Wilcoxon $p=0.770$, and a bootstrap $95\%$ confidence interval of $[-0.0022,\,0.0028]$ for the paired median $\Delta$Sharpe. This is consistent with little difference in the realized trading path once explicit transaction costs are removed, and it does not support a strong regularization or training-superiority interpretation. The regime contrast is therefore clear: evidence is strong for cost-aligned improvement when $\kappaTC>0$, and absent when $\kappaTC=0$. Because the first two Sharpe columns report marginal arm medians while $\Delta$Sharpe reports the median of seed-wise paired differences, the paired median need not equal the arithmetic difference between the two marginal medians. Because the executed holdings path is unchanged when only $\kappa$ varies, the $\kappa=0$ row also reveals the held-out gross-path comparison between $\eta=0.5$ and $\eta=1.0$. Appendix Table~\ref{tab:gross_path_summary} uses that identity to report the gross-Sharpe and gross-CAGR comparison explicitly alongside turnover and tracking diagnostics.
 
 \begin{table*}[t]
 \centering
@@ -457,78 +474,131 @@ $10^{-3}$ & 0.01095 & 0.02190 & 2.00 & 0.00259 & 3.15e-05 & 0.00739 & 3.18e-04 \
 \end{table*}
 
 \subsection{Rolling-window robustness: frontier persists, selected-point transfer is window-sensitive}
-To test whether the canonical 2022--2025 result is specific to that recent window, we repeated the same frozen-policy evaluation on two additional rolling splits: Split A trains on 2010--2017, validates on 2018--2019, and tests on 2020--2021; Split B trains on 2010--2019, validates on 2020--2021, and tests on 2022--2023; Split C is the canonical 2010--2021 / 2022--2023 / 2024--2025 split. Read narrowly as a selected-$\eta$ transfer test, this exercise is mixed. Under the locked $95\%$ largest-qualifying rule, Splits A and B both keep $\eta=1.0$ because the immediate-execution validation score still retains $98.17\%$ and $97.94\%$ of the split-wise best score, respectively. In those two windows, the selected-vs.-baseline held-out delta is therefore identically zero by construction. Split C retains the original selected point $\eta=0.5$ and the positive-cost gains reported above.
+To test whether the canonical 2022--2025 result is specific to that recent window, we repeated the same frozen-policy evaluation on two additional rolling splits: Split A trains on 2010--2017, validates on 2018--2019, and tests on 2020--2021; Split B trains on 2010--2019, validates on 2020--2021, and tests on 2022--2023; Split C is the canonical 2010--2021 / 2022--2023 / 2024--2025 split. As a selected-$\eta$ transfer test, the result is mixed. Under the locked $95\%$ largest-qualifying rule, Splits A and B both keep $\eta=1.0$ because the immediate-execution validation score still retains $98.17\%$ and $97.94\%$ of the split-wise best score, respectively. In those two windows, the selected-vs.-baseline held-out delta is therefore identically zero by construction. Split C retains the original selected point $\eta=0.5$ and the positive-cost gains reported above.
 These are different objects: selected-point transfer asks whether one locked operating point survives unchanged across windows, whereas frontier robustness asks whether the held-out positive-cost frontier still contains beneficial interior points somewhere along the fixed $\eta$ grid.
 
 Read as a frontier-robustness diagnostic, however, the picture is stronger. In all three rolling windows, the held-out positive-cost frontier still contains interior execution rates $\eta<1$ that improve net Sharpe and reduce executed turnover relative to $\eta=1.0$. Using the best interior held-out point only as a post-selection diagnostic, Split A improves median net Sharpe by $+0.0082$ at $\kappa=5\times10^{-4}$ and $+0.0165$ at $\kappa=10^{-3}$ while lowering median executed turnover by $0.01936$; Split B improves median net Sharpe by $+0.0163$ and $+0.0308$ while lowering median executed turnover by $0.01879$; and Split C improves median net Sharpe by $+0.0231$ and $+0.0439$ while lowering median executed turnover by $0.02141$. The rolling-window conclusion is therefore not that one validation-selected operating point transfers unchanged in every window, but that under positive costs the held-out execution frontier itself remains interior across windows while the conservative selector can still remain at $\eta=1.0$ in some regimes. Figure~\ref{fig:rollingfrontier} makes this distinction visual: Split A and Split B retain clear interior frontiers even though their locked selected points remain at the immediate-execution boundary.
 
 \begin{figure*}[!b]
 \centering
-\includegraphics[width=0.92\textwidth]{fig_rolling_frontier_robustness.png}
-\caption{Held-out positive-cost frontiers across the three rolling windows. Each panel shows the seed-median held-out net Sharpe versus seed-median executed turnover for $\kappa\in\{5\times10^{-4},10^{-3}\}$ over the fixed $\eta$ grid. Filled black-edged markers denote the locked validation-selected operating point for that split; hollow diamonds denote the best interior held-out point $\eta<1$, shown only as a post-selection diagnostic. Split C both selects and benefits from an interior point, whereas Splits A and B still exhibit interior frontiers even though the conservative selector remains at $\eta=1.0$.}
+\includegraphics[width=0.89\textwidth]{paper/submission_figures/fig_rolling_summary.pdf}
+\caption{Rolling-window summary with the two relevant objects separated. Left: locked selected-point transfer, shown as the selected $\eta$ on each split. Right: frontier robustness, shown as the best-interior held-out paired $\Delta$ Sharpe at the two positive-cost levels together with the corresponding reduction in executed turnover. The figure makes the paper's reading explicit: Split C selects an interior point, whereas Splits A and B remain at $\eta=1.0$ under the conservative selector even though interior positive-cost improvements still exist within the fixed grid.}
 \label{fig:rollingfrontier}
 \end{figure*}
 
 \subsection{Denser friction grid: the frontier steepens as \texorpdfstring{$\kappa$}{kappa} grows}
-We next densify the friction axis on the canonical split by adding $\kappa\in\{2\times10^{-4},2\times10^{-3}\}$ while keeping the frozen policy, the $\eta$ grid, and the validation-first protocol unchanged. This expansion is intentionally diagnostic: it does not retrain any policy and it does not replace the main selected-point result. Two findings are useful. First, the global validation selector remains stable. When positive costs are expanded to $\{2\times10^{-4},5\times10^{-4},10^{-3},2\times10^{-3}\}$, the same locked rule still selects $\eta=0.5$. Relative to immediate execution, that global selected operating point improves paired median net Sharpe by $+0.0041$, $+0.0105$, $+0.0213$, and $+0.0409$ as $\kappa$ increases across those four positive-cost regimes, while reducing median executed turnover by $0.01105$ in each row.
+We next densify the friction axis on the canonical split by adding $\kappa\in\{2\times10^{-4},2\times10^{-3}\}$ while keeping the frozen policy, the $\eta$ grid, and the validation-first protocol unchanged. This expansion is diagnostic: it does not retrain any policy and it does not replace the main selected-point result. Two findings are useful. First, the global validation selector remains stable. When positive costs are expanded to $\{2\times10^{-4},5\times10^{-4},10^{-3},2\times10^{-3}\}$, the same locked rule still selects $\eta=0.5$. Relative to immediate execution, that global selected operating point improves paired median net Sharpe by $+0.0041$, $+0.0105$, $+0.0213$, and $+0.0409$ as $\kappa$ increases across those four positive-cost regimes, while reducing median executed turnover by $0.01105$ in each row.
 
 Second, the full held-out frontier becomes progressively more favorable to interior execution rates as friction grows. Using the best interior point only as a post-selection diagnostic, the paired median net-Sharpe gain versus $\eta=1.0$ rises monotonically from $+0.0113$ at $\kappa=2\times10^{-4}$ to $+0.0230$ at $\kappa=5\times10^{-4}$, $+0.0424$ at $\kappa=10^{-3}$, and $+0.0761$ at $\kappa=2\times10^{-3}$; the corresponding reduction in median executed turnover is essentially constant at about $0.02143$ because the comparison is always against the same immediate-execution baseline. A per-$\kappa$ diagnostic selector tells the same story from the other direction: it remains at $\eta=1.0$ for $\kappa=2\times10^{-4}$ and $5\times10^{-4}$, moves to $\eta=0.5$ at $\kappa=10^{-3}$, and tightens further to $\eta=0.2$ at $\kappa=2\times10^{-3}$. The friction-grid expansion therefore supports a simple interpretation: the execution frontier is not only real, but increasingly consequential as proportional trading frictions rise. Figure~\ref{fig:kappacurve} summarizes this tightening pattern across the dense friction grid.
 
-\begin{figure*}[t]
+\begin{figure*}[!t]
 \centering
-\includegraphics[width=0.80\textwidth]{fig_kappa_benefit_curve.png}
-\caption{Dense canonical friction-grid benefit curve relative to immediate execution $\eta=1.0$. The top panel plots paired median $\Delta$ net Sharpe and the bottom panel plots paired median $\Delta\overline{\TOexec}$ on the held-out 2024--2025 split as $\kappa$ increases from $2\times10^{-4}$ to $2\times10^{-3}$. The blue line is the global validation-selected operating point $\eta=0.5$, the purple line is the per-$\kappa$ qualifying selector, and the orange line is the best interior held-out point $\eta<1$ shown only as a diagnostic. The per-$\kappa$ selector annotations show how the conservative operating point moves inward only once frictions become large enough, while the best-interior Sharpe gain steepens monotonically with $\kappa$.}
+\includegraphics[width=0.74\textwidth]{paper/submission_figures/fig_kappa_curve_submission.pdf}
+\caption{Dense canonical friction-grid summary relative to immediate execution $\eta=1.0$. The top panel compares the held-out paired $\Delta$ Sharpe of the global selected operating point $\eta=0.5$ against the best interior diagnostic point as friction increases from $2\times10^{-4}$ to $2\times10^{-3}$. The bottom panel records the per-$\kappa$ qualifying selector, which stays at the immediate-execution boundary for smaller frictions and moves inward only once costs become large enough.}
 \label{fig:kappacurve}
 \end{figure*}
 
-\FloatBarrier
+\subsection{Eta-aligned retraining}
+The canonical evidence uses the frozen-policy protocol, but it is still useful to ask whether the positive-cost sign survives retraining when the policy is trained directly under the selected execution timescale. To test that question without opening a full retraining grid, we reran the canonical U27 experiment with the same controller family, the same split, the same cost scale, and the same signal snapshot, but with both training and evaluation aligned to $\eta=0.5$. The resulting comparison is again made against the immediate-execution baseline $\eta=1.0$ under the same retrained checkpoints.
+
+The sign survives. On validation, the retrained $\eta=0.5$ arm raises median Sharpe from $0.5184$ to $0.5215$ at $\kappa=5\times10^{-4}$ and from $0.5052$ to $0.5157$ at $\kappa=10^{-3}$, while reducing median executed turnover from $0.01721$ to $0.00870$. On the held-out test, the same retrained comparison raises median Sharpe from $1.1513$ to $1.1600$ at $\kappa=5\times10^{-4}$ and from $1.1362$ to $1.1522$ at $\kappa=10^{-3}$, again with executed turnover reduced from $0.01735$ to $0.00880$. The positive-cost mean of the seed-median Sharpe therefore moves from $1.1437$ to $1.1561$ on the held-out test, and all $5/5$ retrained seeds improve in both positive-cost regimes. At $\kappa=0$, by contrast, the held-out Sharpe difference is only $+0.0013$. Appendix Table~\ref{tab:retrain_eta05} and Figure~\ref{fig:aux_frontiers} summarize this check.
+
+
+\subsection{U36 replication}
+We next test whether the execution frontier is tied too closely to the original 27-name basket by rerunning the frozen-policy protocol on a nearby 36-name sector-balanced U.S.\ large-cap benchmark. This auxiliary universe keeps the same daily timing, controller family, signal snapshot, and evaluation grid, but changes the asset basket and increases the portfolio dimension. The goal is not to claim large-$N$ scaling from a single auxiliary run; it is to test whether the same execution-accounting pattern reappears outside the original U27 basket.
+
+It does. On the U36 validation split, the raw best positive-cost score again occurs at the smallest interior point $\eta=0.02$, but the locked $95\%$ largest-qualifying rule again selects the more conservative interior point $\eta=0.5$. The validation-selected point retains $96.78\%$ of the best positive-cost validation score while reducing median executed turnover from $0.02224$ to $0.01087$. On the held-out U36 test, the selected $\eta=0.5$ point improves median Sharpe from $0.9608$ to $0.9721$ at $\kappa=5\times10^{-4}$ and from $0.9401$ to $0.9636$ at $\kappa=10^{-3}$, while turnover falls from $0.02161$ to $0.01061$. The raw best interior point remains smaller ($\eta=0.02$), but the selected point still retains $98.12\%$ of the held-out best positive-cost score, which is consistent with the same conservative-selector interpretation used on the canonical benchmark. Appendix Table~\ref{tab:u36_replication} and Figure~\ref{fig:aux_frontiers} summarize the replication.
+
+
+\subsection{CC-TA-LBIP comparator}
+The heuristic baselines above use deliberately simple portfolio rules. To compare the RL results against a stronger classical optimizer under the same state information, we next evaluate CC-TA-LBIP, the cost-calibrated information-parity convex baseline described in Section~\ref{sec:exp}. CC-TA-LBIP fits the same linear ridge forecast map on the same 918-dimensional state as the RL controller and then internalizes turnover regularization directly inside the target optimizer rather than through a second PEC layer. The validation-only sweep over $c\in\{0,2000,3000,4000,6000,8000,12000\}$ selects $c=3000$.
+
+This auxiliary comparator is materially stronger and more consistent than the earlier free-$\tau$ linear prototype. On validation, the selected $c=3000$ point improves net Sharpe from $-0.5047$ to $0.3435$ at $\kappa=5\times10^{-4}$ and from $-1.5017$ to $0.2896$ at $\kappa=10^{-3}$ relative to the unregularized $c=0$ baseline, while executed turnover falls from $1.3130$ to $0.1077$. On the held-out 2024--2025 test, the same validation-selected point improves net Sharpe from $0.0661$ to $1.0199$ at $\kappa=5\times10^{-4}$ and from $-1.0529$ to $0.9679$ at $\kappa=10^{-3}$, with turnover reduced from $1.2903$ to $0.1189$. Because the integrated turnover term vanishes exactly when $\kappa=0$, the zero-cost comparison is now identically unchanged: at $\kappa=0$, Sharpe remains $1.1875$ under both $c=0$ and $c=3000$. We therefore interpret CC-TA-LBIP as a cleaner external classical comparator under information parity: it shows that a transaction-cost-aware linear-convex optimizer can also benefit materially from cost-calibrated turnover control, while leaving the paper's main frozen-policy RL identification result unchanged. Appendix Table~\ref{tab:cctalibp_u27} reports the detailed rows.
+
+Taken together, the three scope checks point in the same direction. The retraining comparison preserves the positive-cost sign with almost no zero-cost movement, the U36 rerun reproduces the same interior execution pattern on a nearby large-cap basket, and the CC-TA-LBIP comparator shows that friction-calibrated turnover control also matters for a stronger classical optimizer under information parity.
+
 \subsection{Adaptive \texorpdfstring{$\eta_t$}{eta-t} schedules are out of scope}
-Adaptive schedules are intentionally left out of the present version. The goal of this paper is to isolate the execution effect under a single frozen control model; adding rule-based $\eta_t$ schedules would mix execution design with schedule-selection effects. We therefore treat adaptive execution as future work and use the fixed-$\eta$ frontier as the main empirical object.
+Adaptive schedules are left out of the present version. The goal of this paper is to isolate the execution effect under a single frozen control model; adding rule-based $\eta_t$ schedules would mix execution design with schedule-selection effects. We therefore treat adaptive execution as future work and use the fixed-$\eta$ frontier as the main empirical object.
 
 % ============================================================
 \section{Discussion}
-\paragraph{Interpretation: realized-path stabilization, not alpha creation.}
-The central empirical result is not that a different prediction model has been learned, but that the same learned target path can be implemented in a more cost-aligned way under frictions. On the canonical 2024--2025 split, moving from immediate execution to the validation-selected interior operating point $\eta=0.5$ roughly halves median executed turnover and improves net Sharpe in the positive-cost regimes, while the corresponding gross-Sharpe change is slightly negative. The resulting interpretation is therefore narrow and mechanistic: under a fixed learned policy, execution-aware control improves risk-adjusted performance primarily through lower realized turnover and lower realized cost, not through additional predictive alpha.
+\subsection{Mechanistic interpretation}
+The key result is implementation, not prediction. On the canonical 2024--2025 split, replacing immediate execution with the validation-selected interior point $\eta=0.5$ roughly halves median executed turnover and improves net Sharpe when costs are positive. Appendix Table~\ref{tab:gross_path_summary} shows that the corresponding gross-path change is negligible to slightly negative and does not vary with $\kappa$, because $\kappa$ changes only cost deductions on the same executed path. The clearest reading is therefore simple: the gain comes from lower realized turnover and lower realized cost, not from a better forecasting model or additional alpha. The scope checks point in the same direction. After $\eta$-aligned retraining on U27, the held-out positive-cost gains remain $+0.0087$ and $+0.0160$ at the two positive-cost values while turnover again falls by about half. On the second U36 universe, the selected interior point delivers held-out gains of $+0.0113$ and $+0.0236$ with a turnover reduction of about $50.9\%$. Those checks do not replace the canonical frozen-policy result, but they make the implementation interpretation harder to dismiss as either a frozen-only or one-basket artifact. Appendix Figure~\ref{fig:aux_frontiers} visualizes the corresponding held-out auxiliary frontiers.
 
-\paragraph{When and why does execution help most?}
-The evidence also clarifies when execution control matters most. First, its gains are concentrated in positive-cost regimes: on the canonical split, paired median net-Sharpe improvements are $+0.0105$ at $\kappa=5\times10^{-4}$ and $+0.0213$ at $\kappa=10^{-3}$, whereas the $\kappa=0$ result is negligible. Second, the selected interior operating point produces a substantial reduction in executed turnover while maintaining only modest target--executed mismatch. Third, on the denser canonical friction grid, the best interior held-out gain steepens monotonically with $\kappa$, indicating that the execution frontier becomes more consequential as frictions rise. Taken together, these patterns support a friction-sensitive stabilization view rather than a broad claim that smaller $\eta$ is universally better.
+\subsection{When execution helps}
+The evidence also clarifies when execution control matters most. First, the gains are concentrated in positive-cost regimes: on the canonical split, paired median net-Sharpe improvements are $+0.0105$ at $\kappa=5\times10^{-4}$ and $+0.0213$ at $\kappa=10^{-3}$. The same regime contrast appears in the auxiliary checks: the retrained U27 comparison is essentially flat at $\kappa=0$ and positive at both positive-cost values, while the U36 replication also turns from negligible at $\kappa=0$ to clearly positive once costs are introduced. Second, the selected interior operating point achieves these gains with a substantial reduction in executed turnover and only modest target--executed mismatch. Third, on the denser canonical friction grid, the best interior held-out gain steepens monotonically with $\kappa$, indicating that the execution frontier becomes more consequential as frictions rise. Taken together, these patterns support a friction-sensitive implementation view rather than a claim that smaller $\eta$ is universally better.
 
-\paragraph{Rolling-window diagnostic.}
-The rolling-window diagnostic should be read carefully. It does not show that one conservative validation-selected operating point transfers unchanged across windows. In two additional windows, the locked selector remained at $\eta=1.0$ because immediate execution stayed sufficiently close to the split-wise validation best. What persists more robustly is not selected-point transfer, but frontier existence: across all three windows, the positive-cost held-out frontier still contains interior execution rates that improve net Sharpe while lowering executed turnover relative to $\eta=1.0$. The rolling-window result therefore acts less as a broad robustness win than as a boundary condition on when conservative validation selection activates smoothing.
+\subsection{Rolling-window reading}
+Across windows, frontier existence is more stable than selected-point transfer: two additional splits keep the locked selector at $\eta=1.0$, yet all three windows still contain interior positive-cost points that improve net Sharpe while lowering executed turnover relative to $\eta=1.0$.
 
-\paragraph{Matched heuristics as context only.}
-The matched heuristic baselines provide only secondary context. Under aligned executed-path accounting, the selected operating point is competitive against several higher-churn comparators such as inverse-volatility risk parity and minimum-variance, mixed against daily-rebalanced equal weight and long-only mean-variance, and weaker than buy-and-hold equal weight on this window. These results help locate the empirical scale of the effect, but they do not define the paper's main claim, which remains the internal frozen-policy execution comparison.
+\subsection{External context}
+The matched heuristic baselines are contextual only. On this held-out window, passive exposure was strong: buy-and-hold equal weight exceeds the selected RL arm under aligned executed-path accounting. The auxiliary CC-TA-LBIP comparator adds a stronger classical benchmark under the same information set, but it is still a benchmark rather than a second identification experiment. Its turnover anchor is calibrated directly to $\kappa$, so the zero-cost row is identical to the unregularized $c=0$ baseline and the positive-cost gains are easier to read as friction-sensitive implementation effects rather than free smoothing. The present paper therefore still does not establish that the underlying RL policy dominates passive or linear-convex baselines. Its contribution is narrower: for a fixed learned strategy, execution-aware implementation materially changes realized net performance under frictions. Within that narrower question, the selected operating point is competitive against several higher-turnover comparators, mixed against daily-rebalanced equal weight and long-only mean-variance, and weaker than buy-and-hold equal weight.
 
-\paragraph{Limitations.}
-The limitation structure mirrors the contribution structure. The paper contributes executed-path accounting, a fixed-$\eta$ execution frontier analysis, and a frozen-policy empirical study. The present evidence is therefore bounded by the market abstraction used for accounting, the fixed-timescale design, and the absence of retraining comparisons.
-\begin{itemize}[leftmargin=*,itemsep=1pt]
-\item The executed-path accounting contribution is established under a daily close-to-close abstraction on a fixed 27-name large-cap U.S. equity snapshot with a no-cash long-only simplex. These choices make the accounting object transparent, but they also limit market realism and leave survivorship-related bias unresolved.
-\item The execution-mapping contribution is established only for fixed $\eta$ schedules. Adaptive schedules and richer execution-control laws are intentionally excluded so that execution design is not confounded with schedule-selection effects.
-\item The empirical contribution isolates execution under one frozen control model. Its strongest selected-point transfer result appears on the canonical split, while the rolling-window diagnostic shows that frontier existence is more robust than conservative selected-point transfer. Training-time alignment and retraining comparisons remain outside the scope of this version.
-\item Secondary heuristic comparisons are reported under aligned accounting only as matched context. Comparator breadth is not a main contribution of this version, and broader classical comparisons are left to follow-on work.
-\end{itemize}
+% ============================================================
+\section{Limitations}
+\subsection{Frozen-policy scope}
+The canonical identification result is still frozen-policy. An auxiliary U27 check shows that the positive-cost sign survives one $\eta$-aligned retraining comparison at $\eta=0.5$, but that is still a narrow retraining exercise. The paper therefore does not establish training-time optimality, retraining-frequency effects, or how the frontier would move under a broader retraining grid.
+
+\subsection{Universe and realism}
+The data remain fixed large-cap U.S. equity snapshots rather than point-in-time constituent histories. We now include an auxiliary 36-name benchmark in addition to the canonical 27-name benchmark, which reduces one-basket dependence, but both datasets still share the same broad market, the same daily abstraction, and the same survivorship-related caveats. Absolute performance levels and external benchmark rankings may therefore be optimistic even though the within-policy $\eta$ comparison is less exposed.
+
+\subsection{Strategy class restriction}
+The study is limited to a no-cash, long-only, fully invested simplex with daily close-to-close execution. The conclusions therefore do not yet cover cash holdings, leverage, short positions, or intraday microstructure.
+
+\subsection{Generalization}
+The evidence is now stronger than a single-basket study, but it is still limited to one market, one controller family, two nearby large-cap universes, and a narrow contextual comparator set. The new CC-TA-LBIP result broadens the non-RL comparison class under information parity, but it is still one deterministic linear-convex comparator rather than an exhaustive family of turnover-aware convex optimizers. The rolling-window diagnostic, the auxiliary retraining check, the second-universe replication, and the CC-TA-LBIP comparator all support the same broad importance of execution design under frictions, but they are not yet evidence of broad cross-market generalization, policy-family invariance, or benchmark dominance.
 
 % ============================================================
 \section{Conclusion}
-We formulate execution-aware portfolio reinforcement learning by separating target and executed portfolios and attaching both trading costs and primary evaluation to the realized executed path. Empirically, one trained policy is reused throughout, only the execution mapping varies over a fixed \emph{a priori} $\eta$ grid, $\eta$ is selected on validation only, and the test split is reserved for held-out evaluation.
+We propose an execution-aware portfolio RL formulation that separates target and executed portfolios and attaches both transaction-cost accounting and primary evaluation to the realized executed path.
 
-On the canonical 2022--2025 split, the validation-selected operating point $\eta=0.5$ roughly halves median executed turnover and improves paired median net Sharpe in both positive-cost regimes, while the $\kappa=0$ evidence remains negligible. Across three rolling windows, the positive-cost held-out frontier remains interior even when conservative selected-point transfer does not persist. On a denser canonical friction grid, the same global selected operating point remains $\eta=0.5$, while the best interior held-out gain increases monotonically with friction. Mechanistically, these gains are explained by lower realized turnover and lower realized cost rather than by improved gross Sharpe.
+Empirically, the validation-selected operating point is $\eta=0.5$. On the canonical split, it roughly halves executed turnover and improves net Sharpe in the positive-cost regimes. Across rolling windows, the positive-cost execution frontier remains interior. Two auxiliary checks strengthen that reading: the same sign survives an $\eta$-aligned retraining comparison on U27, and the frontier reappears on a second 36-name large-cap universe.
 
-Under a fixed learned trading policy, cost-aligned execution control creates an interior positive-cost execution frontier whose gains are driven primarily by lower realized turnover and lower realized cost, while selected-point transfer remains window-sensitive. This version is limited to frozen-policy identification rather than retraining comparisons, broad benchmark dominance claims, or deployment-grade point-in-time backtesting. Future work should focus on explicit training-time alignment comparisons, broader comparator studies, and adaptive execution schedules built on top of this locked frozen-policy protocol.
+The next steps are to broaden the retraining grid beyond a single $\eta$-aligned comparison, extend the study to larger point-in-time universes and additional markets, and test richer execution schedules on top of the same locked accounting protocol.
 
 % ============================================================
+\appendix
 \clearpage
 \onecolumn
-\appendix
 \section{Reproducibility Checklist}
 \label{app:repro}
+Table~\ref{tab:repro_lock} collects the locked artifacts and protocol choices needed to rebuild the paper tables. The point of this appendix is not just that the experiment was rerun, but that the data snapshot, split logic, selection rule, and generated traces are all tied to concrete archived paths.
+
+\begin{table}[H]
+\centering
+\small
+\caption{Locked protocol, artifact paths, and rebuild signatures for the canonical paper run.}
+\label{tab:repro_lock}
+\begin{tabular}{@{}p{0.31\textwidth}p{0.63\textwidth}@{}}
+\toprule
+Locked item & Canonical value \\
+\midrule
+Canonical rebuild root & \texttt{paper\_rebuild\_20260324T065755Z}. \\
+Processed data snapshot & Fixed cache \path{data/processed_u27}, with returns materialized from \path{data/processed_u27/returns.parquet}. \\
+Frozen config bundle & \path{frozen_protocol/paper_v3/snapshot_control.yaml}, \path{repro/rebuilds/paper_rebuild_20260324T065755Z/configs/validation_eta.yaml}, and \path{repro/rebuilds/paper_rebuild_20260324T065755Z/configs/final_eta.yaml}. \\
+Seed set & $\{0,1,\dots,9\}$, fixed before evaluation. \\
+Split boundaries & Train 2010--2021, validation 2022--2023, held-out test 2024--2025; realized validation/test traces begin on 2022-02-15 and 2024-02-14 because of 30-day rolling features. \\
+Primary selection rule & Choose the largest $\eta$ whose validation score is at least 95\% of the best positive-cost score, where the score is the mean of per-$\kappa$ median \texttt{sharpe\_net\_lin} over $\kappa\in\{5\times10^{-4},10^{-3}\}$. \\
+Primary evaluation objects & Executed-path net Sharpe and executed turnover are primary; target-path quantities are archived as diagnostics only. \\
+Per-run archives & Each evaluation arm stores \path{cmd.txt}, \path{config.yaml}, \path{metrics.csv}, \path{trace.parquet}, \path{env_signature.json}, and \path{model_resolved_path.txt}. \\
+Manifests and materialization metadata & \path{repro/manifests/paper_artifact_manifest.json}, \path{repro/manifests/figure_manifest.json}, and \path{repro/rebuilds/paper_rebuild_20260324T065755Z/configs/materialization_meta.json}. \\
+Environment signatures & Per-seed \path{env_signature.json} files in the evaluation directories, plus \path{env_signature_hash}, package versions, and config hashes in \path{run_metadata_*.json}. \\
+Hard-locked equations & Core definitions are frozen in \eqref{eq:exec_update}--\eqref{eq:reward}. \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Stored trace and metric fields}
+The daily executed-path traces are stored as \texttt{trace.parquet} files and contain the fields used to regenerate both the main metrics and the appendix diagnostics. In the canonical rebuild, the archived frame includes:
 \begin{itemize}[leftmargin=*,itemsep=1pt]
-\item Paired-seed evaluation across all arms.
-\item Per-run config archiving and command logging.
-\item Environment signature files to detect drift.
-\item Automated aggregation outputs (tables/figures) generated from stored traces.
-\item Hard-locked core definitions: \eqref{eq:exec_update}--\eqref{eq:reward}.
+\item realized-path returns and costs: \texttt{portfolio\_return}, \texttt{reward}, \texttt{cost}, \texttt{net\_return\_lin}, \texttt{net\_return\_exp},
+\item target-path diagnostics: \texttt{portfolio\_return\_target}, \texttt{cost\_target}, \texttt{net\_return\_lin\_target},
+\item turnover and control fields: \texttt{turnover\_exec}, \texttt{turnover\_target}, \texttt{eta\_t}, \texttt{lambda\_t},
+\item tracking and safety fields: \texttt{tracking\_error\_l2}, \texttt{collapse\_flag}, \texttt{collapse\_reason},
+\item cumulative paths: \texttt{equity\_gross}, \texttt{equity\_gross\_target}, \texttt{equity\_net\_lin}, \texttt{equity\_net\_lin\_target},
+\item run identifiers: \texttt{date}, \texttt{eval\_id}, \texttt{run\_id}, \texttt{model\_type}, and \texttt{seed}.
 \end{itemize}
+The arm-level \texttt{metrics.csv} files store the corresponding aggregate fields used in the tables, including \texttt{sharpe\_net\_lin}, \texttt{cagr}, \texttt{maxdd}, \texttt{avg\_turnover\_exec}, \texttt{avg\_turnover\_target}, \texttt{tracking\_error\_l2\_mean}, \texttt{collapse\_flag\_any}, and the canonical \texttt{trace\_path}.
 
 \section{Data and Protocol Clarifications}
 \label{app:data_protocol}
@@ -539,7 +609,7 @@ The paper rebuild uses a cache-only paper-mode snapshot built from daily adjuste
 \small\ttfamily
 AAPL, AMGN, AXP, BA, CAT, CRM, CSCO, CVX, DIS, GS, HD, HON, IBM, INTC, JNJ, JPM, KO, MCD, MMM, MRK, MSFT, NKE, PG, UNH, V, VZ, WMT
 \end{quote}
-This is a reproducible fixed 27-name snapshot, not a historical point-in-time constituent reconstruction. Legacy project naming may still contain ``Dow30'', but the locked paper rebuild uses the fixed 27-name universe listed above. Accordingly, the empirical protocol should be interpreted as a controlled benchmark study with survivorship-related limitations, not as a deployment-grade backtest free of constituent-selection bias.
+This is a reproducible fixed 27-name snapshot, not a historical point-in-time constituent reconstruction. Legacy project naming may still contain ``Dow30'', but the locked paper rebuild uses the fixed 27-name universe listed above. The empirical protocol should therefore be interpreted as a controlled benchmark study with survivorship-related limitations, not as a deployment-grade backtest free of constituent-selection bias.
 
 \subsection{Decision timing and return interval}
 The backtest uses a close-to-close convention. At decision time $t$:
@@ -578,32 +648,102 @@ All experiments use a long-only, fully invested simplex. In particular, portfoli
 \subsection{Backtest scope limitations}
 The protocol is designed to be reproducible and internally consistent, but its scope remains limited in several ways:
 \begin{itemize}[leftmargin=*,itemsep=1pt]
-\item fixed 27-name large-cap U.S. equity snapshot rather than point-in-time constituent reconstruction,
+\item fixed large-cap U.S. equity snapshots (canonical 27-name benchmark plus one auxiliary 36-name benchmark) rather than point-in-time constituent reconstruction,
 \item no explicit cash asset,
 \item long-only fully invested simplex,
 \item daily close-to-close execution abstraction rather than intraday microstructure modeling,
-\item frozen-policy empirical scope rather than a full retraining comparison.
+\item canonical frozen-policy identification plus one narrow $\eta$-aligned retraining check rather than a broad retraining study.
 \end{itemize}
 These limitations do not invalidate the execution-accounting contribution, but they do bound the external claims that should be made from the current experiments.
 
 \section{Implementation Details}
 \label{app:implementation_details}
 \subsection{Observation and action instantiation}
-\begin{itemize}[leftmargin=*,itemsep=1pt]
-\item Data source and cache: daily adjusted close prices retrieved via \texttt{yfinance} are materialized once and then reused in cache-only paper mode for training and evaluation.
-\item Universe treatment: the paper rebuild uses the fixed 27-name snapshot rather than a point-in-time constituent reconstruction.
-\item Observation schema: $L=30$ return history, $L_v=30$ volatility features, previous executed weights, and two signal channels (\texttt{reversal\_5d}, \texttt{short\_term\_reversal}).
-\item Observation dimension: for 27 assets, the instantiated observation size is $30\times27 + 27 + 27 + 2\times27 = 918$, matching the stored run metadata.
-\item Action parameterization: the actor emits one real-valued logit per asset; the environment clips the action vector to $[-1,1]$ and maps it to the simplex with a stable softmax using logit scale 10.0.
-\end{itemize}
+Table~\ref{tab:impl_obs_action} summarizes the instantiated observation and action interface used by the frozen paper rebuild.
+
+\begin{table}[H]
+\centering
+\small
+\caption{Observation and action instantiation for the frozen paper rebuild.}
+\label{tab:impl_obs_action}
+\begin{tabular}{@{}p{0.30\textwidth}p{0.64\textwidth}@{}}
+\toprule
+Component & Instantiated value \\
+\midrule
+Data source and cache & Daily adjusted close prices retrieved once via \texttt{yfinance} and then reused in cache-only paper mode. \\
+Universe treatment & Fixed 27-name large-cap U.S. equity snapshot; no point-in-time constituent reconstruction. \\
+Return history block & $L=30$ daily log-return history flattened in asset order. \\
+Volatility block & $L_v=30$ rolling per-asset volatility features. \\
+Portfolio-state block & Previous executed weights from the realized holdings at $t-1$. \\
+Signal block & Two channels: \texttt{reversal\_5d} and \texttt{short\_term\_reversal}. \\
+Observation dimension & $30\times27 + 27 + 27 + 2\times27 = 918$, matching stored run metadata. \\
+Action space & One real-valued logit per asset in a 27-dimensional box action space. \\
+Simplex mapping & Action clipped to $[-1,1]$ and mapped to the long-only simplex by a stable softmax with logit scale 10.0. \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Controller schematic}
+Figure~\ref{fig:controller_schematic} summarizes the frozen controller interface at the level relevant for this paper: the actor proposes target logits, the environment maps them to target weights, the execution layer produces realized holdings, and cost-aligned accounting attaches both turnover and primary evaluation to that realized path.
+
+\begin{figure}[H]
+\centering
+\resizebox{0.86\textwidth}{!}{%
+\begin{tikzpicture}[
+  node distance=7mm and 8mm,
+  box/.style={draw, rounded corners, align=center, minimum width=2.7cm, minimum height=0.95cm},
+  arrow/.style={-{Latex[length=2mm]}, line width=0.8pt}
+]
+\node[box] (state) {$s_t$:\\returns, vol,\\prev.\ executed weights,\\frozen signals};
+\node[box, right=of state] (actor) {Frozen actor\\\texttt{MlpPolicy}\\target logits};
+\node[box, right=of actor] (map) {Clip to $[-1,1]$\\stable softmax\\$\wtgt_t \in \Delta^{N-1}$};
+\node[box, right=of map] (exec) {Execution layer\\$\wexec_t=(1-\eta)\wexec_{t-1}+\eta\wtgt_t$};
+\node[box, below=11mm of exec] (account) {Executed-path accounting\\$\TOexec_t$, $\kappaTC\TOexec_t$, $R_{t+1}$};
+\node[box, below=11mm of actor] (critic) {Twin critic and target critic\\library-default SAC critic stack};
+\node[box, left=of critic] (scheduler) {PRL scheduler\\volatility-conditioned\\$\alpha$ modulation};
+
+\draw[arrow] (state) -- (actor);
+\draw[arrow] (actor) -- (map);
+\draw[arrow] (map) -- (exec);
+\draw[arrow] (exec) -- (account);
+\draw[arrow] (state) -- (critic);
+\draw[arrow] (map.south) |- (critic.east);
+\draw[arrow] (scheduler) -- (critic);
+\draw[arrow] (scheduler) -- (actor);
+\end{tikzpicture}
+}
+\caption{Controller-level schematic for the frozen paper rebuild. The figure is not meant to introduce a novel network design; it makes explicit which parts of the controller are fixed, where the PRL scheduler enters, and where executed-path accounting is attached.}
+\label{fig:controller_schematic}
+\end{figure}
 
 \subsection{Frozen controller configuration}
-\begin{itemize}[leftmargin=*,itemsep=1pt]
-\item RL backend: Stable-Baselines3 SAC (\texttt{sb3\_version}=2.7.1 in the stored metadata).
-\item SAC hyperparameters: learning rate $10^{-4}$, batch size 256, discount $\gamma=0.99$, target-update rate $\tau=0.005$, replay buffer size 100000, total timesteps 100000, entropy coefficient 0.2.
-\item PRL scheduler parameters: $\alpha_0=0.2$, $\beta=1.0$, $\lambda_v=2.0$, bias $=-2.0$, $\alpha_{\min}=0.01$, $\alpha_{\max}=1.0$, mid-plasticity multiplier 0.7, CVaR-penalty gamma 0.3.
-\item Frozen signals: \texttt{reversal\_5d} and \texttt{short\_term\_reversal}, loaded from the locked selected-signals snapshot.
-\end{itemize}
+Table~\ref{tab:impl_controller} summarizes what is fixed in the controller architecture, optimization setup, and execution protocol.
+
+\begin{table}[t]
+\centering
+\small
+\caption{Frozen controller architecture and optimization details.}
+\label{tab:impl_controller}
+\begin{tabular}{@{}p{0.30\textwidth}p{0.64\textwidth}@{}}
+\toprule
+Component & Locked value \\
+\midrule
+RL backend & Stable-Baselines3 SAC with stored metadata version \texttt{sb3\_version}=2.7.1. \\
+Actor backbone & Library-default SB3 SAC \texttt{MlpPolicy} actor; no custom \texttt{policy\_kwargs} or explicit \texttt{net\_arch} override is stored in the frozen configs or run metadata. \\
+Critic backbone & Library-default SB3 SAC twin-critic stack plus target critic; no custom critic-topology override is stored in the frozen configs or run metadata. \\
+Action parameterization & One scalar logit per asset is emitted by the actor, clipped to $[-1,1]$, and then mapped to the long-only simplex by the environment-side stable softmax. \\
+Checkpoint reuse & One checkpoint trained once per seed on the training window, then reused across all $\eta$ arms for that seed. \\
+Execution interface & Policy emits target-allocation logits; the environment maps them to simplex weights and the execution layer applies fixed partial adjustment. \\
+Frozen signals & \texttt{reversal\_5d} and \texttt{short\_term\_reversal}. \\
+Training horizon and cadence & 100000 training timesteps per seed, evaluation cadence 5000 steps, checkpoint cadence 50000 steps, and log interval 1000 steps in the frozen control snapshot. \\
+Optimization settings & Shared SAC learning rate $10^{-4}$, batch size 256, discount $\gamma=0.99$, target-update rate $\tau=0.005$, replay buffer size 100000. No custom optimizer override is specified in the frozen training code, so optimization follows the library SAC defaults under those locked scalar settings. \\
+Entropy handling & The frozen snapshot stores \texttt{ent\_coef}=0.2. In PRL-SAC training, SB3 entropy auto-updating is disabled and the scheduler-supplied $\alpha$ enters both the critic target and actor objective, while the evaluation sweep reuses the already-trained frozen checkpoints. \\
+PRL scheduler and penalties & $\alpha_0=0.2$, $\beta=1.0$, $\lambda_v=2.0$, bias $=-2.0$, $\alpha_{\min}=0.01$, $\alpha_{\max}=1.0$, mid-plasticity multiplier 0.7, and CVaR-penalty gamma 0.3. The scheduler modulates the effective entropy weight from volatility-conditioned observations rather than changing the execution rule during evaluation. \\
+Checkpoint selection rule & Checkpoints are trained on the train split only. Validation selects $\eta$, not a different model checkpoint, and the held-out test reuses that same per-seed frozen checkpoint. \\
+Incumbent execution rate & Frozen snapshot \texttt{rebalance\_eta}=0.082 before evaluation-grid expansion. \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \subsection{Execution-grid provenance}
 \begin{itemize}[leftmargin=*,itemsep=1pt]
@@ -612,9 +752,235 @@ These limitations do not invalidate the execution-accounting contribution, but t
 \item Validation selects one operating point from that fixed grid, and the held-out test split is then reserved for final evaluation only.
 \end{itemize}
 
+\subsection{Validation-threshold sensitivity}
+Table~\ref{tab:threshold_sensitivity} records the small threshold check referenced in the main text. The practical message is that the selected operating point is stable to a moderate tightening of the retained-score threshold: moving from 95\% to 97.5\% leaves the selected operating point at $\eta=0.5$, whereas loosening the rule to 90\% collapses back to immediate execution.
+
+\begin{table}[H]
+\centering
+\small
+\caption{Sensitivity of the validation selector to the retained-score threshold. The raw-best validation point is $\eta=0.02$ with normalized score 100\%.}
+\label{tab:threshold_sensitivity}
+\begin{tabular}{@{}cccc@{}}
+\toprule
+Retained-score threshold & Selected $\eta$ & Normalized score kept & Mean positive-cost tracking \\
+\midrule
+90\% & 1.0 & 94.63\% & 0.00000 \\
+95\% & 0.5 & 97.66\% & 0.00257 \\
+97.5\% & 0.5 & 97.66\% & 0.00257 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Gross-path mechanism summary}
+For a fixed executed holdings path, changing $\kappa$ alters only the cost deduction and leaves gross returns unchanged. The gross comparison between the validation-selected operating point and the immediate-execution baseline can therefore be read directly from the $\kappa=0$ row of the held-out paired test. Table~\ref{tab:gross_path_summary} makes that implication explicit and places the gross-path quantities next to the turnover and tracking diagnostics that explain the positive-cost net benefit.
+
+\begin{table}[H]
+\centering
+\small
+\caption{Held-out gross-path summary for the validation-selected operating point $\eta=0.5$ relative to the immediate-execution baseline $\eta=1.0$. Gross quantities are read from the $\kappa=0$ paired comparison because varying $\kappa$ changes cost accounting but not the executed holdings path. Values are medians across 10 paired seeds; bracketed terms are IQRs.}
+\label{tab:gross_path_summary}
+\begin{tabular}{@{}p{0.56\textwidth}r@{}}
+\toprule
+Quantity & Value \\
+\midrule
+Selected gross Sharpe [IQR] & 1.1554 [0.0138] \\
+Baseline gross Sharpe [IQR] & 1.1542 [0.0148] \\
+Paired $\Delta$ gross Sharpe [IQR] & -0.0002 [0.0028] \\
+Paired $\Delta$ gross CAGR [IQR] & -0.0000 [0.0006] \\
+Paired $\Delta\overline{\TOexec}$ & -0.01105 \\
+Median target-to-executed turnover ratio $\overline{\TOtgt}/\overline{\TOexec}$ & 2.00 \\
+Median tracking error $\normtwo{\wexec_t-\wtgt_t}$ & 0.00259 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{groupplot}[
+  group style={group size=3 by 1, horizontal sep=1.2cm},
+  width=0.30\textwidth,
+  height=0.24\textwidth,
+  tick label style={font=\scriptsize},
+  label style={font=\scriptsize},
+  title style={font=\scriptsize},
+  legend style={font=\scriptsize, draw=none, fill=none},
+  every axis plot/.append style={line width=0.9pt},
+]
+\nextgroupplot[
+  title={Validation frontier view},
+  xlabel={Mean positive-cost median $\overline{\TOexec}$},
+  ylabel={Mean positive-cost median Sharpe},
+  xmin=0, xmax=0.023,
+  ymin=0.49, ymax=0.523,
+]
+\addplot[
+  only marks,
+  mark=*,
+  mark size=1.9pt,
+  color=black
+] coordinates {
+  (0.0216034806,0.4932669983)
+  (0.0108696366,0.5090715491)
+  (0.0050120889,0.5135892222)
+  (0.0027137514,0.5170443542)
+  (0.0022627329,0.5179054667)
+  (0.0014273821,0.5195832412)
+  (0.0006003807,0.5212581716)
+};
+\addplot[
+  only marks,
+  mark=*,
+  mark size=2.7pt,
+  color=blue
+] coordinates {(0.0108696366,0.5090715491)};
+\node[font=\scriptsize, anchor=west] at (axis cs:0.0216034806,0.4932669983) {$\eta=1.0$};
+\node[font=\scriptsize, anchor=west, text=blue] at (axis cs:0.0108696366,0.5090715491) {$\eta=0.5$};
+\node[font=\scriptsize, anchor=west] at (axis cs:0.0050120889,0.5135892222) {$0.2$};
+\node[font=\scriptsize, anchor=west] at (axis cs:0.0027137514,0.5170443542) {$0.1$};
+\node[font=\scriptsize, anchor=west] at (axis cs:0.0022627329,0.5179054667) {$0.082$};
+\node[font=\scriptsize, anchor=west] at (axis cs:0.0014273821,0.5195832412) {$0.05$};
+\node[font=\scriptsize, anchor=west] at (axis cs:0.0006003807,0.5212581716) {$0.02$};
+
+\nextgroupplot[
+  title={Tracking-turnover trade-off},
+  xlabel={Mean positive-cost median $\overline{\TOexec}$},
+  ylabel={Mean positive-cost median tracking},
+  xmin=0, xmax=0.023,
+  ymin=0, ymax=0.0074,
+]
+\addplot[
+  mark=*,
+  mark size=1.9pt,
+  color=teal
+] coordinates {
+  (0.0216034806,0.0000000008)
+  (0.0108696366,0.0025722796)
+  (0.0050120889,0.0047362641)
+  (0.0027137514,0.0057630053)
+  (0.0022627329,0.0059752069)
+  (0.0014273821,0.0063923404)
+  (0.0006003807,0.0069210265)
+};
+\addplot[
+  only marks,
+  mark=*,
+  mark size=2.7pt,
+  color=blue
+] coordinates {(0.0108696366,0.0025722796)};
+\node[font=\scriptsize, anchor=west] at (axis cs:0.0216034806,0.0000000008) {$\eta=1.0$};
+\node[font=\scriptsize, anchor=west, text=blue] at (axis cs:0.0108696366,0.0025722796) {$\eta=0.5$};
+\node[font=\scriptsize, anchor=west] at (axis cs:0.0050120889,0.0047362641) {$0.2$};
+\node[font=\scriptsize, anchor=west] at (axis cs:0.0027137514,0.0057630053) {$0.1$};
+\node[font=\scriptsize, anchor=west] at (axis cs:0.0022627329,0.0059752069) {$0.082$};
+\node[font=\scriptsize, anchor=west] at (axis cs:0.0014273821,0.0063923404) {$0.05$};
+\node[font=\scriptsize, anchor=west] at (axis cs:0.0006003807,0.0069210265) {$0.02$};
+
+\nextgroupplot[
+  title={Gross versus net on held-out test},
+  xlabel={$\kappa$},
+  ylabel={Paired $\Delta$ Sharpe},
+  symbolic x coords={$0$,$5\times10^{-4}$,$10^{-3}$},
+  xtick=data,
+  ymin=-0.003, ymax=0.0245,
+]
+\addplot[
+  ybar,
+  bar width=7pt,
+  fill=blue!40,
+  draw=blue!60!black
+] coordinates {
+  ($0$,-0.0002460831)
+  ($5\times10^{-4}$,0.0105028745)
+  ($10^{-3}$,0.0212508777)
+};
+\addplot[
+  mark=*,
+  mark size=1.8pt,
+  color=red!70!black,
+  dashed
+] coordinates {
+  ($0$,-0.0002460831)
+  ($5\times10^{-4}$,-0.0002460831)
+  ($10^{-3}$,-0.0002460831)
+};
+\legend{Net delta, Gross-path delta}
+\end{groupplot}
+\end{tikzpicture}
+\caption{Appendix trade-off view built from already-generated artifacts, with no new experiments. Left: validation positive-cost frontier over the fixed $\eta$ grid, showing that the locked rule selects the largest qualifying interior point $\eta=0.5$ rather than the raw best tiny-$\eta$ point. Middle: lower turnover is achieved by accepting larger target--executed mismatch, but the selected operating point remains far from the extreme low-$\eta$ end of the tracking curve. Right: on the held-out test, the selected operating point's net-Sharpe gain grows with friction, while the gross-path Sharpe change stays essentially flat and slightly negative.}
+\label{fig:appendix_tradeoff}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.94\textwidth]{paper/submission_figures/fig_aux_frontiers_submission.pdf}
+\caption{Scope checks for the main identification result. Left: after $\eta$-aligned retraining on U27, the interior point $\eta=0.5$ still cuts turnover roughly in half and remains better in positive-cost regimes while the zero-cost row stays nearly flat. Right: on the U36 benchmark, the same interior operating point is selected again, while the raw best diagnostic point stays at a smaller $\eta$. These checks do not replace the main protocol, but they reduce the risk that the main finding is either a frozen-only artifact or a one-basket artifact.}
+\label{fig:aux_frontiers}
+\end{figure}
+
+\section{Auxiliary Detailed Tables}
+\label{app:aux_tables}
+
+\begin{table}[H]
+\centering
+\scriptsize
+\caption{$\eta$-aligned retraining check on the canonical U27 benchmark. A fresh policy is trained with the same split, controller family, cost scale, and signal snapshot, but with training and evaluation aligned to $\eta=0.5$. The table then compares the retrained $\eta=0.5$ arm against the immediate-execution baseline $\eta=1.0$ under the same retrained checkpoints. Values are medians across 5 paired seeds.}
+\label{tab:retrain_eta05}
+\begin{tabular}{@{}llrrrrrr@{}}
+\toprule
+Window & $\kappa$ & Baseline Sharpe & Retrained $\eta=0.5$ Sharpe & $\Delta$Sharpe & Baseline $\overline{\TOexec}$ & Retrained $\overline{\TOexec}$ & Seed wins \\
+\midrule
+Validation & $0$ & 0.5294 & 0.5272 & $-0.0022$ & 0.01721 & 0.00870 & $2/5$ \\
+Validation & $5\times10^{-4}$ & 0.5184 & 0.5215 & $+0.0030$ & 0.01721 & 0.00870 & $5/5$ \\
+Validation & $10^{-3}$ & 0.5052 & 0.5157 & $+0.0105$ & 0.01721 & 0.00870 & $5/5$ \\
+Held-out test & $0$ & 1.1662 & 1.1675 & $+0.0013$ & 0.01735 & 0.00880 & $3/5$ \\
+Held-out test & $5\times10^{-4}$ & 1.1513 & 1.1600 & $+0.0087$ & 0.01735 & 0.00880 & $5/5$ \\
+Held-out test & $10^{-3}$ & 1.1362 & 1.1522 & $+0.0160$ & 0.01735 & 0.00880 & $5/5$ \\
+\bottomrule
+\end{tabular}
+\par\vspace{2pt}\raggedright\footnotesize{\textit{Note:} The held-out positive-cost mean of the seed-median Sharpe moves from $1.1437$ under $\eta=1.0$ to $1.1561$ under retrained $\eta=0.5$. The corresponding turnover reduction is approximately $49.3\%$.}
+\end{table}
+
+\begin{table}[H]
+\centering
+\scriptsize
+\caption{Second-universe replication on a fixed 36-name sector-balanced U.S.\ large-cap benchmark. The locked validation rule again selects $\eta=0.5$ even though the raw best positive-cost point is $\eta=0.02$. Values are medians across 5 seeds.}
+\label{tab:u36_replication}
+\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+$\kappa$ & Immediate $\eta=1.0$ Sharpe & Selected $\eta=0.5$ Sharpe & $\Delta$Sharpe & Raw-best interior $\eta$ & Raw-best interior Sharpe & Turnover ratio ($\eta=0.5/1.0$) \\
+\midrule
+$0$ & 0.9815 & 0.9805 & $-0.0010$ & 0.02 & 0.9871 & 0.491 \\
+$5\times10^{-4}$ & 0.9608 & 0.9721 & $+0.0113$ & 0.02 & 0.9866 & 0.491 \\
+$10^{-3}$ & 0.9401 & 0.9636 & $+0.0236$ & 0.02 & 0.9862 & 0.491 \\
+\bottomrule
+\end{tabular}
+\par\vspace{2pt}\raggedright\footnotesize{\textit{Note:} On validation, the selected point $\eta=0.5$ keeps $96.78\%$ of the best positive-cost score under the locked $95\%$ largest-qualifying rule. On the held-out test, the selected point keeps $98.12\%$ of the raw best positive-cost score while reducing executed turnover by about $50.9\%$ relative to $\eta=1.0$.}
+\end{table}
+
+\begin{table}[H]
+\centering
+\scriptsize
+\caption{Cost-Calibrated Turnover-Aware Linear Information-Parity Baseline (CC-TA-LBIP) on the canonical U27 split. CC-TA-LBIP uses the same 918-dimensional state as the RL controller, fixes the ridge forecast map at $\texttt{ridge\_alpha}=30$, and tunes only the cost-scaling constant $c$ on validation. The selected operating point is $c=3000$, the baseline comparator is the unregularized $c=0$ variant, and the integrated turnover anchor is proportional to the actual friction level $\kappa$. Values are from a deterministic single-run comparator rather than a paired multi-seed RL sweep.}
+\label{tab:cctalibp_u27}
+\begin{tabular}{@{}llrrrrr@{}}
+\toprule
+Window & $\kappa$ & Selected $c$ & Selected Sharpe & Baseline Sharpe ($c=0$) & $\Delta$Sharpe & Selected $\overline{\TOexec}$ \\
+\midrule
+Validation & $0$ & 3000 & 0.4939 & 0.4939 & 0.0000 & 1.3130 \\
+Validation & $5\times10^{-4}$ & 3000 & 0.3435 & -0.5047 & +0.8482 & 0.1077 \\
+Validation & $10^{-3}$ & 3000 & 0.2896 & -1.5017 & +1.7913 & 0.0570 \\
+Held-out test & $0$ & 3000 & 1.1875 & 1.1875 & 0.0000 & 1.2903 \\
+Held-out test & $5\times10^{-4}$ & 3000 & 1.0199 & 0.0661 & +0.9539 & 0.1189 \\
+Held-out test & $10^{-3}$ & 3000 & 0.9679 & -1.0529 & +2.0208 & 0.0633 \\
+\bottomrule
+\end{tabular}
+\par\vspace{2pt}\raggedright\footnotesize{\textit{Note:} At $\kappa=0$, the integrated turnover anchor is exactly zero for all $c$, so the selected and baseline rows are identical by construction. At positive frictions, the selected CC-TA-LBIP point reduces executed turnover by about $91.8\%$ on validation and $90.8\%$ on the held-out test relative to $c=0$.}
+\end{table}
+
 \section{Secondary Matched-Heuristic Context}
 \label{app:secondary_heuristics}
-Table~\ref{tab:selected_vs_external} is reported only as secondary context and is not part of the main identification strategy. Under the same effective held-out dates, the same transaction-cost definition $\kappaTC\cdot\TOexec$, the same annualization $\sqrt{252}$, and the same $r_f=0$ convention, the selected operating point is stronger than inverse-volatility risk parity and minimum-variance, mixed against daily-rebalanced equal weight and long-only mean-variance, and weaker than buy-and-hold equal weight on this window. These matched heuristics help calibrate the empirical scale of the result under aligned accounting, but they do not define the paper's main claim and they do not change the frozen-policy interpretation of the internal execution frontier.
+Table~\ref{tab:selected_vs_external} is reported only as contextual external scale, not as identification evidence. It is not used for $\eta$ selection, not used for validation decisions, and not used for the paper's core causal interpretation. Under the same effective held-out dates, the same transaction-cost definition $\kappaTC\cdot\TOexec$, the same annualization $\sqrt{252}$, and the same $r_f=0$ convention, the selected operating point is stronger than inverse-volatility risk parity and minimum-variance, mixed against daily-rebalanced equal weight and long-only mean-variance, and weaker than buy-and-hold equal weight on this window. The table therefore helps calibrate external performance scale under aligned accounting, while leaving the main claim unchanged: the paper studies the within-policy execution differential of a fixed learned strategy.
 
 \begin{center}
 \captionsetup{type=table}
@@ -642,7 +1008,7 @@ $10^{-3}$ & Minimum-variance & 0.9480 & +0.1860 & 0.1072 & +0.0544 & -0.04160 \\
 $10^{-3}$ & Mean-variance (long-only) & 1.0570 & +0.0770 & 0.1550 & +0.0066 & -0.08780 \\
 \bottomrule
 \end{tabular}
-\par\vspace{2pt}\raggedright\footnotesize{\textit{Note:} All heuristic rows use the same effective held-out dates 2024-02-14 to 2025-12-31 and the same executed-path accounting conventions. Positive $\Delta\overline{\TOexec}$ means the selected RL arm trades \emph{more} than the comparator; negative values mean it trades less.}
+\par\vspace{2pt}\raggedright\footnotesize{\textit{Note:} All heuristic rows use the same effective held-out dates 2024-02-14 to 2025-12-31 and the same executed-path accounting conventions. This table is contextual only: it is not part of the identification strategy and is not used for $\eta$ selection, validation, or the paper's core causal interpretation. Positive $\Delta\overline{\TOexec}$ means the selected RL arm trades \emph{more} than the comparator; negative values mean it trades less.}
 \end{center}
 
 \section{Supplementary Figures}
@@ -650,14 +1016,14 @@ $10^{-3}$ & Mean-variance (long-only) & 1.0570 & +0.0770 & 0.1550 & +0.0066 & -0
 
 \begin{center}
 \captionsetup{type=figure}
-\includegraphics[width=0.88\textwidth]{fig_seed_scatter.png}
-\captionof{figure}{Seed-wise paired $\Delta$ net Sharpe on the effective held-out dates 2024-02-14 to 2025-12-31 for the validation-selected operating point $\eta=0.5$ relative to the immediate-execution baseline $\eta=1.0$. This figure visualizes the same held-out paired comparison reported in Table~\ref{tab:selected_vs_eta1}. Each point is one seed-wise difference $\mathrm{Sharpe}_{\eta=0.5}-\mathrm{Sharpe}_{\eta=1.0}$, and the dotted horizontal line marks zero. All 10 paired seeds are positive in the two positive-cost regimes, matching the $10/10$ seed-win result reported in Table~\ref{tab:selected_vs_eta1}, whereas the $\kappa=0$ panel mixes positive and negative deltas.}
+\includegraphics[width=0.94\textwidth]{paper/submission_figures/fig_seed_scatter_submission.pdf}
+\captionof{figure}{Seed-wise paired $\Delta$ net Sharpe on the effective held-out dates 2024-02-14 to 2025-12-31 for the validation-selected operating point $\eta=0.5$ relative to the immediate-execution baseline $\eta=1.0$. Each point is one seed-wise difference $\mathrm{Sharpe}_{\eta=0.5}-\mathrm{Sharpe}_{\eta=1.0}$, and the vertical reference line marks zero. All 10 paired seeds are positive in the two positive-cost regimes, matching the $10/10$ seed-win result reported in Table~\ref{tab:selected_vs_eta1}, whereas the $\kappa=0$ panel mixes positive and negative deltas.}
 \label{fig:seedscatter}
 \end{center}
 
 \begin{center}
 \captionsetup{type=figure}
-\includegraphics[width=0.92\textwidth]{fig_misalignment.png}
+\includegraphics[width=0.87\textwidth]{paper/fig_misalignment.png}
 \captionof{figure}{Representative held-out trace for the validation-selected operating point on the effective held-out dates 2024-02-14 to 2025-12-31 within the 2024--2025 split at $\eta=0.5$, $\kappa=10^{-3}$, seed 2. The top panel shows executed net equity and hypothetical target net equity, where the target path is the immediate move to the target portfolio used only for diagnostics. The bottom panel shows cumulative executed and target turnover. The representative seed is the selected-arm run whose held-out net Sharpe is closest to the median selected-arm net Sharpe across the 10 paired seeds at $\kappa=10^{-3}$.}
 \label{fig:misalign}
 \end{center}

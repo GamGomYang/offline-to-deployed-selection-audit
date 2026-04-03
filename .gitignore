@@ -38,6 +38,7 @@ paper/*.out
 paper/*.pdf
 paper/*.synctex.gz
 paper/page_renders/
+!paper/paper.pdf
 
 # Convenience symlinks recreated locally when needed
 paper_rebuild_*/train_control/models/prl_seed*_final.zip

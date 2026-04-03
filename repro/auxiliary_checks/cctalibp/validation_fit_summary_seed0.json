@@ -1,0 +1,11 @@
+{
+  "target_mode_fit": "mean_variance",
+  "ridge_alpha": 30.0,
+  "fit_passes": 2,
+  "training_eta": 1.0,
+  "include_prev_weights": true,
+  "mean_variance_risk_aversion": 10.0,
+  "equal_weight_shrink": 0.0,
+  "obs_dim": 918,
+  "train_rows": 2961
+}
