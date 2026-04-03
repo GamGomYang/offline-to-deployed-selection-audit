@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-MANIFEST="${ROOT}/manifests/baselines/paper_v3_frozen.json"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+MANIFEST="${ROOT}/repro/manifests/baselines/paper_v3_frozen.json"
 MODE="frozen-models"
 VERIFY="1"
 RUN_ROOT=""
@@ -60,7 +60,7 @@ FROZEN_SOURCE_CONFIG="${ROOT}/${MANIFEST_VALUES[2]}"
 
 if [[ -z "${RUN_ROOT}" ]]; then
   STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
-  RUN_ROOT="${ROOT}/outputs/reproductions/baseline/${BASELINE_ID}/${STAMP}"
+  RUN_ROOT="${ROOT}/repro/outputs/reproductions/baseline/${BASELINE_ID}/${STAMP}"
 fi
 
 mkdir -p "${RUN_ROOT}"

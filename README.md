@@ -1,199 +1,117 @@
 # Execution-Aware Portfolio Reinforcement Learning
-## A Two-Stage Decomposition with Execution Timescale Control
+## Target, Execution, and Accounting as Separate Objects
 
-Execution-aware RL framework for **multi-asset portfolio management** with a paper-audited **fixed 27-name large-cap U.S. equity snapshot**.
+This repository studies portfolio control with a simple but strict distinction:
 
-Some repository paths retain legacy `prl-dow30` naming. That directory is still the active source tree for training, evaluation, and paper-build scripts; the paper itself, however, uses the fixed 27-name universe documented in `paper.tex` and `frozen_protocol/paper_v3/`.
+- `w_tgt`: the portfolio the controller proposes
+- `w_exec`: the portfolio that is actually realized
 
-Most portfolio-RL formulations implicitly assume the policy's target weights are the same as what gets traded:
+The execution layer maps target weights to realized holdings through a partial-adjustment rule,
 
-```
-w_target = w_exec
-```
-
-This repository **separates** the two:
-
-- **Target portfolio (`w_target`)**: policy output
-- **Executed portfolio (`w_exec`)**: weights actually applied to the portfolio path
-
-This separation enables:
-- **Execution-consistent transaction cost accounting**
-- **Execution-timescale control** via a single parameter `eta`
-- **Turnover-Tracking-Performance frontier** analysis
-- Stabilization under weak/overtrading regimes
-
----
-
-## Core Idea: Two-Stage Control
-
-### Stage 1: Target Policy
-The policy outputs portfolio logits and produces target weights:
-
-```
-w_target,t = softmax(logits_t)
+```text
+w_exec,t = (1 - eta_t) w_exec,t-1 + eta_t w_tgt,t,
 ```
 
-### Stage 2: Execution Layer (Timescale Control)
-Executed weights follow a controlled update:
+and the paper evaluates performance on the executed path rather than on the untraded target path.
 
-```
-w_exec,t = (1 - eta_t) * w_exec,t-1 + eta_t * w_target,t
-```
+## Why This Matters
 
-Only `w_exec` is used for realized portfolio dynamics and evaluation.
+Many portfolio-RL pipelines implicitly treat
 
-**Return**
-
-`r_t = dot(w_exec,t, arithmetic_returns_t)`
-
-**Turnover (L1)**
-
-`TO_target = || w_exec,t-1 - w_target,t ||_1`  
-`TO_exec = || w_exec,t-1 - w_exec,t ||_1`
-
-**Cost**
-
-`cost_exec = kappa * TO_exec`  
-`cost_target = kappa * TO_target`
-
-> **Note:** Throughout this repo, `prev_weights` refers to `w_exec,t-1`.
-
-For deeper protocol details and definitions, see `docs/spec.md`.
-
----
-
-## Locked Paper Snapshot
-
-The locked paper rebuild is a **frozen-policy execution study**, not a retraining comparison.
-
-- Universe: fixed 27-name large-cap U.S. equity snapshot
-- Train / validation / test splits: `2010--2021`, `2022--2023`, `2024--2025`
-- Effective realized windows after 30-day rolling features:
-  - validation: `2022-02-15` to `2023-12-29`
-  - held-out test: `2024-02-14` to `2025-12-31`
-- Locked execution grid: `eta in {1.0, 0.5, 0.2, 0.1, 0.082, 0.05, 0.02}`
-- Validation-selected operating point in the corrected full-window rebuild: `eta = 0.5`
-
-Main internal result on the canonical split:
-
-- Median executed turnover falls from `0.02200` to `0.01095`
-- Paired median net Sharpe improves by `+0.0105` at `kappa = 0.0005`
-- Paired median net Sharpe improves by `+0.0213` at `kappa = 0.001`
-- At `kappa = 0`, evidence is negligible rather than strongly favorable
-
-Safe interpretation:
-
-- The main claim is about **cost-aligned execution control under a frozen learned policy**
-- The strongest evidence is the existence of an **interior positive-cost execution frontier**
-- The gain is explained by **lower realized turnover and lower realized cost**, not by gross-alpha improvement
-- The paper does **not** claim retraining superiority, universal selected-point transfer across windows, or broad comparator dominance
-
-Primary paper artifacts:
-
-- `paper.tex`
-- `paper/` (Overleaf-ready package)
-- `paper_rebuild_20260324T065755Z/validation_eta/selection/validation_eta_selection.md`
-- `paper_rebuild_20260324T065755Z/paper_pack/stats/selected_eta_vs_eta1_stats.md`
-- `fig_frontier.png`, `fig_misalignment.png`, `fig_seed_scatter.png`
-- `fig_rolling_frontier_robustness.png`, `fig_kappa_benefit_curve.png`
-- `BASELINE_PROTOCOL.md`
-
-## Broader Repository Experiments
-
-The repository also contains broader exploratory material. Those runs are useful for development, but the locked v1 paper claims should be read from the paper rebuild artifacts above rather than from older exploratory outputs.
-
----
-
-## Repository Structure
-
-```
-prl-dow30/              # legacy name, still the active source tree
-- prl/
-  - data.py
-  - features.py
-  - envs.py
-  - prl.py
-  - sb3_prl_sac.py
-  - train.py
-  - eval.py
-  - metrics.py
-- scripts/
-  - run_train.py
-  - run_eval.py
-  - run_all.py
-  - run_matrix.py
-  - build_reports.py
-  - sanity_checks.py
-- configs/
-  - default.yaml
-  - paper.yaml
-  - main_experiment.yaml
-  - eta_sweep.yaml
-  - rule_vol.yaml
-- outputs/
-- reports/
-- docs/spec.md
+```text
+w_tgt = w_exec
 ```
 
-## Validation & Reproducibility
+as if it were an identity. This repository treats that as a modeling choice instead.
 
-Step-wise recomputation checks (max absolute error):
+The paper asks a narrower question:
 
-- `w_exec`: `1e-9`
-- `turnover`: `1e-8`
-- `reward`: `1e-10`
-- `cost (kappa=0)`: `0.0`
+- if the learned target path is held fixed,
+- and only the execution rule changes,
+- does realized net performance change once trading frictions are charged on what is actually traded?
 
-Paired-delta exactness: `~1e-16`  
-Signature hashes are unique across eta / rule-vol configurations.
+## Where To Look First
 
----
+- [`paper/`](paper): canonical manuscript package, figures, and the final submission PDF
+- [`prl-dow30/`](prl-dow30): active source tree for training, evaluation, and experiment scripts
+- [`frozen_protocol/`](frozen_protocol): locked protocol snapshots and split definitions used by the paper
+- [`repro/`](repro): manifests, rebuild artifacts, smoke checks, and paper-facing reproduction material
+
+## Current Paper Scope
+
+The paper is an execution-and-accounting identification study built around a fixed 27-name large-cap U.S. equity snapshot.
+
+- canonical splits: `2010--2021`, `2022--2023`, `2024--2025`
+- locked execution grid: `eta in {1.0, 0.5, 0.2, 0.1, 0.082, 0.05, 0.02}`
+- validation-selected operating point on the canonical split: `eta = 0.5`
+
+Main empirical takeaway on the canonical split:
+
+- executed turnover falls from `0.02200` to `0.01095`
+- paired median net Sharpe improves by `+0.0105` at `kappa = 5e-4`
+- paired median net Sharpe improves by `+0.0213` at `kappa = 1e-3`
+- the `kappa = 0` row remains nearly flat
+
+The manuscript now also includes:
+
+- an `eta`-aligned retraining check
+- a second 36-name large-cap replication benchmark
+- a cost-calibrated linear-convex information-parity comparator
+
+## Representative Frontier
+
+<p align="center">
+  <img src="paper/fig_frontier.png" alt="Validation frontier for execution rate eta under multiple transaction-cost levels" width="760">
+</p>
+
+The main frontier should be read as follows:
+
+- when `kappa = 0`, the selected interior point is nearly flat relative to immediate execution
+- when `kappa > 0`, an interior execution rate improves net Sharpe by reducing realized turnover
+- the paper's main claim is therefore about implementation under frictions, not about new alpha
 
 ## Quickstart
 
-### Install
+Install:
 
-```
+```bash
 cd prl-dow30
 pip install -r requirements.txt
 ```
 
-### Build Cache (Online)
+Train:
 
-```
-python3 -m scripts.build_cache --config configs/paper.yaml
-```
-
-Paper mode is designed to run without external downloads during training/evaluation.
-
-### Train
-
-```
-python3 -m scripts.run_train \
-  --config configs/default.yaml \
-  --model-type prl \
-  --seed 0
+```bash
+python3 -m scripts.run_train --config configs/default.yaml --model-type prl --seed 0
 ```
 
-### Evaluate
+Evaluate:
 
-```
-python3 -m scripts.run_eval \
-  --config configs/default.yaml \
-  --model-type prl \
-  --seed 0
+```bash
+python3 -m scripts.run_eval --config configs/default.yaml --model-type prl --seed 0
 ```
 
-### Run Experiment Suites
+Run experiment suites:
 
-```
+```bash
 python3 -m scripts.run_matrix --config configs/main_experiment.yaml
 python3 -m scripts.run_matrix --config configs/eta_sweep.yaml
 python3 -m scripts.run_matrix --config configs/rule_vol.yaml
 ```
 
----
+## Repository Layout
 
-## Citation / Reference
+```text
+paper/            final manuscript package
+prl-dow30/        code, configs, scripts, experiment outputs
+frozen_protocol/  locked paper protocol snapshots
+repro/            manifests, rebuilds, smoke checks, and paper reproduction artifacts
+docs/             project notes and specifications
+defence/          defense material
+```
 
-If you use this codebase in research, please cite the accompanying paper (coming soon) and link to this repository.
+## Notes
+
+- Some repository paths retain legacy `prl-dow30` naming; that remains the active code tree.
+- The preferred manuscript entry point is [`paper/paper.tex`](paper/paper.tex).
+- The preferred manuscript PDF is [`paper/paper.pdf`](paper/paper.pdf).
