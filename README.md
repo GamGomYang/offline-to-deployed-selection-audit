@@ -32,7 +32,6 @@ The paper asks a narrower question:
 
 ## Where To Look First
 
-- [`paper/`](paper): canonical manuscript package, figures, and the final submission PDF
 - [`prl-dow30/`](prl-dow30): active source tree for training, evaluation, and experiment scripts
 - [`frozen_protocol/`](frozen_protocol): locked protocol snapshots and split definitions used by the paper
 - [`repro/`](repro): manifests, rebuild artifacts, smoke checks, and paper-facing reproduction material
@@ -110,8 +109,4 @@ docs/             project notes and specifications
 defence/          defense material
 ```
 
-## Notes
 
-- Some repository paths retain legacy `prl-dow30` naming; that remains the active code tree.
-- The preferred manuscript entry point is [`paper/paper.tex`](paper/paper.tex).
-- The preferred manuscript PDF is [`paper/paper.pdf`](paper/paper.pdf).
