@@ -10,9 +10,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-ROOT = Path('/workspace/execution-aware-portfolio-rl')
+ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / 'submission_figures'
 PAPER_OUT = ROOT / 'paper' / 'submission_figures'
+REBUILD_ROOT = ROOT / 'repro' / 'rebuilds' / 'paper_rebuild_20260324T065755Z'
+AUX_CHECK_ROOT = ROOT / 'repro' / 'auxiliary_checks'
 
 PALETTE = {
     'blue': '#1f4e79',
@@ -68,7 +70,7 @@ def finish(fig: plt.Figure, name: str) -> None:
 
 
 def build_validation_frontier() -> None:
-    df = pd.read_csv(ROOT / 'paper_rebuild_20260324T065755Z' / 'validation_eta' / 'aggregate.csv')
+    df = pd.read_csv(REBUILD_ROOT / 'validation_eta' / 'aggregate.csv')
     df['kappa'] = pd.to_numeric(df['kappa'])
     df['eta'] = pd.to_numeric(df['eta'])
     df['median_sharpe'] = pd.to_numeric(df['median_sharpe'])
@@ -174,14 +176,14 @@ def build_kappa_curve() -> None:
 
 
 def build_aux_frontiers() -> None:
-    retrain = pd.read_csv(ROOT / 'prl-dow30' / 'outputs' / 'v2_u27_eta05_retrain_pilot' / 'final_main_vs_baseline' / 'aggregate.csv')
-    u36 = pd.read_csv(ROOT / 'prl-dow30' / 'outputs' / 'v2_u36_sector_frozen_pilot' / 'final_eta' / 'aggregate.csv')
+    retrain = pd.read_csv(AUX_CHECK_ROOT / 'u27_eta05_retraining' / 'final_aggregate.csv')
+    u36 = pd.read_csv(AUX_CHECK_ROOT / 'u36_replication' / 'final_aggregate.csv')
     for df in (retrain, u36):
         for col in df.columns:
             if col in {'kappa', 'eta', 'median_sharpe', 'median_turnover_exec'}:
                 df[col] = pd.to_numeric(df[col], errors='coerce')
 
-    fig, axes = plt.subplots(1, 2, figsize=(9.4, 4.9), constrained_layout=True)
+    fig, axes = plt.subplots(1, 2, figsize=(8.1, 4.1), constrained_layout=True)
 
     ax = axes[0]
     for kappa, grp in retrain.groupby('kappa'):
@@ -192,11 +194,11 @@ def build_aux_frontiers() -> None:
     base = retrain[retrain['arm'] == 'baseline']
     ax.scatter(main['median_turnover_exec'], main['median_sharpe'], s=85, facecolor='white', edgecolor='#111111', linewidth=1.4, zorder=4)
     ax.scatter(main['median_turnover_exec'], main['median_sharpe'], s=40, facecolor=PALETTE['blue'], edgecolor='none', zorder=5)
-    ax.set_title('Eta-Aligned Retraining')
+    ax.set_title('Eta-Aligned Retraining', pad=10)
     ax.set_xlabel('Median executed turnover')
     ax.set_ylabel('Median net Sharpe')
     ax.grid(axis='y')
-    ax.legend(frameon=False, loc='lower right')
+    ax.legend(frameon=False, fontsize=7.6, loc='lower left')
     first = main[np.isclose(main['kappa'], 0.0005)].iloc[0]
     ax.annotate(r'retrained $\eta=0.5$', (first['median_turnover_exec'], first['median_sharpe']), xytext=(8, 4), textcoords='offset points', fontsize=8.3, fontweight='bold')
 
@@ -213,15 +215,16 @@ def build_aux_frontiers() -> None:
     sel = u36[(np.isclose(u36['kappa'], 0.0005)) & (np.isclose(u36['eta'], 0.5))].iloc[0]
     best = u36[(np.isclose(u36['kappa'], 0.0005)) & (np.isclose(u36['eta'], 0.02))].iloc[0]
     ax.annotate(r'selected $\eta=0.5$', (sel['median_turnover_exec'], sel['median_sharpe']), xytext=(8, -2), textcoords='offset points', fontsize=8.3, fontweight='bold')
-    ax.annotate(r'raw best $\eta=0.02$', (best['median_turnover_exec'], best['median_sharpe']), xytext=(8, 8), textcoords='offset points', fontsize=8.1, color=PALETTE['gray'])
-    ax.set_title('U36 Replication')
+    ax.annotate(r'raw best $\eta=0.02$', (best['median_turnover_exec'], best['median_sharpe']), xytext=(18, 10), textcoords='offset points', fontsize=8.1, color=PALETTE['gray'])
+    ax.set_title('U36 Replication', pad=10)
     ax.set_xlabel('Median executed turnover')
     ax.grid(axis='y')
+    ax.legend(frameon=False, fontsize=7.6, loc='lower left')
     finish(fig, 'fig_aux_frontiers_submission.pdf')
 
 
 def build_seed_dotplot() -> None:
-    df = pd.read_csv(ROOT / 'paper_rebuild_20260324T065755Z' / 'paper_pack' / 'stats' / 'selected_eta_seedwise_deltas.csv')
+    df = pd.read_csv(REBUILD_ROOT / 'paper_pack' / 'stats' / 'selected_eta_seedwise_deltas.csv')
     df['kappa'] = pd.to_numeric(df['kappa'])
     df['seed'] = pd.to_numeric(df['seed'])
     df['delta_sharpe_net_lin'] = pd.to_numeric(df['delta_sharpe_net_lin'])

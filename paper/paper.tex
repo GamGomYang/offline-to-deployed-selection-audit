@@ -66,15 +66,17 @@
 % ---------- Title ----------
 \title{\vspace{-6mm}
 \textbf{Execution-Aware Portfolio Reinforcement Learning via Proximal Execution Control}\\
-\vspace{2mm}
+\vspace{5mm}
 \large Separating Target and Executed Portfolios for Cost-Aligned Evaluation and Execution Stabilization
 \vspace{-3mm}
 }
-\author[1]{Kim Geum-Young}
-\affil[1]{Chungbuk National University, Department of Software Engineering}
-\date{}
-
+% \author[1]{Kim Geum-Young}
+% \affil[1]{Chungbuk National University, Department of Software Engineering}
+% \date{}
+% date 각주 처리했는데 왜 계속 컴파일 되는지 모르겠음.
+\vspace{5mm}
 \begin{document}
+
 
 % ============================================================
 % Title + Abstract across both columns (more journal-like)
@@ -148,27 +150,32 @@ The policy outputs a target portfolio $\wtgt_t=\pi_\theta(s_t)$ in the long-only
 \]
 Thus the MDP action is a \emph{target} portfolio rather than the realized holding vector. In the empirical implementation, the actor emits unconstrained real-valued logits that are mapped into $\DeltaN$ by a stable softmax; Section~\ref{sec:exp} records that concrete parameterization.
 
+
+% align 으로 자동으로 (1) index 매핑이 되었음.
+
 \subsection{Execution Mapping}
 Let the previous executed portfolio be $\wexec_{t-1}$. The execution layer maps the target portfolio to an executed portfolio according to
-\begin{align}
-\wtgt_t &= \pi_\theta(s_t)\in\DeltaN, \label{eq:tgt_policy}\\
-\wexec_t &= (1-\eta_t)\wexec_{t-1} + \eta_t \wtgt_t,\quad \eta_t\in(0,1], \label{eq:exec_update}\\
-\TOtgt_t &= \normone{\wtgt_t - \wexec_{t-1}}, \label{eq:turnover_tgt}\\
-\TOexec_t &= \normone{\wexec_t - \wexec_{t-1}}. \label{eq:turnover_exec}
-\end{align}
+\begin{align*}
+\wtgt_t &= \pi_\theta(s_t)\in\DeltaN, \\
+\wexec_t &= (1-\eta_t)\wexec_{t-1} + \eta_t \wtgt_t,\quad \eta_t\in(0,1], \\
+\TOtgt_t &= \normone{\wtgt_t - \wexec_{t-1}}, \\
+\TOexec_t &= \normone{\wexec_t - \wexec_{t-1}}.
+\end{align*}
 Here $\TOtgt_t$ is the turnover implied by an immediate move to the target portfolio, while $\TOexec_t$ is the turnover actually realized on the executed path.
 
 \subsection{Reward and Realized Return}
 Transaction costs are charged on executed turnover, and realized reward is attached to the executed portfolio:
-\begin{align}
-\mathrm{cost}_{t} &= \kappaTC \, \TOexec_t, \label{eq:cost_exec}\\
-R_{t+1} &= (\wexec_t)^\top r_{t+1} - \mathrm{cost}_t, \label{eq:reward}\\
-R^{\mathrm{tgt}}_{t+1} &= (\wtgt_t)^\top r_{t+1} - \kappaTC \TOtgt_t. \label{eq:reward_tgt_diag}
-\end{align}
-The quantity $R_{t+1}$ is the realized executed-path return used for primary evaluation. The quantity $R^{\mathrm{tgt}}_{t+1}$ is a hypothetical target-path return used only for diagnostics. The MDP action is therefore $\wtgt_t$, while realized portfolio dynamics and primary reward are governed by the executed path $\wexec_t$ and \eqref{eq:reward}.
+\begin{align*}
+\mathrm{cost}_{t} &= \kappaTC \, \TOexec_t, \\
+R_{t+1} &= (\wexec_t)^\top r_{t+1} - \mathrm{cost}_t, \\
+R^{\mathrm{tgt}}_{t+1} &= (\wtgt_t)^\top r_{t+1} - \kappaTC \TOtgt_t.
+\end{align*}
+The quantity $R_{t+1}$ is the realized executed-path return used for primary evaluation. The quantity $R^{\mathrm{tgt}}_{t+1}$ is a hypothetical target-path return used only for diagnostics. The MDP action is therefore $\wtgt_t$, while realized portfolio dynamics and primary reward are governed by the executed path $\wexec_t$ and the realized-return definition above.
 
 \subsection{Terminology and Evaluation Objects}
 Throughout the paper, \emph{target portfolio} denotes the policy output $\wtgt_t$, \emph{executed portfolio} denotes the realized holdings $\wexec_t$, \emph{immediate-execution baseline} denotes the comparison arm $\eta=1.0$, \emph{validation-selected operating point} denotes the execution rate chosen on the validation window, and \emph{net Sharpe} denotes the annualized Sharpe ratio computed from executed net linear returns. The code label \texttt{sharpe\_net\_lin} is the implementation name for this same net-Sharpe quantity.
+
+
 
 \begin{table}[H]
 \centering
@@ -197,15 +204,15 @@ This section defines the execution-aware interface and the frozen-policy account
 We interpret portfolio RL under frictions as a two-stage control problem:
 \begin{enumerate}[leftmargin=*,itemsep=1pt]
 \item \textbf{Policy layer:} the agent chooses a desired allocation $\wtgt_t=\pi_\theta(s_t)$.
-\item \textbf{Execution layer:} the controller maps that desired allocation into realized holdings $\wexec_t$ via \eqref{eq:exec_update}.
+\item \textbf{Execution layer:} the controller maps that desired allocation into realized holdings $\wexec_t$ through the execution update above.
 \end{enumerate}
-The formulation naturally supports learning under the executed dynamics \eqref{eq:reward}. In the present empirical study, however, the policy layer is trained exactly once and then held fixed; every empirical arm reuses that same trained policy and varies only the execution layer. The resulting comparison isolates how execution-aware accounting changes realized performance for the same learned target path.
+The formulation naturally supports learning under the realized executed-path return defined above. In the present empirical study, however, the policy layer is trained exactly once and then held fixed; every empirical arm reuses that same trained policy and varies only the execution layer. The resulting comparison isolates how execution-aware accounting changes realized performance for the same learned target path.
 
 \subsection{Fixed execution timescale}
-The execution update \eqref{eq:exec_update} is fixed, and the present paper studies only constant timescales $\eta_t\equiv\eta$. This is an identification choice rather than only a simplification. Once $\eta_t$ becomes rule-based or learned, the object of study shifts from execution accounting to adaptive controller design. Fixed $\eta$ removes schedule-design confounds, preserves a one-parameter execution frontier, and keeps the empirical question at the level of how partial execution alone changes realized turnover, realized cost, and net performance.
+The execution update above is fixed, and the present paper studies only constant timescales $\eta_t\equiv\eta$. This is an identification choice rather than only a simplification. Once $\eta_t$ becomes rule-based or learned, the object of study shifts from execution accounting to adaptive controller design. Fixed $\eta$ removes schedule-design confounds, preserves a one-parameter execution frontier, and keeps the empirical question at the level of how partial execution alone changes realized turnover, realized cost, and net performance.
 
 \subsection{Cost alignment (core principle)}
-Cost should be attached to what is actually traded, not to what was merely proposed. The primary accounting object is therefore executed turnover $\TOexec_t$ and the realized executed-path return \eqref{eq:reward}. Target-based cost and target-path return remain useful as counterfactual diagnostics, but they are not the primary accounting object because they describe a hypothetical immediate move that was not actually executed. Charging costs on target turnover $\TOtgt_t$ induces systematic friction mis-scaling when $\eta_t<1$ (Proposition~\ref{prop:cost_misalignment}); the present paper studies that accounting implication under a frozen-policy protocol rather than running alternative retraining experiments.
+Cost should be attached to what is actually traded, not to what was merely proposed. The primary accounting object is therefore executed turnover $\TOexec_t$ and the realized executed-path return defined above. Target-based cost and target-path return remain useful as counterfactual diagnostics, but they are not the primary accounting object because they describe a hypothetical immediate move that was not actually executed. Charging costs on target turnover $\TOtgt_t$ induces systematic friction mis-scaling when $\eta_t<1$ (Proposition~\ref{prop:cost_misalignment}); the present paper studies that accounting implication under a frozen-policy protocol rather than running alternative retraining experiments.
 
 % ============================================================
 \section{Theoretical Analysis}
@@ -213,7 +220,7 @@ Cost should be attached to what is actually traded, not to what was merely propo
 This section collects simple analytical properties needed for interpretation: the proximal form of the update, realized-turnover scaling, tracking and low-pass behavior, and the accounting distortion induced by target-based cost charging.
 
 \begin{proposition}[Proximal interpretation]\label{prop:prox}
-For constant $\eta\in(0,1)$, the execution update \eqref{eq:exec_update} is the unique minimizer of:
+For constant $\eta\in(0,1)$, the execution update above is the unique minimizer of:
 \[
 \begin{aligned}
 \wexec_t=\arg\min_{w \in \DeltaN}\;
@@ -228,7 +235,7 @@ Execution is a proximal step that penalizes \emph{changes from the previous exec
 \end{remark}
 
 \begin{lemma}[Turnover scaling and cumulative bound]\label{lem:turnover_scaling}
-Under \eqref{eq:exec_update}--\eqref{eq:turnover_exec}, for any $\eta_t\in(0,1]$:
+Under the execution update and the executed-turnover definition above, for any $\eta_t\in(0,1]$:
 \[
 \TOexec_t = \eta_t \TOtgt_t.
 \]
@@ -237,7 +244,7 @@ If additionally $\eta_t\le \eta_{\max}$ for all $t$, then
 \sum_{t=1}^T \TOexec_t \le \eta_{\max}\sum_{t=1}^T \TOtgt_t.
 \]
 \end{lemma}
-\noindent\textbf{Proof sketch.} From \eqref{eq:exec_update},
+\noindent\textbf{Proof sketch.} From the execution update,
 $\wexec_t-\wexec_{t-1}=\eta_t(\wtgt_t-\wexec_{t-1})$.
 Taking $\ell_1$ norms gives the one-step identity. Summing over $t$ and using $\eta_t\le \eta_{\max}$ yields the cumulative bound. \hfill$\square$
 
@@ -253,10 +260,10 @@ For constant $\eta\in(0,1]$, the executed sequence has the closed form:
 \]
 For fixed horizon $t$, $\eta\to0$ implies $\wexec_t\to \wexec_0$ (anchor convergence).
 \end{lemma}
-\noindent\textbf{Proof sketch.} Rearranging \eqref{eq:exec_update} yields the tracking identity. Unrolling the constant-$\eta$ recursion yields the closed form, which is an exponential smoothing of the target path. \hfill$\square$
+\noindent\textbf{Proof sketch.} Rearranging the execution update yields the tracking identity. Unrolling the constant-$\eta$ recursion yields the closed form, which is an exponential smoothing of the target path. \hfill$\square$
 
 \begin{proposition}[Cost misalignment rescaling]\label{prop:cost_misalignment}
-If one incorrectly charges costs using target turnover $\TOtgt_t$ while execution obeys \eqref{eq:exec_update}, then the charged cost overestimates realized cost by factor $1/\eta_t$:
+If one incorrectly charges costs using target turnover $\TOtgt_t$ while execution obeys the execution update above, then the charged cost overestimates realized cost by factor $1/\eta_t$:
 \[
 \kappaTC \TOtgt_t \;=\; \frac{\kappaTC}{\eta_t}\TOexec_t.
 \]
@@ -583,7 +590,7 @@ Primary evaluation objects & Executed-path net Sharpe and executed turnover are 
 Per-run archives & Each evaluation arm stores \path{cmd.txt}, \path{config.yaml}, \path{metrics.csv}, \path{trace.parquet}, \path{env_signature.json}, and \path{model_resolved_path.txt}. \\
 Manifests and materialization metadata & \path{repro/manifests/paper_artifact_manifest.json}, \path{repro/manifests/figure_manifest.json}, and \path{repro/rebuilds/paper_rebuild_20260324T065755Z/configs/materialization_meta.json}. \\
 Environment signatures & Per-seed \path{env_signature.json} files in the evaluation directories, plus \path{env_signature_hash}, package versions, and config hashes in \path{run_metadata_*.json}. \\
-Hard-locked equations & Core definitions are frozen in \eqref{eq:exec_update}--\eqref{eq:reward}. \\
+Hard-locked equations & Core definitions of the execution update, executed turnover, transaction cost, and realized return are frozen. \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -616,8 +623,8 @@ The backtest uses a close-to-close convention. At decision time $t$:
 \begin{enumerate}[leftmargin=*,itemsep=1pt]
 \item the state $s_t$ is built only from information available up to close $t$,
 \item the policy outputs the target portfolio $\wtgt_t$,
-\item the execution controller forms the executed portfolio $\wexec_t$ via \eqref{eq:exec_update},
-\item transaction cost is charged on executed turnover $\TOexec_t$ via \eqref{eq:cost_exec},
+\item the execution controller forms the executed portfolio $\wexec_t$ using the execution update above,
+\item transaction cost is charged on executed turnover $\TOexec_t$ using the cost definition above,
 \item the realized return applied to the portfolio is the next-period close-to-close return over $(t,t+1]$.
 \end{enumerate}
 Thus the paper uses the convention ``decide at close $t$, then hold $\wexec_t$ over $(t,t+1]$.'' This ordering is important because both return realization and cost accounting are attached to the executed portfolio rather than to the raw target action.
@@ -913,7 +920,7 @@ Median tracking error $\normtwo{\wexec_t-\wtgt_t}$ & 0.00259 \\
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.94\textwidth]{submission_figures/fig_aux_frontiers_submission.pdf}
+\includegraphics[width=0.84\textwidth]{submission_figures/fig_aux_frontiers_submission.pdf}
 \caption{Scope checks for the main identification result. Left: after $\eta$-aligned retraining on U27, the interior point $\eta=0.5$ still cuts turnover roughly in half and remains better in positive-cost regimes while the zero-cost row stays nearly flat. Right: on the U36 benchmark, the same interior operating point is selected again, while the raw best diagnostic point stays at a smaller $\eta$. These checks do not replace the main protocol, but they reduce the risk that the main finding is either a frozen-only artifact or a one-basket artifact.}
 \label{fig:aux_frontiers}
 \end{figure}
