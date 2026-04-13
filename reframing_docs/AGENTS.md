@@ -5,11 +5,12 @@
 This repository contains a workshop-reframing project built from an existing portfolio-RL paper.
 The goal is not to invent a new RL method.
 The goal is to package the strongest existing evidence into a focused workshop paper about forecast-to-execution interfaces under transaction costs.
+This workspace is scoped to the canonical paper rebuild track centered on the validation-selected `eta = 0.5` result, not the current `eta = 0.082` incumbent configuration.
 
 ## Path Convention
 
 All project-document paths below are relative to the repository root.
-Use the `workshop_reframing/...` form for project documents and outputs.
+Use the `reframing_docs/workshop_reframing/...` form for project documents and outputs.
 
 ## Primary Framing
 
@@ -76,15 +77,15 @@ Do not invert this hierarchy.
 
 Read and follow these files when relevant:
 
-- `workshop_reframing/00_claim_freeze.md`
-- `workshop_reframing/01_repro_checklist.md`
-- `workshop_reframing/02_rl_main_package.md`
-- `workshop_reframing/03_accounting_gap.md`
-- `workshop_reframing/04_friction_curve.md`
-- `workshop_reframing/05_cctalibp_aux.md`
-- `workshop_reframing/06_same_forecast_table.md`
-- `workshop_reframing/07_paper_assembly.md`
-- `workshop_reframing/08_execution_todo.md`
+- `reframing_docs/workshop_reframing/00_claim_freeze.md`
+- `reframing_docs/workshop_reframing/01_repro_checklist.md`
+- `reframing_docs/workshop_reframing/02_rl_main_package.md`
+- `reframing_docs/workshop_reframing/03_accounting_gap.md`
+- `reframing_docs/workshop_reframing/04_friction_curve.md`
+- `reframing_docs/workshop_reframing/05_cctalibp_aux.md`
+- `reframing_docs/workshop_reframing/06_same_forecast_table.md`
+- `reframing_docs/workshop_reframing/07_paper_assembly.md`
+- `reframing_docs/workshop_reframing/08_execution_todo.md`
 
 If a task conflicts with one of these documents, stop and surface the conflict instead of improvising.
 
@@ -92,7 +93,7 @@ If a task conflicts with one of these documents, stop and surface the conflict i
 
 Before any new analysis, pass the reproduction gate in:
 
-- `workshop_reframing/01_repro_checklist.md`
+- `reframing_docs/workshop_reframing/01_repro_checklist.md`
 
 Do not start new experiments until the following are reproduced or explicitly waived by the human:
 
@@ -190,10 +191,10 @@ Do not silently change configs, naming schemes, metrics, or file locations.
 
 Use:
 
-- `workshop_reframing/outputs/tables/`
-- `workshop_reframing/outputs/figures/`
-- `workshop_reframing/outputs/checks/`
-- `workshop_reframing/outputs/logs/`
+- `reframing_docs/workshop_reframing/outputs/tables/`
+- `reframing_docs/workshop_reframing/outputs/figures/`
+- `reframing_docs/workshop_reframing/outputs/checks/`
+- `reframing_docs/workshop_reframing/outputs/logs/`
 
 Tables:
 

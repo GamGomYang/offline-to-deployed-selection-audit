@@ -136,9 +136,9 @@ Soft pass일 때는 아래 문장을 쓴다.
 
 ## Connected Packages
 
-- `workshop_reframing/02_rl_main_package.md`
-- `workshop_reframing/03_accounting_gap.md`
-- `workshop_reframing/04_friction_curve.md`
+- `reframing_docs/workshop_reframing/02_rl_main_package.md`
+- `reframing_docs/workshop_reframing/03_accounting_gap.md`
+- `reframing_docs/workshop_reframing/04_friction_curve.md`
 
 이 figure는 main result보다 먼저 오면 안 된다. 역할은 main result의 구조적 해석 강화이지, 논문 중심의 교체가 아니다.
 

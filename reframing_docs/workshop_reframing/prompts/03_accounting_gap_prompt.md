@@ -1,9 +1,9 @@
-Read AGENTS.md and the following source-of-truth documents:
+Read reframing_docs/AGENTS.md and the following source-of-truth documents:
 
-- workshop_reframing/00_claim_freeze.md
-- workshop_reframing/03_accounting_gap.md
-- workshop_reframing/08_execution_todo.md
-- workshop_reframing/outputs/logs/repro_summary.md
+- reframing_docs/workshop_reframing/00_claim_freeze.md
+- reframing_docs/workshop_reframing/03_accounting_gap.md
+- reframing_docs/workshop_reframing/08_execution_todo.md
+- reframing_docs/workshop_reframing/outputs/logs/repro_summary.md
 
 Task:
 Build only the target-vs-executed accounting-gap package.
@@ -18,11 +18,11 @@ Requirements:
 
 Deliverables:
 
-- workshop_reframing/outputs/tables/diagnostic_gap_table.csv
-- workshop_reframing/outputs/tables/diagnostic_gap_table.tex
-- workshop_reframing/outputs/figures/fig_accounting_gap.pdf
-- workshop_reframing/outputs/logs/accounting_gap_paragraph.md
-- workshop_reframing/outputs/logs/accounting_gap_caption.md
+- reframing_docs/workshop_reframing/outputs/tables/diagnostic_gap_table.csv
+- reframing_docs/workshop_reframing/outputs/tables/diagnostic_gap_table.tex
+- reframing_docs/workshop_reframing/outputs/figures/fig_accounting_gap.pdf
+- reframing_docs/workshop_reframing/outputs/logs/accounting_gap_paragraph.md
+- reframing_docs/workshop_reframing/outputs/logs/accounting_gap_caption.md
 
 Validation:
 

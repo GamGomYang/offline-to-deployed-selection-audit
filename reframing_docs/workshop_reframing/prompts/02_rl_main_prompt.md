@@ -1,9 +1,9 @@
-Read AGENTS.md and the following source-of-truth documents:
+Read reframing_docs/AGENTS.md and the following source-of-truth documents:
 
-- workshop_reframing/00_claim_freeze.md
-- workshop_reframing/02_rl_main_package.md
-- workshop_reframing/08_execution_todo.md
-- workshop_reframing/outputs/logs/repro_summary.md
+- reframing_docs/workshop_reframing/00_claim_freeze.md
+- reframing_docs/workshop_reframing/02_rl_main_package.md
+- reframing_docs/workshop_reframing/08_execution_todo.md
+- reframing_docs/workshop_reframing/outputs/logs/repro_summary.md
 
 Task:
 Build only the RL frozen-policy main package using reproduced artifacts.
@@ -20,11 +20,11 @@ Requirements:
 
 Deliverables:
 
-- workshop_reframing/outputs/tables/table_rl_main.csv
-- workshop_reframing/outputs/tables/table_rl_main.tex
-- workshop_reframing/outputs/logs/rl_main_numbers_check.md
-- workshop_reframing/outputs/logs/rl_main_result_paragraph.md
-- workshop_reframing/outputs/logs/rl_main_caption.md
+- reframing_docs/workshop_reframing/outputs/tables/table_rl_main.csv
+- reframing_docs/workshop_reframing/outputs/tables/table_rl_main.tex
+- reframing_docs/workshop_reframing/outputs/logs/rl_main_numbers_check.md
+- reframing_docs/workshop_reframing/outputs/logs/rl_main_result_paragraph.md
+- reframing_docs/workshop_reframing/outputs/logs/rl_main_caption.md
 
 Validation:
 

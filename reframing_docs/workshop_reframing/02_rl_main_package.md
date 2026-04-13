@@ -152,8 +152,8 @@ Soft pass일 때는 아래 문장을 쓴다.
 
 이 패키지는 아래 문서와 연결된다.
 
-- `workshop_reframing/03_accounting_gap.md`
-- `workshop_reframing/04_friction_curve.md`
+- `reframing_docs/workshop_reframing/03_accounting_gap.md`
+- `reframing_docs/workshop_reframing/04_friction_curve.md`
 
 연결 논리:
 

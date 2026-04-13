@@ -173,7 +173,7 @@
 
 이 패키지는 아래 문서와 직접 연결된다.
 
-- `workshop_reframing/06_same_forecast_table.md`
+- `reframing_docs/workshop_reframing/06_same_forecast_table.md`
 
 이유는 간단하다. CC-TA-LBIP는 forecast map 고정, `c`만 변경 구조를 가장 직관적으로 보여줄 수 있어서 implementation, not prediction 메시지를 직접 표로 만들기 가장 좋은 기반이다.
 

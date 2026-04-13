@@ -10,19 +10,24 @@
 ## Path Convention
 
 이 문서의 경로 표기는 저장소 루트 기준 상대경로로 통일한다.
-프로젝트 문서와 산출물은 모두 `workshop_reframing/...` 형식을 사용한다.
+프로젝트 문서와 산출물은 모두 `reframing_docs/workshop_reframing/...` 형식을 사용한다.
+
+## Scope Lock
+
+이 워크숍 리프레이밍 작업의 기본 축은 current incumbent 설정이 아니라 canonical paper rebuild다.
+즉, 메인 클레임과 패키징 기준은 validation-selected `η = 0.5` canonical result를 중심으로 고정한다.
 
 현재 기준 작업 구조는 아래와 같다.
 
 ```text
-workshop_reframing/
-workshop_reframing/prompts/
-workshop_reframing/outputs/
-workshop_reframing/outputs/tables/
-workshop_reframing/outputs/figures/
-workshop_reframing/outputs/checks/
-workshop_reframing/outputs/logs/
-workshop_reframing/outputs/appendix/
+reframing_docs/workshop_reframing/
+reframing_docs/workshop_reframing/prompts/
+reframing_docs/workshop_reframing/outputs/
+reframing_docs/workshop_reframing/outputs/tables/
+reframing_docs/workshop_reframing/outputs/figures/
+reframing_docs/workshop_reframing/outputs/checks/
+reframing_docs/workshop_reframing/outputs/logs/
+reframing_docs/workshop_reframing/outputs/appendix/
 ```
 
 ## 0. Operating Principles
@@ -55,26 +60,26 @@ workshop_reframing/outputs/appendix/
 
 ### 1.1 Required Documents
 
-- [ ] `workshop_reframing/00_claim_freeze.md`
-- [ ] `workshop_reframing/01_repro_checklist.md`
-- [ ] `workshop_reframing/02_rl_main_package.md`
-- [ ] `workshop_reframing/03_accounting_gap.md`
-- [ ] `workshop_reframing/04_friction_curve.md`
-- [ ] `workshop_reframing/05_cctalibp_aux.md`
-- [ ] `workshop_reframing/06_same_forecast_table.md`
-- [ ] `workshop_reframing/07_paper_assembly.md`
-- [ ] `workshop_reframing/08_execution_todo.md`
+- [ ] `reframing_docs/workshop_reframing/00_claim_freeze.md`
+- [ ] `reframing_docs/workshop_reframing/01_repro_checklist.md`
+- [ ] `reframing_docs/workshop_reframing/02_rl_main_package.md`
+- [ ] `reframing_docs/workshop_reframing/03_accounting_gap.md`
+- [ ] `reframing_docs/workshop_reframing/04_friction_curve.md`
+- [ ] `reframing_docs/workshop_reframing/05_cctalibp_aux.md`
+- [ ] `reframing_docs/workshop_reframing/06_same_forecast_table.md`
+- [ ] `reframing_docs/workshop_reframing/07_paper_assembly.md`
+- [ ] `reframing_docs/workshop_reframing/08_execution_todo.md`
 
 ### 1.2 Working Folders
 
-- [ ] `workshop_reframing/`
-- [ ] `workshop_reframing/prompts/`
-- [ ] `workshop_reframing/outputs/`
-- [ ] `workshop_reframing/outputs/tables/`
-- [ ] `workshop_reframing/outputs/figures/`
-- [ ] `workshop_reframing/outputs/checks/`
-- [ ] `workshop_reframing/outputs/logs/`
-- [ ] `workshop_reframing/outputs/appendix/`
+- [ ] `reframing_docs/workshop_reframing/`
+- [ ] `reframing_docs/workshop_reframing/prompts/`
+- [ ] `reframing_docs/workshop_reframing/outputs/`
+- [ ] `reframing_docs/workshop_reframing/outputs/tables/`
+- [ ] `reframing_docs/workshop_reframing/outputs/figures/`
+- [ ] `reframing_docs/workshop_reframing/outputs/checks/`
+- [ ] `reframing_docs/workshop_reframing/outputs/logs/`
+- [ ] `reframing_docs/workshop_reframing/outputs/appendix/`
 
 ### 1.3 Naming Rules
 
@@ -618,7 +623,7 @@ workshop_reframing/outputs/appendix/
 ### 17.3 Status and Review Files
 
 - [ ] `repro_summary.md`
-- [ ] `workshop_reframing/00_claim_freeze.md`
+- [ ] `reframing_docs/workshop_reframing/00_claim_freeze.md`
 - [ ] `run_manifest.md`
 
 ## 18. Final Confirmation

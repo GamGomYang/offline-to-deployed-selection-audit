@@ -1,9 +1,9 @@
-Read AGENTS.md and the following source-of-truth documents:
+Read reframing_docs/AGENTS.md and the following source-of-truth documents:
 
-- workshop_reframing/00_claim_freeze.md
-- workshop_reframing/05_cctalibp_aux.md
-- workshop_reframing/08_execution_todo.md
-- workshop_reframing/outputs/logs/repro_summary.md
+- reframing_docs/workshop_reframing/00_claim_freeze.md
+- reframing_docs/workshop_reframing/05_cctalibp_aux.md
+- reframing_docs/workshop_reframing/08_execution_todo.md
+- reframing_docs/workshop_reframing/outputs/logs/repro_summary.md
 
 Task:
 Build only the CC-TA-LBIP auxiliary package.
@@ -19,10 +19,10 @@ Requirements:
 
 Deliverables:
 
-- workshop_reframing/outputs/tables/table_cctalibp_aux.csv
-- workshop_reframing/outputs/tables/table_cctalibp_aux.tex
-- workshop_reframing/outputs/logs/cctalibp_aux_paragraph.md
-- workshop_reframing/outputs/logs/cctalibp_aux_caption.md
+- reframing_docs/workshop_reframing/outputs/tables/table_cctalibp_aux.csv
+- reframing_docs/workshop_reframing/outputs/tables/table_cctalibp_aux.tex
+- reframing_docs/workshop_reframing/outputs/logs/cctalibp_aux_paragraph.md
+- reframing_docs/workshop_reframing/outputs/logs/cctalibp_aux_caption.md
 
 Validation:
 

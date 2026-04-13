@@ -1,8 +1,8 @@
-Read AGENTS.md and the following source-of-truth documents:
+Read reframing_docs/AGENTS.md and the following source-of-truth documents:
 
-- workshop_reframing/00_claim_freeze.md
-- workshop_reframing/01_repro_checklist.md
-- workshop_reframing/08_execution_todo.md
+- reframing_docs/workshop_reframing/00_claim_freeze.md
+- reframing_docs/workshop_reframing/01_repro_checklist.md
+- reframing_docs/workshop_reframing/08_execution_todo.md
 
 Task:
 Perform only the reproduction gate for the workshop-reframing project.
@@ -25,16 +25,16 @@ Required checks:
 
 Deliverables:
 
-- workshop_reframing/outputs/checks/validation_selection_check.md
-- workshop_reframing/outputs/checks/rl_selected_vs_eta1_repro.csv
-- workshop_reframing/outputs/checks/diagnostic_selected_eta_repro.csv
-- workshop_reframing/outputs/checks/dense_friction_repro.csv
-- workshop_reframing/outputs/checks/cctalibp_repro.csv
-- workshop_reframing/outputs/logs/repro_summary.md
+- reframing_docs/workshop_reframing/outputs/checks/validation_selection_check.md
+- reframing_docs/workshop_reframing/outputs/checks/rl_selected_vs_eta1_repro.csv
+- reframing_docs/workshop_reframing/outputs/checks/diagnostic_selected_eta_repro.csv
+- reframing_docs/workshop_reframing/outputs/checks/dense_friction_repro.csv
+- reframing_docs/workshop_reframing/outputs/checks/cctalibp_repro.csv
+- reframing_docs/workshop_reframing/outputs/logs/repro_summary.md
 
 If reproduction fails:
 
-- write workshop_reframing/outputs/logs/repro_failure_report.md
+- write reframing_docs/workshop_reframing/outputs/logs/repro_failure_report.md
 - stop immediately
 
 Stop after this milestone.

@@ -1,9 +1,9 @@
-Read AGENTS.md and the following source-of-truth documents:
+Read reframing_docs/AGENTS.md and the following source-of-truth documents:
 
-- workshop_reframing/00_claim_freeze.md
-- workshop_reframing/07_paper_assembly.md
-- workshop_reframing/08_execution_todo.md
-- all outputs already produced under workshop_reframing/outputs/
+- reframing_docs/workshop_reframing/00_claim_freeze.md
+- reframing_docs/workshop_reframing/07_paper_assembly.md
+- reframing_docs/workshop_reframing/08_execution_todo.md
+- all outputs already produced under reframing_docs/workshop_reframing/outputs/
 
 Task:
 Assemble only the workshop-paper writing package.
@@ -20,12 +20,12 @@ Requirements:
 
 Deliverables:
 
-- workshop_reframing/outputs/logs/abstract_workshop_v1.md
-- workshop_reframing/outputs/logs/intro_workshop_v1.md
-- workshop_reframing/outputs/logs/results_workshop_v1.md
-- workshop_reframing/outputs/logs/discussion_limitations_v1.md
-- workshop_reframing/outputs/logs/figure_table_order.md
-- workshop_reframing/outputs/logs/paper_workshop_outline.md
+- reframing_docs/workshop_reframing/outputs/logs/abstract_workshop_v1.md
+- reframing_docs/workshop_reframing/outputs/logs/intro_workshop_v1.md
+- reframing_docs/workshop_reframing/outputs/logs/results_workshop_v1.md
+- reframing_docs/workshop_reframing/outputs/logs/discussion_limitations_v1.md
+- reframing_docs/workshop_reframing/outputs/logs/figure_table_order.md
+- reframing_docs/workshop_reframing/outputs/logs/paper_workshop_outline.md
 
 Validation:
 

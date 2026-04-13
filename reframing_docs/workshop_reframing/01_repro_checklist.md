@@ -293,6 +293,6 @@
 
 이 문서를 통과한 뒤에만 다음 문서를 연다.
 
-- `workshop_reframing/02_rl_main_package.md`
-- `workshop_reframing/03_accounting_gap.md`
-- `workshop_reframing/04_friction_curve.md`
+- `reframing_docs/workshop_reframing/02_rl_main_package.md`
+- `reframing_docs/workshop_reframing/03_accounting_gap.md`
+- `reframing_docs/workshop_reframing/04_friction_curve.md`

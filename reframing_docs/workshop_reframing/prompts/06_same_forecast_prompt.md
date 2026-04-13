@@ -1,9 +1,9 @@
-Read AGENTS.md and the following source-of-truth documents:
+Read reframing_docs/AGENTS.md and the following source-of-truth documents:
 
-- workshop_reframing/00_claim_freeze.md
-- workshop_reframing/06_same_forecast_table.md
-- workshop_reframing/08_execution_todo.md
-- workshop_reframing/outputs/logs/repro_summary.md
+- reframing_docs/workshop_reframing/00_claim_freeze.md
+- reframing_docs/workshop_reframing/06_same_forecast_table.md
+- reframing_docs/workshop_reframing/08_execution_todo.md
+- reframing_docs/workshop_reframing/outputs/logs/repro_summary.md
 
 Task:
 Run only the same-forecast / different-decision-quality analysis for the auxiliary comparator.
@@ -19,11 +19,11 @@ Requirements:
 
 Deliverables:
 
-- workshop_reframing/outputs/checks/forecast_outputs_eval.csv
-- workshop_reframing/outputs/tables/table_same_forecast_diff_decision.csv
-- workshop_reframing/outputs/tables/table_same_forecast_diff_decision.tex
-- workshop_reframing/outputs/logs/forecast_metric_analysis.md
-- workshop_reframing/outputs/logs/same_forecast_table_paragraph.md
+- reframing_docs/workshop_reframing/outputs/checks/forecast_outputs_eval.csv
+- reframing_docs/workshop_reframing/outputs/tables/table_same_forecast_diff_decision.csv
+- reframing_docs/workshop_reframing/outputs/tables/table_same_forecast_diff_decision.tex
+- reframing_docs/workshop_reframing/outputs/logs/forecast_metric_analysis.md
+- reframing_docs/workshop_reframing/outputs/logs/same_forecast_table_paragraph.md
 
 Validation:
 
