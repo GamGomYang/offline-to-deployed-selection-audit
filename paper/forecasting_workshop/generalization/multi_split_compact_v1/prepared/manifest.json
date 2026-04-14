@@ -1,0 +1,89 @@
+{
+  "experiment_root": "/workspace/execution-aware-portfolio-rl/paper/forecasting_workshop/generalization/multi_split_compact_v1",
+  "prepared_root": "/workspace/execution-aware-portfolio-rl/paper/forecasting_workshop/generalization/multi_split_compact_v1/prepared",
+  "base_current_config": "/workspace/execution-aware-portfolio-rl/frozen_protocol/paper_v3/current_config.yaml",
+  "splits_json": "/workspace/execution-aware-portfolio-rl/paper/forecasting_workshop/generalization/multi_split_runtime_splits_v1.json",
+  "splits": {
+    "split_a": {
+      "split_id": "split_a",
+      "label": "Split A",
+      "status": "launch",
+      "train": {
+        "start": "2010-01-01",
+        "end": "2015-12-31"
+      },
+      "validation": {
+        "start": "2016-01-01",
+        "end": "2017-12-31"
+      },
+      "test": {
+        "start": "2018-01-01",
+        "end": "2019-12-31"
+      },
+      "current_config": "/workspace/execution-aware-portfolio-rl/paper/forecasting_workshop/generalization/multi_split_compact_v1/prepared/configs/split_a/current_config.yaml",
+      "split_definition": "/workspace/execution-aware-portfolio-rl/paper/forecasting_workshop/generalization/multi_split_compact_v1/prepared/configs/split_a/split_definition.json",
+      "run_root": "/workspace/execution-aware-portfolio-rl/paper/forecasting_workshop/generalization/multi_split_compact_v1/splits/split_a"
+    },
+    "split_b": {
+      "split_id": "split_b",
+      "label": "Split B",
+      "status": "launch",
+      "train": {
+        "start": "2010-01-01",
+        "end": "2017-12-31"
+      },
+      "validation": {
+        "start": "2018-01-01",
+        "end": "2019-12-31"
+      },
+      "test": {
+        "start": "2020-01-01",
+        "end": "2021-12-31"
+      },
+      "current_config": "/workspace/execution-aware-portfolio-rl/paper/forecasting_workshop/generalization/multi_split_compact_v1/prepared/configs/split_b/current_config.yaml",
+      "split_definition": "/workspace/execution-aware-portfolio-rl/paper/forecasting_workshop/generalization/multi_split_compact_v1/prepared/configs/split_b/split_definition.json",
+      "run_root": "/workspace/execution-aware-portfolio-rl/paper/forecasting_workshop/generalization/multi_split_compact_v1/splits/split_b"
+    },
+    "split_c": {
+      "split_id": "split_c",
+      "label": "Split C",
+      "status": "launch",
+      "train": {
+        "start": "2010-01-01",
+        "end": "2019-12-31"
+      },
+      "validation": {
+        "start": "2020-01-01",
+        "end": "2021-12-31"
+      },
+      "test": {
+        "start": "2022-01-01",
+        "end": "2023-12-31"
+      },
+      "current_config": "/workspace/execution-aware-portfolio-rl/paper/forecasting_workshop/generalization/multi_split_compact_v1/prepared/configs/split_c/current_config.yaml",
+      "split_definition": "/workspace/execution-aware-portfolio-rl/paper/forecasting_workshop/generalization/multi_split_compact_v1/prepared/configs/split_c/split_definition.json",
+      "run_root": "/workspace/execution-aware-portfolio-rl/paper/forecasting_workshop/generalization/multi_split_compact_v1/splits/split_c"
+    },
+    "split_d": {
+      "split_id": "split_d",
+      "label": "Split D",
+      "status": "canonical_reference",
+      "train": {
+        "start": "2010-01-01",
+        "end": "2021-12-31"
+      },
+      "validation": {
+        "start": "2022-01-01",
+        "end": "2023-12-31"
+      },
+      "test": {
+        "start": "2024-01-01",
+        "end": "2025-12-31"
+      },
+      "current_config": "/workspace/execution-aware-portfolio-rl/paper/forecasting_workshop/generalization/multi_split_compact_v1/prepared/configs/split_d/current_config.yaml",
+      "split_definition": "/workspace/execution-aware-portfolio-rl/paper/forecasting_workshop/generalization/multi_split_compact_v1/prepared/configs/split_d/split_definition.json",
+      "run_root": "/workspace/execution-aware-portfolio-rl/paper/forecasting_workshop/generalization/multi_split_compact_v1/splits/split_d",
+      "canonical_run_root": "/workspace/execution-aware-portfolio-rl/repro/rebuilds/paper_rebuild_20260324T065755Z"
+    }
+  }
+}

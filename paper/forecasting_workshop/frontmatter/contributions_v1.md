@@ -1,0 +1,3 @@
+- We frame forecast-to-decision evaluation around the distinction between proposed targets and realized actions under frictions, and argue that executed-path evaluation should be primary while target-level quantities remain diagnostic.
+- We provide narrow fixed-signal evidence from a cost-sensitive portfolio case study showing that the validation-selected interior operating point `eta=0.5` improves positive-cost held-out executed-path performance relative to `eta=1.0`, while the zero-cost row remains near-flat.
+- We provide supporting evidence from accounting diagnostics and a conservative same-forecast analysis showing that forecast-side movement can stay small even when realized decision-side consequences become large.

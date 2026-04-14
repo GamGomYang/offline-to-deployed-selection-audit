@@ -1,0 +1,2584 @@
+[BUCKET-START] split=split_a seeds=0 1 2 finalizer=1
+[TRAIN-START] split=split_a seed=0
+INFO:prl.data:Loading processed cache from data/processed_u27
+Using cuda device
+INFO:prl.prl:PRL mid_plasticity_multiplier applied: multiplier=0.700 mid_fraction=0.102
+--------------------------------------------
+| time/                         |          |
+|    episodes                   | 4        |
+|    fps                        | 41       |
+|    time_elapsed               | 138      |
+|    total_timesteps            | 5800     |
+| train/                        |          |
+|    actor_loss                 | -69.4    |
+|    actor_loss_base            | -86.8    |
+|    alpha_clamped_mean         | 0.213    |
+|    alpha_next_mean            | 0.213    |
+|    alpha_obs_max              | 0.375    |
+|    alpha_obs_mean             | 0.213    |
+|    alpha_obs_min              | 0.177    |
+|    alpha_obs_p05              | 0.179    |
+|    alpha_obs_p50              | 0.195    |
+|    alpha_obs_p95              | 0.357    |
+|    alpha_obs_std              | 0.0502   |
+|    alpha_raw_max              | 0.375    |
+|    alpha_raw_mean             | 0.213    |
+|    alpha_raw_min              | 0.177    |
+|    alpha_raw_p05              | 0.179    |
+|    alpha_raw_p50              | 0.195    |
+|    alpha_raw_p95              | 0.357    |
+|    alpha_raw_std              | 0.0502   |
+|    beta_effective_mean        | 0.85     |
+|    critic_loss                | 0.288    |
+|    cvar_penalty_raw_mean      | 0.804    |
+|    cvar_penalty_weighted_mean | 0.241    |
+|    emergency_rate             | 0        |
+|    entropy_loss               | -3.65    |
+|    penalty_ratio              | 0.2      |
+|    prl_prob_max               | 0.997    |
+|    prl_prob_mean              | 0.184    |
+|    prl_prob_min               | 0.00525  |
+|    prl_prob_p05               | 0.0134   |
+|    prl_prob_p50               | 0.0827   |
+|    prl_prob_p95               | 0.905    |
+|    prl_prob_std               | 0.253    |
+|    var_penalty_raw_mean       | 250      |
+|    var_penalty_weighted_mean  | 75       |
+|    vz_max                     | 3.83     |
+|    vz_mean                    | -0.0337  |
+|    vz_min                     | -1.62    |
+|    vz_p05                     | -1.15    |
+|    vz_p50                     | -0.203   |
+|    vz_p95                     | 2.13     |
+|    vz_std                     | 0.931    |
+--------------------------------------------
+--------------------------------------------
+| time/                         |          |
+|    episodes                   | 8        |
+|    fps                        | 41       |
+|    time_elapsed               | 280      |
+|    total_timesteps            | 11600    |
+| train/                        |          |
+|    actor_loss                 | -122     |
+|    actor_loss_base            | -153     |
+|    alpha_clamped_mean         | 0.216    |
+|    alpha_next_mean            | 0.216    |
+|    alpha_obs_max              | 0.375    |
+|    alpha_obs_mean             | 0.216    |
+|    alpha_obs_min              | 0.177    |
+|    alpha_obs_p05              | 0.18     |
+|    alpha_obs_p50              | 0.196    |
+|    alpha_obs_p95              | 0.355    |
+|    alpha_obs_std              | 0.0536   |
+|    alpha_raw_max              | 0.375    |
+|    alpha_raw_mean             | 0.216    |
+|    alpha_raw_min              | 0.177    |
+|    alpha_raw_p05              | 0.18     |
+|    alpha_raw_p50              | 0.196    |
+|    alpha_raw_p95              | 0.355    |
+|    alpha_raw_std              | 0.0536   |
+|    beta_effective_mean        | 0.846    |
+|    critic_loss                | 0.253    |
+|    cvar_penalty_raw_mean      | 3.76     |
+|    cvar_penalty_weighted_mean | 1.13     |
+|    emergency_rate             | 0        |
+|    entropy_loss               | -3.83    |
+|    penalty_ratio              | 0.2      |
+|    prl_prob_max               | 0.993    |
+|    prl_prob_mean              | 0.201    |
+|    prl_prob_min               | 0.00491  |
+|    prl_prob_p05               | 0.02     |
+|    prl_prob_p50               | 0.0923   |
+|    prl_prob_p95               | 0.894    |
+|    prl_prob_std               | 0.27     |
+|    var_penalty_raw_mean       | 1.29e+03 |
+|    var_penalty_weighted_mean  | 387      |
+|    vz_max                     | 3.46     |
+|    vz_mean                    | 0.0196   |
+|    vz_min                     | -1.66    |
+|    vz_p05                     | -0.947   |
+|    vz_p50                     | -0.143   |
+|    vz_p95                     | 2.07     |
+|    vz_std                     | 0.933    |
+--------------------------------------------
+--------------------------------------------
+| time/                         |          |
+|    episodes                   | 12       |
+|    fps                        | 41       |
+|    time_elapsed               | 421      |
+|    total_timesteps            | 17400    |
+| train/                        |          |
+|    actor_loss                 | -164     |
+|    actor_loss_base            | -205     |
+|    alpha_clamped_mean         | 0.213    |
+|    alpha_next_mean            | 0.214    |
+|    alpha_obs_max              | 0.376    |
+|    alpha_obs_mean             | 0.213    |
+|    alpha_obs_min              | 0.177    |
+|    alpha_obs_p05              | 0.179    |
+|    alpha_obs_p50              | 0.195    |
+|    alpha_obs_p95              | 0.351    |
+|    alpha_obs_std              | 0.0502   |
+|    alpha_raw_max              | 0.376    |
+|    alpha_raw_mean             | 0.213    |
+|    alpha_raw_min              | 0.177    |
+|    alpha_raw_p05              | 0.179    |
+|    alpha_raw_p50              | 0.195    |
+|    alpha_raw_p95              | 0.351    |
+|    alpha_raw_std              | 0.0502   |
+|    beta_effective_mean        | 0.858    |
+|    critic_loss                | 0.141    |
+|    cvar_penalty_raw_mean      | 2.92     |
+|    cvar_penalty_weighted_mean | 0.876    |
+|    emergency_rate             | 0        |
+|    entropy_loss               | -3.9     |
+|    penalty_ratio              | 0.2      |
+|    prl_prob_max               | 0.998    |
+|    prl_prob_mean              | 0.186    |
+|    prl_prob_min               | 0.0053   |
+|    prl_prob_p05               | 0.0144   |
+|    prl_prob_p50               | 0.0837   |
+|    prl_prob_p95               | 0.873    |
+|    prl_prob_std               | 0.253    |
+|    var_penalty_raw_mean       | 1.69e+03 |
+|    var_penalty_weighted_mean  | 508      |
+|    vz_max                     | 4.17     |
+|    vz_mean                    | -0.0346  |
+|    vz_min                     | -1.62    |
+|    vz_p05                     | -1.11    |
+|    vz_p50                     | -0.197   |
+|    vz_p95                     | 1.96     |
+|    vz_std                     | 0.914    |
+--------------------------------------------
+--------------------------------------------
+| time/                         |          |
+|    episodes                   | 16       |
+|    fps                        | 41       |
+|    time_elapsed               | 564      |
+|    total_timesteps            | 23200    |
+| train/                        |          |
+|    actor_loss                 | -191     |
+|    actor_loss_base            | -238     |
+|    alpha_clamped_mean         | 0.212    |
+|    alpha_next_mean            | 0.212    |
+|    alpha_obs_max              | 0.376    |
+|    alpha_obs_mean             | 0.212    |
+|    alpha_obs_min              | 0.177    |
+|    alpha_obs_p05              | 0.18     |
+|    alpha_obs_p50              | 0.194    |
+|    alpha_obs_p95              | 0.356    |
+|    alpha_obs_std              | 0.0498   |
+|    alpha_raw_max              | 0.376    |
+|    alpha_raw_mean             | 0.212    |
+|    alpha_raw_min              | 0.177    |
+|    alpha_raw_p05              | 0.18     |
+|    alpha_raw_p50              | 0.194    |
+|    alpha_raw_p95              | 0.356    |
+|    alpha_raw_std              | 0.0498   |
+|    beta_effective_mean        | 0.856    |
+|    critic_loss                | 0.108    |
+|    cvar_penalty_raw_mean      | 11.7     |
+|    cvar_penalty_weighted_mean | 3.51     |
+|    emergency_rate             | 0        |
+|    entropy_loss               | -3.9     |
+|    penalty_ratio              | 0.2      |
+|    prl_prob_max               | 0.998    |
+|    prl_prob_mean              | 0.18     |
+|    prl_prob_min               | 0.00552  |
+|    prl_prob_p05               | 0.0185   |
+|    prl_prob_p50               | 0.0794   |
+|    prl_prob_p95               | 0.899    |
+|    prl_prob_std               | 0.251    |
+|    var_penalty_raw_mean       | 3.99e+03 |
+|    var_penalty_weighted_mean  | 1.2e+03  |
+|    vz_max                     | 4.13     |
+|    vz_mean                    | -0.019   |
+|    vz_min                     | -1.6     |
+|    vz_p05                     | -0.987   |
+|    vz_p50                     | -0.225   |
+|    vz_p95                     | 2.09     |
+|    vz_std                     | 0.957    |
+--------------------------------------------
+--------------------------------------------
+| time/                         |          |
+|    episodes                   | 20       |
+|    fps                        | 41       |
+|    time_elapsed               | 706      |
+|    total_timesteps            | 29000    |
+| train/                        |          |
+|    actor_loss                 | -224     |
+|    actor_loss_base            | -280     |
+|    alpha_clamped_mean         | 0.22     |
+|    alpha_next_mean            | 0.22     |
+|    alpha_obs_max              | 0.376    |
+|    alpha_obs_mean             | 0.22     |
+|    alpha_obs_min              | 0.177    |
+|    alpha_obs_p05              | 0.179    |
+|    alpha_obs_p50              | 0.195    |
+|    alpha_obs_p95              | 0.366    |
+|    alpha_obs_std              | 0.0596   |
+|    alpha_raw_max              | 0.376    |
+|    alpha_raw_mean             | 0.22     |
+|    alpha_raw_min              | 0.177    |
+|    alpha_raw_p05              | 0.179    |
+|    alpha_raw_p50              | 0.195    |
+|    alpha_raw_p95              | 0.366    |
+|    alpha_raw_std              | 0.0596   |
+|    beta_effective_mean        | 0.856    |
+|    critic_loss                | 0.0812   |
+|    cvar_penalty_raw_mean      | 9.25     |
+|    cvar_penalty_weighted_mean | 2.78     |
+|    emergency_rate             | 0        |
+|    entropy_loss               | -4.06    |
+|    penalty_ratio              | 0.2      |
+|    prl_prob_max               | 0.998    |
+|    prl_prob_mean              | 0.218    |
+|    prl_prob_min               | 0.00491  |
+|    prl_prob_p05               | 0.0146   |
+|    prl_prob_p50               | 0.0864   |
+|    prl_prob_p95               | 0.951    |
+|    prl_prob_std               | 0.299    |
+|    var_penalty_raw_mean       | 5.03e+03 |
+|    var_penalty_weighted_mean  | 1.51e+03 |
+|    vz_max                     | 4.13     |
+|    vz_mean                    | 0.102    |
+|    vz_min                     | -1.66    |
+|    vz_p05                     | -1.11    |
+|    vz_p50                     | -0.179   |
+|    vz_p95                     | 2.48     |
+|    vz_std                     | 1.17     |
+--------------------------------------------
+--------------------------------------------
+| time/                         |          |
+|    episodes                   | 24       |
+|    fps                        | 40       |
+|    time_elapsed               | 849      |
+|    total_timesteps            | 34800    |
+| train/                        |          |
+|    actor_loss                 | -235     |
+|    actor_loss_base            | -294     |
+|    alpha_clamped_mean         | 0.216    |
+|    alpha_next_mean            | 0.217    |
+|    alpha_obs_max              | 0.376    |
+|    alpha_obs_mean             | 0.216    |
+|    alpha_obs_min              | 0.177    |
+|    alpha_obs_p05              | 0.179    |
+|    alpha_obs_p50              | 0.196    |
+|    alpha_obs_p95              | 0.356    |
+|    alpha_obs_std              | 0.0545   |
+|    alpha_raw_max              | 0.376    |
+|    alpha_raw_mean             | 0.216    |
+|    alpha_raw_min              | 0.177    |
+|    alpha_raw_p05              | 0.179    |
+|    alpha_raw_p50              | 0.196    |
+|    alpha_raw_p95              | 0.356    |
+|    alpha_raw_std              | 0.0545   |
+|    beta_effective_mean        | 0.854    |
+|    critic_loss                | 0.0898   |
+|    cvar_penalty_raw_mean      | 11.4     |
+|    cvar_penalty_weighted_mean | 3.42     |
+|    emergency_rate             | 0        |
+|    entropy_loss               | -3.99    |
+|    penalty_ratio              | 0.2      |
+|    prl_prob_max               | 0.998    |
+|    prl_prob_mean              | 0.201    |
+|    prl_prob_min               | 0.00491  |
+|    prl_prob_p05               | 0.0138   |
+|    prl_prob_p50               | 0.0916   |
+|    prl_prob_p95               | 0.899    |
+|    prl_prob_std               | 0.274    |
+|    var_penalty_raw_mean       | 5.04e+03 |
+|    var_penalty_weighted_mean  | 1.51e+03 |
+|    vz_max                     | 4.05     |
+|    vz_mean                    | 0.0299   |
+|    vz_min                     | -1.66    |
+|    vz_p05                     | -1.13    |
+|    vz_p50                     | -0.147   |
+|    vz_p95                     | 2.09     |
+|    vz_std                     | 0.996    |
+--------------------------------------------
+--------------------------------------------
+| time/                         |          |
+|    episodes                   | 28       |
+|    fps                        | 40       |
+|    time_elapsed               | 992      |
+|    total_timesteps            | 40600    |
+| train/                        |          |
+|    actor_loss                 | -250     |
+|    actor_loss_base            | -313     |
+|    alpha_clamped_mean         | 0.214    |
+|    alpha_next_mean            | 0.214    |
+|    alpha_obs_max              | 0.376    |
+|    alpha_obs_mean             | 0.214    |
+|    alpha_obs_min              | 0.177    |
+|    alpha_obs_p05              | 0.179    |
+|    alpha_obs_p50              | 0.196    |
+|    alpha_obs_p95              | 0.352    |
+|    alpha_obs_std              | 0.0511   |
+|    alpha_raw_max              | 0.376    |
+|    alpha_raw_mean             | 0.214    |
+|    alpha_raw_min              | 0.177    |
+|    alpha_raw_p05              | 0.179    |
+|    alpha_raw_p50              | 0.196    |
+|    alpha_raw_p95              | 0.352    |
+|    alpha_raw_std              | 0.0511   |
+|    beta_effective_mean        | 0.848    |
+|    critic_loss                | 0.0805   |
+|    cvar_penalty_raw_mean      | 12.9     |
+|    cvar_penalty_weighted_mean | 3.88     |
+|    emergency_rate             | 0        |
+|    entropy_loss               | -3.94    |
+|    penalty_ratio              | 0.2      |
+|    prl_prob_max               | 0.998    |
+|    prl_prob_mean              | 0.189    |
+|    prl_prob_min               | 0.00546  |
+|    prl_prob_p05               | 0.0134   |
+|    prl_prob_p50               | 0.0881   |
+|    prl_prob_p95               | 0.877    |
+|    prl_prob_std               | 0.257    |
+|    var_penalty_raw_mean       | 5.3e+03  |
+|    var_penalty_weighted_mean  | 1.59e+03 |
+|    vz_max                     | 4.17     |
+|    vz_mean                    | 0.0044   |
+|    vz_min                     | -1.6     |
+|    vz_p05                     | -1.15    |
+|    vz_p50                     | -0.169   |
+|    vz_p95                     | 1.98     |
+|    vz_std                     | 0.98     |
+--------------------------------------------
+--------------------------------------------
+| time/                         |          |
+|    episodes                   | 32       |
+|    fps                        | 40       |
+|    time_elapsed               | 1132     |
+|    total_timesteps            | 46400    |
+| train/                        |          |
+|    actor_loss                 | -263     |
+|    actor_loss_base            | -328     |
+|    alpha_clamped_mean         | 0.213    |
+|    alpha_next_mean            | 0.213    |
+|    alpha_obs_max              | 0.376    |
+|    alpha_obs_mean             | 0.213    |
+|    alpha_obs_min              | 0.177    |
+|    alpha_obs_p05              | 0.179    |
+|    alpha_obs_p50              | 0.196    |
+|    alpha_obs_p95              | 0.356    |
+|    alpha_obs_std              | 0.0505   |
+|    alpha_raw_max              | 0.376    |
+|    alpha_raw_mean             | 0.213    |
+|    alpha_raw_min              | 0.177    |
+|    alpha_raw_p05              | 0.179    |
+|    alpha_raw_p50              | 0.196    |
+|    alpha_raw_p95              | 0.356    |
+|    alpha_raw_std              | 0.0505   |
+|    beta_effective_mean        | 0.851    |
+|    critic_loss                | 0.134    |
+|    cvar_penalty_raw_mean      | 11.3     |
+|    cvar_penalty_weighted_mean | 3.39     |
+|    emergency_rate             | 0        |
+|    entropy_loss               | -3.92    |
+|    penalty_ratio              | 0.2      |
+|    prl_prob_max               | 0.998    |
+|    prl_prob_mean              | 0.186    |
+|    prl_prob_min               | 0.0053   |
+|    prl_prob_p05               | 0.0139   |
+|    prl_prob_p50               | 0.0894   |
+|    prl_prob_p95               | 0.901    |
+|    prl_prob_std               | 0.254    |
+|    var_penalty_raw_mean       | 5.36e+03 |
+|    var_penalty_weighted_mean  | 1.61e+03 |
+|    vz_max                     | 4.18     |
+|    vz_mean                    | -0.0235  |
+|    vz_min                     | -1.62    |
+|    vz_p05                     | -1.13    |
+|    vz_p50                     | -0.161   |
+|    vz_p95                     | 2.11     |
+|    vz_std                     | 0.948    |
+--------------------------------------------
+--------------------------------------------
+| time/                         |          |
+|    episodes                   | 36       |
+|    fps                        | 41       |
+|    time_elapsed               | 1272     |
+|    total_timesteps            | 52200    |
+| train/                        |          |
+|    actor_loss                 | -270     |
+|    actor_loss_base            | -337     |
+|    alpha_clamped_mean         | 0.214    |
+|    alpha_next_mean            | 0.214    |
+|    alpha_obs_max              | 0.376    |
+|    alpha_obs_mean             | 0.214    |
+|    alpha_obs_min              | 0.177    |
+|    alpha_obs_p05              | 0.179    |
+|    alpha_obs_p50              | 0.194    |
+|    alpha_obs_p95              | 0.358    |
+|    alpha_obs_std              | 0.0528   |
+|    alpha_raw_max              | 0.376    |
+|    alpha_raw_mean             | 0.214    |
+|    alpha_raw_min              | 0.177    |
+|    alpha_raw_p05              | 0.179    |
+|    alpha_raw_p50              | 0.194    |
+|    alpha_raw_p95              | 0.358    |
+|    alpha_raw_std              | 0.0528   |
+|    beta_effective_mean        | 0.868    |
+|    critic_loss                | 0.0928   |
+|    cvar_penalty_raw_mean      | 9.21     |
+|    cvar_penalty_weighted_mean | 2.76     |
+|    emergency_rate             | 0        |
+|    entropy_loss               | -3.94    |
+|    penalty_ratio              | 0.2      |
+|    prl_prob_max               | 0.998    |
+|    prl_prob_mean              | 0.188    |
+|    prl_prob_min               | 0.00491  |
+|    prl_prob_p05               | 0.012    |
+|    prl_prob_p50               | 0.077    |
+|    prl_prob_p95               | 0.907    |
+|    prl_prob_std               | 0.265    |
+|    var_penalty_raw_mean       | 4.54e+03 |
+|    var_penalty_weighted_mean  | 1.36e+03 |
+|    vz_max                     | 4.15     |
+|    vz_mean                    | -0.0136  |
+|    vz_min                     | -1.66    |
+|    vz_p05                     | -1.2     |
+|    vz_p50                     | -0.242   |
+|    vz_p95                     | 2.14     |
+|    vz_std                     | 1.04     |
+--------------------------------------------
+--------------------------------------------
+| time/                         |          |
+|    episodes                   | 40       |
+|    fps                        | 41       |
+|    time_elapsed               | 1412     |
+|    total_timesteps            | 58000    |
+| train/                        |          |
+|    actor_loss                 | -278     |
+|    actor_loss_base            | -348     |
+|    alpha_clamped_mean         | 0.22     |
+|    alpha_next_mean            | 0.221    |
+|    alpha_obs_max              | 0.376    |
+|    alpha_obs_mean             | 0.22     |
+|    alpha_obs_min              | 0.177    |
+|    alpha_obs_p05              | 0.179    |
+|    alpha_obs_p50              | 0.196    |
+|    alpha_obs_p95              | 0.36     |
+|    alpha_obs_std              | 0.0594   |
+|    alpha_raw_max              | 0.376    |
+|    alpha_raw_mean             | 0.22     |
+|    alpha_raw_min              | 0.177    |
+|    alpha_raw_p05              | 0.179    |
+|    alpha_raw_p50              | 0.196    |
+|    alpha_raw_p95              | 0.36     |
+|    alpha_raw_std              | 0.0594   |
+|    beta_effective_mean        | 0.863    |
+|    critic_loss                | 0.107    |
+|    cvar_penalty_raw_mean      | 11.8     |
+|    cvar_penalty_weighted_mean | 3.54     |
+|    emergency_rate             | 0        |
+|    entropy_loss               | -4.08    |
+|    penalty_ratio              | 0.2      |
+|    prl_prob_max               | 0.998    |
+|    prl_prob_mean              | 0.222    |
+|    prl_prob_min               | 0.00611  |
+|    prl_prob_p05               | 0.0165   |
+|    prl_prob_p50               | 0.0926   |
+|    prl_prob_p95               | 0.918    |
+|    prl_prob_std               | 0.298    |
+|    var_penalty_raw_mean       | 5.56e+03 |
+|    var_penalty_weighted_mean  | 1.67e+03 |
+|    vz_max                     | 4.18     |
+|    vz_mean                    | 0.116    |
+|    vz_min                     | -1.55    |
+|    vz_p05                     | -1.05    |
+|    vz_p50                     | -0.141   |
+|    vz_p95                     | 2.21     |
+|    vz_std                     | 1.08     |
+--------------------------------------------
+--------------------------------------------
+| time/                         |          |
+|    episodes                   | 44       |
+|    fps                        | 41       |
+|    time_elapsed               | 1548     |
+|    total_timesteps            | 63800    |
+| train/                        |          |
+|    actor_loss                 | -283     |
+|    actor_loss_base            | -354     |
+|    alpha_clamped_mean         | 0.213    |
+|    alpha_next_mean            | 0.212    |
+|    alpha_obs_max              | 0.376    |
+|    alpha_obs_mean             | 0.213    |
+|    alpha_obs_min              | 0.177    |
+|    alpha_obs_p05              | 0.178    |
+|    alpha_obs_p50              | 0.194    |
+|    alpha_obs_p95              | 0.353    |
+|    alpha_obs_std              | 0.0513   |
+|    alpha_raw_max              | 0.376    |
+|    alpha_raw_mean             | 0.213    |
+|    alpha_raw_min              | 0.177    |
+|    alpha_raw_p05              | 0.178    |
+|    alpha_raw_p50              | 0.194    |
+|    alpha_raw_p95              | 0.353    |
+|    alpha_raw_std              | 0.0513   |
+|    beta_effective_mean        | 0.871    |
+|    critic_loss                | 0.0976   |
+|    cvar_penalty_raw_mean      | 8.97     |
+|    cvar_penalty_weighted_mean | 2.69     |
+|    emergency_rate             | 0        |
+|    entropy_loss               | -3.92    |
+|    penalty_ratio              | 0.2      |
+|    prl_prob_max               | 0.998    |
+|    prl_prob_mean              | 0.184    |
+|    prl_prob_min               | 0.00517  |
+|    prl_prob_p05               | 0.00914  |
+|    prl_prob_p50               | 0.074    |
+|    prl_prob_p95               | 0.885    |
+|    prl_prob_std               | 0.258    |
+|    var_penalty_raw_mean       | 4.74e+03 |
+|    var_penalty_weighted_mean  | 1.42e+03 |
+|    vz_max                     | 4.15     |
+|    vz_mean                    | -0.0563  |
+|    vz_min                     | -1.63    |
+|    vz_p05                     | -1.34    |
+|    vz_p50                     | -0.263   |
+|    vz_p95                     | 2.02     |
+|    vz_std                     | 0.996    |
+--------------------------------------------
+--------------------------------------------
+| time/                         |          |
+|    episodes                   | 48       |
+|    fps                        | 41       |
+|    time_elapsed               | 1689     |
+|    total_timesteps            | 69600    |
+| train/                        |          |
+|    actor_loss                 | -284     |
+|    actor_loss_base            | -355     |
+|    alpha_clamped_mean         | 0.218    |
+|    alpha_next_mean            | 0.219    |
+|    alpha_obs_max              | 0.376    |
+|    alpha_obs_mean             | 0.218    |
+|    alpha_obs_min              | 0.177    |
+|    alpha_obs_p05              | 0.179    |
+|    alpha_obs_p50              | 0.196    |
+|    alpha_obs_p95              | 0.361    |
+|    alpha_obs_std              | 0.0558   |
+|    alpha_raw_max              | 0.376    |
+|    alpha_raw_mean             | 0.218    |
+|    alpha_raw_min              | 0.177    |
+|    alpha_raw_p05              | 0.179    |
+|    alpha_raw_p50              | 0.196    |
+|    alpha_raw_p95              | 0.361    |
+|    alpha_raw_std              | 0.0558   |
+|    beta_effective_mean        | 0.87     |
+|    critic_loss                | 0.0875   |
+|    cvar_penalty_raw_mean      | 12.9     |
+|    cvar_penalty_weighted_mean | 3.87     |
+|    emergency_rate             | 0        |
+|    entropy_loss               | -4.05    |
+|    penalty_ratio              | 0.2      |
+|    prl_prob_max               | 0.997    |
+|    prl_prob_mean              | 0.211    |
+|    prl_prob_min               | 0.00517  |
+|    prl_prob_p05               | 0.0129   |
+|    prl_prob_p50               | 0.0898   |
+|    prl_prob_p95               | 0.926    |
+|    prl_prob_std               | 0.28     |
+|    var_penalty_raw_mean       | 5.7e+03  |
+|    var_penalty_weighted_mean  | 1.71e+03 |
+|    vz_max                     | 3.95     |
+|    vz_mean                    | 0.044    |
+|    vz_min                     | -1.63    |
+|    vz_p05                     | -1.17    |
+|    vz_p50                     | -0.158   |
+|    vz_p95                     | 2.26     |
+|    vz_std                     | 1.05     |
+--------------------------------------------
+--------------------------------------------
+| time/                         |          |
+|    episodes                   | 52       |
+|    fps                        | 41       |
+|    time_elapsed               | 1831     |
+|    total_timesteps            | 75400    |
+| train/                        |          |
+|    actor_loss                 | -284     |
+|    actor_loss_base            | -355     |
+|    alpha_clamped_mean         | 0.215    |
+|    alpha_next_mean            | 0.215    |
+|    alpha_obs_max              | 0.373    |
+|    alpha_obs_mean             | 0.215    |
+|    alpha_obs_min              | 0.177    |
+|    alpha_obs_p05              | 0.178    |
+|    alpha_obs_p50              | 0.194    |
+|    alpha_obs_p95              | 0.357    |
+|    alpha_obs_std              | 0.0543   |
+|    alpha_raw_max              | 0.373    |
+|    alpha_raw_mean             | 0.215    |
+|    alpha_raw_min              | 0.177    |
+|    alpha_raw_p05              | 0.178    |
+|    alpha_raw_p50              | 0.194    |
+|    alpha_raw_p95              | 0.357    |
+|    alpha_raw_std              | 0.0543   |
+|    beta_effective_mean        | 0.859    |
+|    critic_loss                | 0.077    |
+|    cvar_penalty_raw_mean      | 13.2     |
+|    cvar_penalty_weighted_mean | 3.95     |
+|    emergency_rate             | 0        |
+|    entropy_loss               | -3.97    |
+|    penalty_ratio              | 0.2      |
+|    prl_prob_max               | 0.986    |
+|    prl_prob_mean              | 0.193    |
+|    prl_prob_min               | 0.00517  |
+|    prl_prob_p05               | 0.0105   |
+|    prl_prob_p50               | 0.0731   |
+|    prl_prob_p95               | 0.902    |
+|    prl_prob_std               | 0.273    |
+|    var_penalty_raw_mean       | 5.36e+03 |
+|    var_penalty_weighted_mean  | 1.61e+03 |
+|    vz_max                     | 3.12     |
+|    vz_mean                    | -0.0486  |
+|    vz_min                     | -1.63    |
+|    vz_p05                     | -1.27    |
+|    vz_p50                     | -0.27    |
+|    vz_p95                     | 2.11     |
+|    vz_std                     | 0.956    |
+--------------------------------------------
+--------------------------------------------
+| time/                         |          |
+|    episodes                   | 56       |
+|    fps                        | 41       |
+|    time_elapsed               | 1969     |
+|    total_timesteps            | 81200    |
+| train/                        |          |
+|    actor_loss                 | -287     |
+|    actor_loss_base            | -359     |
+|    alpha_clamped_mean         | 0.215    |
+|    alpha_next_mean            | 0.215    |
+|    alpha_obs_max              | 0.376    |
+|    alpha_obs_mean             | 0.215    |
+|    alpha_obs_min              | 0.177    |
+|    alpha_obs_p05              | 0.179    |
+|    alpha_obs_p50              | 0.194    |
+|    alpha_obs_p95              | 0.356    |
+|    alpha_obs_std              | 0.0538   |
+|    alpha_raw_max              | 0.376    |
+|    alpha_raw_mean             | 0.215    |
+|    alpha_raw_min              | 0.177    |
+|    alpha_raw_p05              | 0.179    |
+|    alpha_raw_p50              | 0.194    |
+|    alpha_raw_p95              | 0.356    |
+|    alpha_raw_std              | 0.0538   |
+|    beta_effective_mean        | 0.87     |
+|    critic_loss                | 0.0693   |
+|    cvar_penalty_raw_mean      | 11.3     |
+|    cvar_penalty_weighted_mean | 3.4      |
+|    emergency_rate             | 0        |
+|    entropy_loss               | -3.96    |
+|    penalty_ratio              | 0.2      |
+|    prl_prob_max               | 0.998    |
+|    prl_prob_mean              | 0.193    |
+|    prl_prob_min               | 0.00611  |
+|    prl_prob_p05               | 0.0145   |
+|    prl_prob_p50               | 0.0749   |
+|    prl_prob_p95               | 0.901    |
+|    prl_prob_std               | 0.271    |
+|    var_penalty_raw_mean       | 4.94e+03 |
+|    var_penalty_weighted_mean  | 1.48e+03 |
+|    vz_max                     | 4.18     |
+|    vz_mean                    | -0.0192  |
+|    vz_min                     | -1.55    |
+|    vz_p05                     | -1.11    |
+|    vz_p50                     | -0.257   |
+|    vz_p95                     | 2.1      |
+|    vz_std                     | 0.967    |
+--------------------------------------------
+--------------------------------------------
+| time/                         |          |
+|    episodes                   | 60       |
+|    fps                        | 41       |
+|    time_elapsed               | 2110     |
+|    total_timesteps            | 87000    |
+| train/                        |          |
+|    actor_loss                 | -287     |
+|    actor_loss_base            | -359     |
+|    alpha_clamped_mean         | 0.216    |
+|    alpha_next_mean            | 0.215    |
+|    alpha_obs_max              | 0.376    |
+|    alpha_obs_mean             | 0.216    |
+|    alpha_obs_min              | 0.177    |
+|    alpha_obs_p05              | 0.179    |
+|    alpha_obs_p50              | 0.195    |
+|    alpha_obs_p95              | 0.36     |
+|    alpha_obs_std              | 0.0539   |
+|    alpha_raw_max              | 0.376    |
+|    alpha_raw_mean             | 0.216    |
+|    alpha_raw_min              | 0.177    |
+|    alpha_raw_p05              | 0.179    |
+|    alpha_raw_p50              | 0.195    |
+|    alpha_raw_p95              | 0.36     |
+|    alpha_raw_std              | 0.0539   |
+|    beta_effective_mean        | 0.864    |
+|    critic_loss                | 0.0834   |
+|    cvar_penalty_raw_mean      | 16.4     |
+|    cvar_penalty_weighted_mean | 4.93     |
+|    emergency_rate             | 0        |
+|    entropy_loss               | -3.98    |
+|    penalty_ratio              | 0.2      |
+|    prl_prob_max               | 0.998    |
+|    prl_prob_mean              | 0.197    |
+|    prl_prob_min               | 0.00491  |
+|    prl_prob_p05               | 0.0121   |
+|    prl_prob_p50               | 0.0846   |
+|    prl_prob_p95               | 0.919    |
+|    prl_prob_std               | 0.271    |
+|    var_penalty_raw_mean       | 7.12e+03 |
+|    var_penalty_weighted_mean  | 2.14e+03 |
+|    vz_max                     | 4.17     |
+|    vz_mean                    | 0.000695 |
+|    vz_min                     | -1.66    |
+|    vz_p05                     | -1.2     |
+|    vz_p50                     | -0.191   |
+|    vz_p95                     | 2.22     |
+|    vz_std                     | 1.03     |
+--------------------------------------------
+--------------------------------------------
+| time/                         |          |
+|    episodes                   | 64       |
+|    fps                        | 41       |
+|    time_elapsed               | 2246     |
+|    total_timesteps            | 92800    |
+| train/                        |          |
+|    actor_loss                 | -295     |
+|    actor_loss_base            | -369     |
+|    alpha_clamped_mean         | 0.216    |
+|    alpha_next_mean            | 0.216    |
+|    alpha_obs_max              | 0.376    |
+|    alpha_obs_mean             | 0.216    |
+|    alpha_obs_min              | 0.177    |
+|    alpha_obs_p05              | 0.179    |
+|    alpha_obs_p50              | 0.195    |
+|    alpha_obs_p95              | 0.356    |
+|    alpha_obs_std              | 0.0557   |
+|    alpha_raw_max              | 0.376    |
+|    alpha_raw_mean             | 0.216    |
+|    alpha_raw_min              | 0.177    |
+|    alpha_raw_p05              | 0.179    |
+|    alpha_raw_p50              | 0.195    |
+|    alpha_raw_p95              | 0.356    |
+|    alpha_raw_std              | 0.0557   |
+|    beta_effective_mean        | 0.863    |
+|    critic_loss                | 0.0639   |
+|    cvar_penalty_raw_mean      | 9.08     |
+|    cvar_penalty_weighted_mean | 2.72     |
+|    emergency_rate             | 0        |
+|    entropy_loss               | -3.98    |
+|    penalty_ratio              | 0.2      |
+|    prl_prob_max               | 0.998    |
+|    prl_prob_mean              | 0.198    |
+|    prl_prob_min               | 0.00517  |
+|    prl_prob_p05               | 0.0157   |
+|    prl_prob_p50               | 0.0806   |
+|    prl_prob_p95               | 0.9      |
+|    prl_prob_std               | 0.28     |
+|    var_penalty_raw_mean       | 4.71e+03 |
+|    var_penalty_weighted_mean  | 1.41e+03 |
+|    vz_max                     | 4.18     |
+|    vz_mean                    | 0.00849  |
+|    vz_min                     | -1.63    |
+|    vz_p05                     | -1.07    |
+|    vz_p50                     | -0.217   |
+|    vz_p95                     | 2.1      |
+|    vz_std                     | 1.05     |
+--------------------------------------------
+--------------------------------------------
+| time/                         |          |
+|    episodes                   | 68       |
+|    fps                        | 41       |
+|    time_elapsed               | 2384     |
+|    total_timesteps            | 98600    |
+| train/                        |          |
+|    actor_loss                 | -292     |
+|    actor_loss_base            | -365     |
+|    alpha_clamped_mean         | 0.215    |
+|    alpha_next_mean            | 0.215    |
+|    alpha_obs_max              | 0.376    |
+|    alpha_obs_mean             | 0.215    |
+|    alpha_obs_min              | 0.177    |
+|    alpha_obs_p05              | 0.179    |
+|    alpha_obs_p50              | 0.194    |
+|    alpha_obs_p95              | 0.355    |
+|    alpha_obs_std              | 0.0539   |
+|    alpha_raw_max              | 0.376    |
+|    alpha_raw_mean             | 0.215    |
+|    alpha_raw_min              | 0.177    |
+|    alpha_raw_p05              | 0.179    |
+|    alpha_raw_p50              | 0.194    |
+|    alpha_raw_p95              | 0.355    |
+|    alpha_raw_std              | 0.0539   |
+|    beta_effective_mean        | 0.864    |
+|    critic_loss                | 0.079    |
+|    cvar_penalty_raw_mean      | 14.1     |
+|    cvar_penalty_weighted_mean | 4.23     |
+|    emergency_rate             | 0        |
+|    entropy_loss               | -3.97    |
+|    penalty_ratio              | 0.2      |
+|    prl_prob_max               | 0.997    |
+|    prl_prob_mean              | 0.195    |
+|    prl_prob_min               | 0.00482  |
+|    prl_prob_p05               | 0.0155   |
+|    prl_prob_p50               | 0.0733   |
+|    prl_prob_p95               | 0.894    |
+|    prl_prob_std               | 0.271    |
+|    var_penalty_raw_mean       | 6.41e+03 |
+|    var_penalty_weighted_mean  | 1.92e+03 |
+|    vz_max                     | 3.95     |
+|    vz_mean                    | 0.00812  |
+|    vz_min                     | -1.67    |
+|    vz_p05                     | -1.08    |
+|    vz_p50                     | -0.268   |
+|    vz_p95                     | 2.07     |
+|    vz_std                     | 1.02     |
+--------------------------------------------
+Model saved to /workspace/execution-aware-portfolio-rl/paper/forecasting_workshop/generalization/multi_split_compact_v1/splits/split_a/train_control/models/20260414T141042Z_9123e2fe_seed0_prl_5a54_final.zip
+[TRAIN-END] split=split_a seed=0
+[TRAIN-START] split=split_a seed=1
+INFO:prl.data:Loading processed cache from data/processed_u27
+Using cuda device
+INFO:prl.prl:PRL mid_plasticity_multiplier applied: multiplier=0.700 mid_fraction=0.125
+--------------------------------------------
+| time/                         |          |
+|    episodes                   | 4        |
+|    fps                        | 41       |
+|    time_elapsed               | 141      |
+|    total_timesteps            | 5800     |
+| train/                        |          |
+|    actor_loss                 | -70.8    |
+|    actor_loss_base            | -88.5    |
+|    alpha_clamped_mean         | 0.218    |
+|    alpha_next_mean            | 0.218    |
+|    alpha_obs_max              | 0.376    |
+|    alpha_obs_mean             | 0.218    |
+|    alpha_obs_min              | 0.177    |
+|    alpha_obs_p05              | 0.179    |
+|    alpha_obs_p50              | 0.193    |
+|    alpha_obs_p95              | 0.36     |
+|    alpha_obs_std              | 0.0573   |
+|    alpha_raw_max              | 0.376    |
+|    alpha_raw_mean             | 0.218    |
+|    alpha_raw_min              | 0.177    |
+|    alpha_raw_p05              | 0.179    |
+|    alpha_raw_p50              | 0.193    |
+|    alpha_raw_p95              | 0.36     |
+|    alpha_raw_std              | 0.0573   |
+|    beta_effective_mean        | 0.864    |
+|    critic_loss                | 0.263    |
+|    cvar_penalty_raw_mean      | 0.811    |
+|    cvar_penalty_weighted_mean | 0.243    |
+|    emergency_rate             | 0        |
+|    entropy_loss               | -3.65    |
+|    penalty_ratio              | 0.2      |
+|    prl_prob_max               | 0.998    |
+|    prl_prob_mean              | 0.209    |
+|    prl_prob_min               | 0.00546  |
+|    prl_prob_p05               | 0.0128   |
+|    prl_prob_p50               | 0.0721   |
+|    prl_prob_p95               | 0.921    |
+|    prl_prob_std               | 0.288    |
+|    var_penalty_raw_mean       | 299      |
+|    var_penalty_weighted_mean  | 89.6     |
+|    vz_max                     | 4.17     |
+|    vz_mean                    | 0.0379   |
+|    vz_min                     | -1.6     |
+|    vz_p05                     | -1.18    |
+|    vz_p50                     | -0.277   |
+|    vz_p95                     | 2.23     |
+|    vz_std                     | 1.12     |
+--------------------------------------------
+--------------------------------------------
+| time/                         |          |
+|    episodes                   | 8        |
+|    fps                        | 41       |
+|    time_elapsed               | 279      |
+|    total_timesteps            | 11600    |
+| train/                        |          |
+|    actor_loss                 | -122     |
+|    actor_loss_base            | -152     |
+|    alpha_clamped_mean         | 0.211    |
+|    alpha_next_mean            | 0.211    |
+|    alpha_obs_max              | 0.376    |
+|    alpha_obs_mean             | 0.211    |
+|    alpha_obs_min              | 0.177    |
+|    alpha_obs_p05              | 0.179    |
+|    alpha_obs_p50              | 0.194    |
+|    alpha_obs_p95              | 0.353    |
+|    alpha_obs_std              | 0.0493   |
+|    alpha_raw_max              | 0.376    |
+|    alpha_raw_mean             | 0.211    |
+|    alpha_raw_min              | 0.177    |
+|    alpha_raw_p05              | 0.179    |
+|    alpha_raw_p50              | 0.194    |
+|    alpha_raw_p95              | 0.353    |
+|    alpha_raw_std              | 0.0493   |
+|    beta_effective_mean        | 0.851    |
+|    critic_loss                | 0.231    |
+|    cvar_penalty_raw_mean      | 1.66     |
+|    cvar_penalty_weighted_mean | 0.499    |
+|    emergency_rate             | 0        |
+|    entropy_loss               | -3.75    |
+|    penalty_ratio              | 0.2      |
+|    prl_prob_max               | 0.998    |
+|    prl_prob_mean              | 0.173    |
+|    prl_prob_min               | 0.00491  |
+|    prl_prob_p05               | 0.0134   |
+|    prl_prob_p50               | 0.0741   |
+|    prl_prob_p95               | 0.884    |
+|    prl_prob_std               | 0.248    |
+|    var_penalty_raw_mean       | 822      |
+|    var_penalty_weighted_mean  | 247      |
+|    vz_max                     | 4.05     |
+|    vz_mean                    | -0.0494  |
+|    vz_min                     | -1.66    |
+|    vz_p05                     | -1.15    |
+|    vz_p50                     | -0.263   |
+|    vz_p95                     | 2.02     |
+|    vz_std                     | 0.971    |
+--------------------------------------------
+--------------------------------------------
+| time/                         |          |
+|    episodes                   | 12       |
+|    fps                        | 41       |
+|    time_elapsed               | 419      |
+|    total_timesteps            | 17400    |
+| train/                        |          |
+|    actor_loss                 | -165     |
+|    actor_loss_base            | -206     |
+|    alpha_clamped_mean         | 0.215    |
+|    alpha_next_mean            | 0.216    |
+|    alpha_obs_max              | 0.376    |
+|    alpha_obs_mean             | 0.215    |
+|    alpha_obs_min              | 0.177    |
+|    alpha_obs_p05              | 0.179    |
+|    alpha_obs_p50              | 0.194    |
+|    alpha_obs_p95              | 0.355    |
+|    alpha_obs_std              | 0.0543   |
+|    alpha_raw_max              | 0.376    |
+|    alpha_raw_mean             | 0.215    |
+|    alpha_raw_min              | 0.177    |
+|    alpha_raw_p05              | 0.179    |
+|    alpha_raw_p50              | 0.194    |
+|    alpha_raw_p95              | 0.355    |
+|    alpha_raw_std              | 0.0543   |
+|    beta_effective_mean        | 0.864    |
+|    critic_loss                | 0.0992   |
+|    cvar_penalty_raw_mean      | 6.12     |
+|    cvar_penalty_weighted_mean | 1.84     |
+|    emergency_rate             | 0        |
+|    entropy_loss               | -3.93    |
+|    penalty_ratio              | 0.2      |
+|    prl_prob_max               | 0.998    |
+|    prl_prob_mean              | 0.195    |
+|    prl_prob_min               | 0.00551  |
+|    prl_prob_p05               | 0.0141   |
+|    prl_prob_p50               | 0.0776   |
+|    prl_prob_p95               | 0.893    |
+|    prl_prob_std               | 0.273    |
+|    var_penalty_raw_mean       | 2.72e+03 |
+|    var_penalty_weighted_mean  | 817      |
+|    vz_max                     | 4.05     |
+|    vz_mean                    | -0.0107  |
+|    vz_min                     | -1.6     |
+|    vz_p05                     | -1.12    |
+|    vz_p50                     | -0.238   |
+|    vz_p95                     | 2.06     |
+|    vz_std                     | 0.984    |
+--------------------------------------------
+--------------------------------------------
+| time/                         |          |
+|    episodes                   | 16       |
+|    fps                        | 41       |
+|    time_elapsed               | 559      |
+|    total_timesteps            | 23200    |
+| train/                        |          |
+|    actor_loss                 | -196     |
+|    actor_loss_base            | -245     |
+|    alpha_clamped_mean         | 0.218    |
+|    alpha_next_mean            | 0.218    |
+|    alpha_obs_max              | 0.376    |
+|    alpha_obs_mean             | 0.218    |
+|    alpha_obs_min              | 0.177    |
+|    alpha_obs_p05              | 0.179    |
+|    alpha_obs_p50              | 0.196    |
+|    alpha_obs_p95              | 0.357    |
+|    alpha_obs_std              | 0.0564   |
+|    alpha_raw_max              | 0.376    |
+|    alpha_raw_mean             | 0.218    |
+|    alpha_raw_min              | 0.177    |
+|    alpha_raw_p05              | 0.179    |
+|    alpha_raw_p50              | 0.196    |
+|    alpha_raw_p95              | 0.357    |
+|    alpha_raw_std              | 0.0564   |
+|    beta_effective_mean        | 0.858    |
+|    critic_loss                | 0.0716   |
+|    cvar_penalty_raw_mean      | 5.82     |
+|    cvar_penalty_weighted_mean | 1.75     |
+|    emergency_rate             | 0        |
+|    entropy_loss               | -4.01    |
+|    penalty_ratio              | 0.2      |
+|    prl_prob_max               | 0.998    |
+|    prl_prob_mean              | 0.211    |
+|    prl_prob_min               | 0.00546  |
+|    prl_prob_p05               | 0.0164   |
+|    prl_prob_p50               | 0.0903   |
+|    prl_prob_p95               | 0.902    |
+|    prl_prob_std               | 0.283    |
+|    var_penalty_raw_mean       | 3.01e+03 |
+|    var_penalty_weighted_mean  | 903      |
+|    vz_max                     | 4.17     |
+|    vz_mean                    | 0.0679   |
+|    vz_min                     | -1.6     |
+|    vz_p05                     | -1.05    |
+|    vz_p50                     | -0.155   |
+|    vz_p95                     | 2.11     |
+|    vz_std                     | 1.06     |
+--------------------------------------------
+--------------------------------------------
+| time/                         |          |
+|    episodes                   | 20       |
+|    fps                        | 41       |
+|    time_elapsed               | 700      |
+|    total_timesteps            | 29000    |
+| train/                        |          |
+|    actor_loss                 | -225     |
+|    actor_loss_base            | -281     |
+|    alpha_clamped_mean         | 0.215    |
+|    alpha_next_mean            | 0.215    |
+|    alpha_obs_max              | 0.376    |
+|    alpha_obs_mean             | 0.215    |
+|    alpha_obs_min              | 0.177    |
+|    alpha_obs_p05              | 0.179    |
+|    alpha_obs_p50              | 0.195    |
+|    alpha_obs_p95              | 0.359    |
+|    alpha_obs_std              | 0.0542   |
+|    alpha_raw_max              | 0.376    |
+|    alpha_raw_mean             | 0.215    |
+|    alpha_raw_min              | 0.177    |
+|    alpha_raw_p05              | 0.179    |
+|    alpha_raw_p50              | 0.195    |
+|    alpha_raw_p95              | 0.359    |
+|    alpha_raw_std              | 0.0542   |
+|    beta_effective_mean        | 0.851    |
+|    critic_loss                | 0.118    |
+|    cvar_penalty_raw_mean      | 7.93     |
+|    cvar_penalty_weighted_mean | 2.38     |
+|    emergency_rate             | 0        |
+|    entropy_loss               | -3.98    |
+|    penalty_ratio              | 0.2      |
+|    prl_prob_max               | 0.998    |
+|    prl_prob_mean              | 0.192    |
+|    prl_prob_min               | 0.00482  |
+|    prl_prob_p05               | 0.0149   |
+|    prl_prob_p50               | 0.0838   |
+|    prl_prob_p95               | 0.916    |
+|    prl_prob_std               | 0.273    |
+|    var_penalty_raw_mean       | 4.48e+03 |
+|    var_penalty_weighted_mean  | 1.34e+03 |
+|    vz_max                     | 4.08     |
+|    vz_mean                    | 0.00699  |
+|    vz_min                     | -1.67    |
+|    vz_p05                     | -1.1     |
+|    vz_p50                     | -0.196   |
+|    vz_p95                     | 2.19     |
+|    vz_std                     | 1.03     |
+--------------------------------------------
+--------------------------------------------
+| time/                         |          |
+|    episodes                   | 24       |
+|    fps                        | 41       |
+|    time_elapsed               | 841      |
+|    total_timesteps            | 34800    |
+| train/                        |          |
+|    actor_loss                 | -239     |
+|    actor_loss_base            | -299     |
+|    alpha_clamped_mean         | 0.216    |
+|    alpha_next_mean            | 0.216    |
+|    alpha_obs_max              | 0.376    |
+|    alpha_obs_mean             | 0.216    |
+|    alpha_obs_min              | 0.177    |
+|    alpha_obs_p05              | 0.179    |
+|    alpha_obs_p50              | 0.193    |
+|    alpha_obs_p95              | 0.358    |
+|    alpha_obs_std              | 0.0555   |
+|    alpha_raw_max              | 0.376    |
+|    alpha_raw_mean             | 0.216    |
+|    alpha_raw_min              | 0.177    |
+|    alpha_raw_p05              | 0.179    |
+|    alpha_raw_p50              | 0.193    |
+|    alpha_raw_p95              | 0.358    |
+|    alpha_raw_std              | 0.0555   |
+|    beta_effective_mean        | 0.878    |
+|    critic_loss                | 0.0794   |
+|    cvar_penalty_raw_mean      | 8.42     |
+|    cvar_penalty_weighted_mean | 2.53     |
+|    emergency_rate             | 0        |
+|    entropy_loss               | -3.97    |
+|    penalty_ratio              | 0.2      |
+|    prl_prob_max               | 0.997    |
+|    prl_prob_mean              | 0.198    |
+|    prl_prob_min               | 0.0053   |
+|    prl_prob_p05               | 0.0127   |
+|    prl_prob_p50               | 0.0712   |
+|    prl_prob_p95               | 0.907    |
+|    prl_prob_std               | 0.279    |
+|    var_penalty_raw_mean       | 3.56e+03 |
+|    var_penalty_weighted_mean  | 1.07e+03 |
+|    vz_max                     | 3.95     |
+|    vz_mean                    | -0.0244  |
+|    vz_min                     | -1.62    |
+|    vz_p05                     | -1.18    |
+|    vz_p50                     | -0.284   |
+|    vz_p95                     | 2.14     |
+|    vz_std                     | 0.996    |
+--------------------------------------------
+--------------------------------------------
+| time/                         |          |
+|    episodes                   | 28       |
+|    fps                        | 41       |
+|    time_elapsed               | 980      |
+|    total_timesteps            | 40600    |
+| train/                        |          |
+|    actor_loss                 | -260     |
+|    actor_loss_base            | -325     |
+|    alpha_clamped_mean         | 0.218    |
+|    alpha_next_mean            | 0.218    |
+|    alpha_obs_max              | 0.376    |
+|    alpha_obs_mean             | 0.218    |
+|    alpha_obs_min              | 0.177    |
+|    alpha_obs_p05              | 0.179    |
+|    alpha_obs_p50              | 0.193    |
+|    alpha_obs_p95              | 0.36     |
+|    alpha_obs_std              | 0.0582   |
+|    alpha_raw_max              | 0.376    |
+|    alpha_raw_mean             | 0.218    |
+|    alpha_raw_min              | 0.177    |
+|    alpha_raw_p05              | 0.179    |
+|    alpha_raw_p50              | 0.193    |
+|    alpha_raw_p95              | 0.36     |
+|    alpha_raw_std              | 0.0582   |
+|    beta_effective_mean        | 0.871    |
+|    critic_loss                | 0.0603   |
+|    cvar_penalty_raw_mean      | 3.67     |
+|    cvar_penalty_weighted_mean | 1.1      |
+|    emergency_rate             | 0        |
+|    entropy_loss               | -4       |
+|    penalty_ratio              | 0.2      |
+|    prl_prob_max               | 0.998    |
+|    prl_prob_mean              | 0.208    |
+|    prl_prob_min               | 0.00525  |
+|    prl_prob_p05               | 0.0148   |
+|    prl_prob_p50               | 0.0728   |
+|    prl_prob_p95               | 0.918    |
+|    prl_prob_std               | 0.293    |
+|    var_penalty_raw_mean       | 3.28e+03 |
+|    var_penalty_weighted_mean  | 985      |
+|    vz_max                     | 4.15     |
+|    vz_mean                    | 0.0317   |
+|    vz_min                     | -1.62    |
+|    vz_p05                     | -1.1     |
+|    vz_p50                     | -0.273   |
+|    vz_p95                     | 2.2      |
+|    vz_std                     | 1.09     |
+--------------------------------------------
+--------------------------------------------
+| time/                         |          |
+|    episodes                   | 32       |
+|    fps                        | 41       |
+|    time_elapsed               | 1119     |
+|    total_timesteps            | 46400    |
+| train/                        |          |
+|    actor_loss                 | -262     |
+|    actor_loss_base            | -328     |
+|    alpha_clamped_mean         | 0.212    |
+|    alpha_next_mean            | 0.211    |
+|    alpha_obs_max              | 0.376    |
+|    alpha_obs_mean             | 0.212    |
+|    alpha_obs_min              | 0.177    |
+|    alpha_obs_p05              | 0.179    |
+|    alpha_obs_p50              | 0.194    |
+|    alpha_obs_p95              | 0.346    |
+|    alpha_obs_std              | 0.0496   |
+|    alpha_raw_max              | 0.376    |
+|    alpha_raw_mean             | 0.212    |
+|    alpha_raw_min              | 0.177    |
+|    alpha_raw_p05              | 0.179    |
+|    alpha_raw_p50              | 0.194    |
+|    alpha_raw_p95              | 0.346    |
+|    alpha_raw_std              | 0.0496   |
+|    beta_effective_mean        | 0.843    |
+|    critic_loss                | 0.108    |
+|    cvar_penalty_raw_mean      | 10.5     |
+|    cvar_penalty_weighted_mean | 3.14     |
+|    emergency_rate             | 0        |
+|    entropy_loss               | -3.9     |
+|    penalty_ratio              | 0.2      |
+|    prl_prob_max               | 0.998    |
+|    prl_prob_mean              | 0.176    |
+|    prl_prob_min               | 0.00491  |
+|    prl_prob_p05               | 0.0151   |
+|    prl_prob_p50               | 0.0747   |
+|    prl_prob_p95               | 0.847    |
+|    prl_prob_std               | 0.25     |
+|    var_penalty_raw_mean       | 5.16e+03 |
+|    var_penalty_weighted_mean  | 1.55e+03 |
+|    vz_max                     | 4.18     |
+|    vz_mean                    | -0.0518  |
+|    vz_min                     | -1.66    |
+|    vz_p05                     | -1.09    |
+|    vz_p50                     | -0.258   |
+|    vz_p95                     | 1.86     |
+|    vz_std                     | 0.953    |
+--------------------------------------------
+--------------------------------------------
+| time/                         |          |
+|    episodes                   | 36       |
+|    fps                        | 41       |
+|    time_elapsed               | 1257     |
+|    total_timesteps            | 52200    |
+| train/                        |          |
+|    actor_loss                 | -267     |
+|    actor_loss_base            | -334     |
+|    alpha_clamped_mean         | 0.213    |
+|    alpha_next_mean            | 0.212    |
+|    alpha_obs_max              | 0.376    |
+|    alpha_obs_mean             | 0.213    |
+|    alpha_obs_min              | 0.177    |
+|    alpha_obs_p05              | 0.179    |
+|    alpha_obs_p50              | 0.195    |
+|    alpha_obs_p95              | 0.353    |
+|    alpha_obs_std              | 0.05     |
+|    alpha_raw_max              | 0.376    |
+|    alpha_raw_mean             | 0.213    |
+|    alpha_raw_min              | 0.177    |
+|    alpha_raw_p05              | 0.179    |
+|    alpha_raw_p50              | 0.195    |
+|    alpha_raw_p95              | 0.353    |
+|    alpha_raw_std              | 0.05     |
+|    beta_effective_mean        | 0.863    |
+|    critic_loss                | 0.101    |
+|    cvar_penalty_raw_mean      | 13.5     |
+|    cvar_penalty_weighted_mean | 4.04     |
+|    emergency_rate             | 0        |
+|    entropy_loss               | -3.91    |
+|    penalty_ratio              | 0.2      |
+|    prl_prob_max               | 0.998    |
+|    prl_prob_mean              | 0.183    |
+|    prl_prob_min               | 0.00482  |
+|    prl_prob_p05               | 0.0144   |
+|    prl_prob_p50               | 0.0814   |
+|    prl_prob_p95               | 0.885    |
+|    prl_prob_std               | 0.251    |
+|    var_penalty_raw_mean       | 5.99e+03 |
+|    var_penalty_weighted_mean  | 1.8e+03  |
+|    vz_max                     | 4.15     |
+|    vz_mean                    | -0.0407  |
+|    vz_min                     | -1.67    |
+|    vz_p05                     | -1.11    |
+|    vz_p50                     | -0.211   |
+|    vz_p95                     | 2.02     |
+|    vz_std                     | 0.932    |
+--------------------------------------------
+--------------------------------------------
+| time/                         |          |
+|    episodes                   | 40       |
+|    fps                        | 41       |
+|    time_elapsed               | 1398     |
+|    total_timesteps            | 58000    |
+| train/                        |          |
+|    actor_loss                 | -274     |
+|    actor_loss_base            | -342     |
+|    alpha_clamped_mean         | 0.211    |
+|    alpha_next_mean            | 0.21     |
+|    alpha_obs_max              | 0.376    |
+|    alpha_obs_mean             | 0.211    |
+|    alpha_obs_min              | 0.177    |
+|    alpha_obs_p05              | 0.179    |
+|    alpha_obs_p50              | 0.194    |
+|    alpha_obs_p95              | 0.349    |
+|    alpha_obs_std              | 0.0496   |
+|    alpha_raw_max              | 0.376    |
+|    alpha_raw_mean             | 0.211    |
+|    alpha_raw_min              | 0.177    |
+|    alpha_raw_p05              | 0.179    |
+|    alpha_raw_p50              | 0.194    |
+|    alpha_raw_p95              | 0.349    |
+|    alpha_raw_std              | 0.0496   |
+|    beta_effective_mean        | 0.872    |
+|    critic_loss                | 0.0952   |
+|    cvar_penalty_raw_mean      | 11.8     |
+|    cvar_penalty_weighted_mean | 3.55     |
+|    emergency_rate             | 0        |
+|    entropy_loss               | -3.89    |
+|    penalty_ratio              | 0.2      |
+|    prl_prob_max               | 0.998    |
+|    prl_prob_mean              | 0.171    |
+|    prl_prob_min               | 0.00549  |
+|    prl_prob_p05               | 0.0132   |
+|    prl_prob_p50               | 0.0731   |
+|    prl_prob_p95               | 0.862    |
+|    prl_prob_std               | 0.249    |
+|    var_penalty_raw_mean       | 4.89e+03 |
+|    var_penalty_weighted_mean  | 1.47e+03 |
+|    vz_max                     | 4.05     |
+|    vz_mean                    | -0.0888  |
+|    vz_min                     | -1.6     |
+|    vz_p05                     | -1.16    |
+|    vz_p50                     | -0.27    |
+|    vz_p95                     | 1.92     |
+|    vz_std                     | 0.963    |
+--------------------------------------------
+--------------------------------------------
+| time/                         |          |
+|    episodes                   | 44       |
+|    fps                        | 41       |
+|    time_elapsed               | 1540     |
+|    total_timesteps            | 63800    |
+| train/                        |          |
+|    actor_loss                 | -285     |
+|    actor_loss_base            | -356     |
+|    alpha_clamped_mean         | 0.217    |
+|    alpha_next_mean            | 0.217    |
+|    alpha_obs_max              | 0.376    |
+|    alpha_obs_mean             | 0.217    |
+|    alpha_obs_min              | 0.177    |
+|    alpha_obs_p05              | 0.178    |
+|    alpha_obs_p50              | 0.194    |
+|    alpha_obs_p95              | 0.358    |
+|    alpha_obs_std              | 0.0562   |
+|    alpha_raw_max              | 0.376    |
+|    alpha_raw_mean             | 0.217    |
+|    alpha_raw_min              | 0.177    |
+|    alpha_raw_p05              | 0.178    |
+|    alpha_raw_p50              | 0.194    |
+|    alpha_raw_p95              | 0.358    |
+|    alpha_raw_std              | 0.0562   |
+|    beta_effective_mean        | 0.858    |
+|    critic_loss                | 0.0752   |
+|    cvar_penalty_raw_mean      | 8.9      |
+|    cvar_penalty_weighted_mean | 2.67     |
+|    emergency_rate             | 0        |
+|    entropy_loss               | -3.99    |
+|    penalty_ratio              | 0.2      |
+|    prl_prob_max               | 0.998    |
+|    prl_prob_mean              | 0.202    |
+|    prl_prob_min               | 0.0055   |
+|    prl_prob_p05               | 0.011    |
+|    prl_prob_p50               | 0.0779   |
+|    prl_prob_p95               | 0.91     |
+|    prl_prob_std               | 0.283    |
+|    var_penalty_raw_mean       | 4.85e+03 |
+|    var_penalty_weighted_mean  | 1.45e+03 |
+|    vz_max                     | 4.13     |
+|    vz_mean                    | 0.0176   |
+|    vz_min                     | -1.6     |
+|    vz_p05                     | -1.25    |
+|    vz_p50                     | -0.236   |
+|    vz_p95                     | 2.16     |
+|    vz_std                     | 1.08     |
+--------------------------------------------
+--------------------------------------------
+| time/                         |          |
+|    episodes                   | 48       |
+|    fps                        | 41       |
+|    time_elapsed               | 1682     |
+|    total_timesteps            | 69600    |
+| train/                        |          |
+|    actor_loss                 | -285     |
+|    actor_loss_base            | -356     |
+|    alpha_clamped_mean         | 0.21     |
+|    alpha_next_mean            | 0.209    |
+|    alpha_obs_max              | 0.376    |
+|    alpha_obs_mean             | 0.21     |
+|    alpha_obs_min              | 0.177    |
+|    alpha_obs_p05              | 0.178    |
+|    alpha_obs_p50              | 0.192    |
+|    alpha_obs_p95              | 0.353    |
+|    alpha_obs_std              | 0.0508   |
+|    alpha_raw_max              | 0.376    |
+|    alpha_raw_mean             | 0.21     |
+|    alpha_raw_min              | 0.177    |
+|    alpha_raw_p05              | 0.178    |
+|    alpha_raw_p50              | 0.192    |
+|    alpha_raw_p95              | 0.353    |
+|    alpha_raw_std              | 0.0508   |
+|    beta_effective_mean        | 0.864    |
+|    critic_loss                | 0.0897   |
+|    cvar_penalty_raw_mean      | 8.65     |
+|    cvar_penalty_weighted_mean | 2.6      |
+|    emergency_rate             | 0        |
+|    entropy_loss               | -3.89    |
+|    penalty_ratio              | 0.2      |
+|    prl_prob_max               | 0.998    |
+|    prl_prob_mean              | 0.169    |
+|    prl_prob_min               | 0.00482  |
+|    prl_prob_p05               | 0.0106   |
+|    prl_prob_p50               | 0.0617   |
+|    prl_prob_p95               | 0.886    |
+|    prl_prob_std               | 0.256    |
+|    var_penalty_raw_mean       | 4.28e+03 |
+|    var_penalty_weighted_mean  | 1.28e+03 |
+|    vz_max                     | 4.18     |
+|    vz_mean                    | -0.116   |
+|    vz_min                     | -1.67    |
+|    vz_p05                     | -1.27    |
+|    vz_p50                     | -0.361   |
+|    vz_p95                     | 2.03     |
+|    vz_std                     | 0.996    |
+--------------------------------------------
+--------------------------------------------
+| time/                         |          |
+|    episodes                   | 52       |
+|    fps                        | 41       |
+|    time_elapsed               | 1823     |
+|    total_timesteps            | 75400    |
+| train/                        |          |
+|    actor_loss                 | -279     |
+|    actor_loss_base            | -348     |
+|    alpha_clamped_mean         | 0.217    |
+|    alpha_next_mean            | 0.217    |
+|    alpha_obs_max              | 0.376    |
+|    alpha_obs_mean             | 0.217    |
+|    alpha_obs_min              | 0.177    |
+|    alpha_obs_p05              | 0.179    |
+|    alpha_obs_p50              | 0.196    |
+|    alpha_obs_p95              | 0.358    |
+|    alpha_obs_std              | 0.0547   |
+|    alpha_raw_max              | 0.376    |
+|    alpha_raw_mean             | 0.217    |
+|    alpha_raw_min              | 0.177    |
+|    alpha_raw_p05              | 0.179    |
+|    alpha_raw_p50              | 0.196    |
+|    alpha_raw_p95              | 0.358    |
+|    alpha_raw_std              | 0.0547   |
+|    beta_effective_mean        | 0.864    |
+|    critic_loss                | 0.0827   |
+|    cvar_penalty_raw_mean      | 20.7     |
+|    cvar_penalty_weighted_mean | 6.21     |
+|    emergency_rate             | 0        |
+|    entropy_loss               | -4.02    |
+|    penalty_ratio              | 0.2      |
+|    prl_prob_max               | 0.997    |
+|    prl_prob_mean              | 0.205    |
+|    prl_prob_min               | 0.0053   |
+|    prl_prob_p05               | 0.0129   |
+|    prl_prob_p50               | 0.0927   |
+|    prl_prob_p95               | 0.911    |
+|    prl_prob_std               | 0.275    |
+|    var_penalty_raw_mean       | 8.24e+03 |
+|    var_penalty_weighted_mean  | 2.47e+03 |
+|    vz_max                     | 3.95     |
+|    vz_mean                    | 0.0421   |
+|    vz_min                     | -1.62    |
+|    vz_p05                     | -1.17    |
+|    vz_p50                     | -0.141   |
+|    vz_p95                     | 2.16     |
+|    vz_std                     | 1.04     |
+--------------------------------------------
+--------------------------------------------
+| time/                         |          |
+|    episodes                   | 56       |
+|    fps                        | 41       |
+|    time_elapsed               | 1963     |
+|    total_timesteps            | 81200    |
+| train/                        |          |
+|    actor_loss                 | -277     |
+|    actor_loss_base            | -347     |
+|    alpha_clamped_mean         | 0.212    |
+|    alpha_next_mean            | 0.212    |
+|    alpha_obs_max              | 0.376    |
+|    alpha_obs_mean             | 0.212    |
+|    alpha_obs_min              | 0.177    |
+|    alpha_obs_p05              | 0.178    |
+|    alpha_obs_p50              | 0.195    |
+|    alpha_obs_p95              | 0.35     |
+|    alpha_obs_std              | 0.0497   |
+|    alpha_raw_max              | 0.376    |
+|    alpha_raw_mean             | 0.212    |
+|    alpha_raw_min              | 0.177    |
+|    alpha_raw_p05              | 0.178    |
+|    alpha_raw_p50              | 0.195    |
+|    alpha_raw_p95              | 0.35     |
+|    alpha_raw_std              | 0.0497   |
+|    beta_effective_mean        | 0.854    |
+|    critic_loss                | 0.088    |
+|    cvar_penalty_raw_mean      | 19.9     |
+|    cvar_penalty_weighted_mean | 5.98     |
+|    emergency_rate             | 0        |
+|    entropy_loss               | -3.9     |
+|    penalty_ratio              | 0.2      |
+|    prl_prob_max               | 0.998    |
+|    prl_prob_mean              | 0.177    |
+|    prl_prob_min               | 0.00482  |
+|    prl_prob_p05               | 0.0116   |
+|    prl_prob_p50               | 0.0839   |
+|    prl_prob_p95               | 0.869    |
+|    prl_prob_std               | 0.25     |
+|    var_penalty_raw_mean       | 7.33e+03 |
+|    var_penalty_weighted_mean  | 2.2e+03  |
+|    vz_max                     | 4.01     |
+|    vz_mean                    | -0.0557  |
+|    vz_min                     | -1.67    |
+|    vz_p05                     | -1.22    |
+|    vz_p50                     | -0.195   |
+|    vz_p95                     | 1.95     |
+|    vz_std                     | 0.958    |
+--------------------------------------------
+--------------------------------------------
+| time/                         |          |
+|    episodes                   | 60       |
+|    fps                        | 41       |
+|    time_elapsed               | 2105     |
+|    total_timesteps            | 87000    |
+| train/                        |          |
+|    actor_loss                 | -281     |
+|    actor_loss_base            | -351     |
+|    alpha_clamped_mean         | 0.212    |
+|    alpha_next_mean            | 0.212    |
+|    alpha_obs_max              | 0.376    |
+|    alpha_obs_mean             | 0.212    |
+|    alpha_obs_min              | 0.177    |
+|    alpha_obs_p05              | 0.179    |
+|    alpha_obs_p50              | 0.195    |
+|    alpha_obs_p95              | 0.344    |
+|    alpha_obs_std              | 0.0481   |
+|    alpha_raw_max              | 0.376    |
+|    alpha_raw_mean             | 0.212    |
+|    alpha_raw_min              | 0.177    |
+|    alpha_raw_p05              | 0.179    |
+|    alpha_raw_p50              | 0.195    |
+|    alpha_raw_p95              | 0.344    |
+|    alpha_raw_std              | 0.0481   |
+|    beta_effective_mean        | 0.845    |
+|    critic_loss                | 0.0725   |
+|    cvar_penalty_raw_mean      | 18.2     |
+|    cvar_penalty_weighted_mean | 5.47     |
+|    emergency_rate             | 0        |
+|    entropy_loss               | -3.91    |
+|    penalty_ratio              | 0.2      |
+|    prl_prob_max               | 0.998    |
+|    prl_prob_mean              | 0.178    |
+|    prl_prob_min               | 0.00551  |
+|    prl_prob_p05               | 0.014    |
+|    prl_prob_p50               | 0.0863   |
+|    prl_prob_p95               | 0.842    |
+|    prl_prob_std               | 0.242    |
+|    var_penalty_raw_mean       | 6.29e+03 |
+|    var_penalty_weighted_mean  | 1.89e+03 |
+|    vz_max                     | 4.15     |
+|    vz_mean                    | -0.0283  |
+|    vz_min                     | -1.6     |
+|    vz_p05                     | -1.13    |
+|    vz_p50                     | -0.18    |
+|    vz_p95                     | 1.84     |
+|    vz_std                     | 0.947    |
+--------------------------------------------
+--------------------------------------------
+| time/                         |          |
+|    episodes                   | 64       |
+|    fps                        | 41       |
+|    time_elapsed               | 2246     |
+|    total_timesteps            | 92800    |
+| train/                        |          |
+|    actor_loss                 | -282     |
+|    actor_loss_base            | -353     |
+|    alpha_clamped_mean         | 0.211    |
+|    alpha_next_mean            | 0.211    |
+|    alpha_obs_max              | 0.376    |
+|    alpha_obs_mean             | 0.211    |
+|    alpha_obs_min              | 0.177    |
+|    alpha_obs_p05              | 0.179    |
+|    alpha_obs_p50              | 0.192    |
+|    alpha_obs_p95              | 0.354    |
+|    alpha_obs_std              | 0.0504   |
+|    alpha_raw_max              | 0.376    |
+|    alpha_raw_mean             | 0.211    |
+|    alpha_raw_min              | 0.177    |
+|    alpha_raw_p05              | 0.179    |
+|    alpha_raw_p50              | 0.192    |
+|    alpha_raw_p95              | 0.354    |
+|    alpha_raw_std              | 0.0504   |
+|    beta_effective_mean        | 0.854    |
+|    critic_loss                | 0.151    |
+|    cvar_penalty_raw_mean      | 20.8     |
+|    cvar_penalty_weighted_mean | 6.23     |
+|    emergency_rate             | 0        |
+|    entropy_loss               | -3.89    |
+|    penalty_ratio              | 0.2      |
+|    prl_prob_max               | 0.998    |
+|    prl_prob_mean              | 0.175    |
+|    prl_prob_min               | 0.00589  |
+|    prl_prob_p05               | 0.0164   |
+|    prl_prob_p50               | 0.0589   |
+|    prl_prob_p95               | 0.89     |
+|    prl_prob_std               | 0.254    |
+|    var_penalty_raw_mean       | 8.33e+03 |
+|    var_penalty_weighted_mean  | 2.5e+03  |
+|    vz_max                     | 4.08     |
+|    vz_mean                    | -0.0545  |
+|    vz_min                     | -1.56    |
+|    vz_p05                     | -1.05    |
+|    vz_p50                     | -0.385   |
+|    vz_p95                     | 2.05     |
+|    vz_std                     | 0.972    |
+--------------------------------------------
+--------------------------------------------
+| time/                         |          |
+|    episodes                   | 68       |
+|    fps                        | 41       |
+|    time_elapsed               | 2381     |
+|    total_timesteps            | 98600    |
+| train/                        |          |
+|    actor_loss                 | -296     |
+|    actor_loss_base            | -370     |
+|    alpha_clamped_mean         | 0.218    |
+|    alpha_next_mean            | 0.219    |
+|    alpha_obs_max              | 0.376    |
+|    alpha_obs_mean             | 0.218    |
+|    alpha_obs_min              | 0.177    |
+|    alpha_obs_p05              | 0.179    |
+|    alpha_obs_p50              | 0.193    |
+|    alpha_obs_p95              | 0.361    |
+|    alpha_obs_std              | 0.0598   |
+|    alpha_raw_max              | 0.376    |
+|    alpha_raw_mean             | 0.218    |
+|    alpha_raw_min              | 0.177    |
+|    alpha_raw_p05              | 0.179    |
+|    alpha_raw_p50              | 0.193    |
+|    alpha_raw_p95              | 0.361    |
+|    alpha_raw_std              | 0.0598   |
+|    beta_effective_mean        | 0.869    |
+|    critic_loss                | 0.0814   |
+|    cvar_penalty_raw_mean      | 12.8     |
+|    cvar_penalty_weighted_mean | 3.83     |
+|    emergency_rate             | 0        |
+|    entropy_loss               | -4.03    |
+|    penalty_ratio              | 0.2      |
+|    prl_prob_max               | 0.998    |
+|    prl_prob_mean              | 0.21     |
+|    prl_prob_min               | 0.00549  |
+|    prl_prob_p05               | 0.0137   |
+|    prl_prob_p50               | 0.0725   |
+|    prl_prob_p95               | 0.925    |
+|    prl_prob_std               | 0.3      |
+|    var_penalty_raw_mean       | 6.2e+03  |
+|    var_penalty_weighted_mean  | 1.86e+03 |
+|    vz_max                     | 4.17     |
+|    vz_mean                    | 0.0493   |
+|    vz_min                     | -1.6     |
+|    vz_p05                     | -1.14    |
+|    vz_p50                     | -0.274   |
+|    vz_p95                     | 2.26     |
+|    vz_std                     | 1.16     |
+--------------------------------------------
+Model saved to /workspace/execution-aware-portfolio-rl/paper/forecasting_workshop/generalization/multi_split_compact_v1/splits/split_a/train_control/models/20260414T145105Z_9123e2fe_seed1_prl_abd7_final.zip
+[TRAIN-END] split=split_a seed=1
+[TRAIN-START] split=split_a seed=2
+INFO:prl.data:Loading processed cache from data/processed_u27
+Using cuda device
+INFO:prl.prl:PRL mid_plasticity_multiplier applied: multiplier=0.700 mid_fraction=0.098
+--------------------------------------------
+| time/                         |          |
+|    episodes                   | 4        |
+|    fps                        | 41       |
+|    time_elapsed               | 140      |
+|    total_timesteps            | 5800     |
+| train/                        |          |
+|    actor_loss                 | -69.5    |
+|    actor_loss_base            | -86.9    |
+|    alpha_clamped_mean         | 0.217    |
+|    alpha_next_mean            | 0.217    |
+|    alpha_obs_max              | 0.376    |
+|    alpha_obs_mean             | 0.217    |
+|    alpha_obs_min              | 0.177    |
+|    alpha_obs_p05              | 0.179    |
+|    alpha_obs_p50              | 0.194    |
+|    alpha_obs_p95              | 0.359    |
+|    alpha_obs_std              | 0.0566   |
+|    alpha_raw_max              | 0.376    |
+|    alpha_raw_mean             | 0.217    |
+|    alpha_raw_min              | 0.177    |
+|    alpha_raw_p05              | 0.179    |
+|    alpha_raw_p50              | 0.194    |
+|    alpha_raw_p95              | 0.359    |
+|    alpha_raw_std              | 0.0566   |
+|    beta_effective_mean        | 0.868    |
+|    critic_loss                | 0.357    |
+|    cvar_penalty_raw_mean      | 1.09     |
+|    cvar_penalty_weighted_mean | 0.326    |
+|    emergency_rate             | 0        |
+|    entropy_loss               | -3.65    |
+|    penalty_ratio              | 0.2      |
+|    prl_prob_max               | 0.998    |
+|    prl_prob_mean              | 0.205    |
+|    prl_prob_min               | 0.00551  |
+|    prl_prob_p05               | 0.0131   |
+|    prl_prob_p50               | 0.0741   |
+|    prl_prob_p95               | 0.914    |
+|    prl_prob_std               | 0.285    |
+|    var_penalty_raw_mean       | 288      |
+|    var_penalty_weighted_mean  | 86.4     |
+|    vz_max                     | 4.18     |
+|    vz_mean                    | 0.00577  |
+|    vz_min                     | -1.6     |
+|    vz_p05                     | -1.16    |
+|    vz_p50                     | -0.263   |
+|    vz_p95                     | 2.18     |
+|    vz_std                     | 1.02     |
+--------------------------------------------
+--------------------------------------------
+| time/                         |          |
+|    episodes                   | 8        |
+|    fps                        | 41       |
+|    time_elapsed               | 281      |
+|    total_timesteps            | 11600    |
+| train/                        |          |
+|    actor_loss                 | -126     |
+|    actor_loss_base            | -158     |
+|    alpha_clamped_mean         | 0.218    |
+|    alpha_next_mean            | 0.219    |
+|    alpha_obs_max              | 0.376    |
+|    alpha_obs_mean             | 0.218    |
+|    alpha_obs_min              | 0.177    |
+|    alpha_obs_p05              | 0.179    |
+|    alpha_obs_p50              | 0.196    |
+|    alpha_obs_p95              | 0.358    |
+|    alpha_obs_std              | 0.0569   |
+|    alpha_raw_max              | 0.376    |
+|    alpha_raw_mean             | 0.218    |
+|    alpha_raw_min              | 0.177    |
+|    alpha_raw_p05              | 0.179    |
+|    alpha_raw_p50              | 0.196    |
+|    alpha_raw_p95              | 0.358    |
+|    alpha_raw_std              | 0.0569   |
+|    beta_effective_mean        | 0.863    |
+|    critic_loss                | 0.295    |
+|    cvar_penalty_raw_mean      | 2.34     |
+|    cvar_penalty_weighted_mean | 0.702    |
+|    emergency_rate             | 0        |
+|    entropy_loss               | -3.84    |
+|    penalty_ratio              | 0.2      |
+|    prl_prob_max               | 0.998    |
+|    prl_prob_mean              | 0.211    |
+|    prl_prob_min               | 0.00549  |
+|    prl_prob_p05               | 0.0155   |
+|    prl_prob_p50               | 0.0899   |
+|    prl_prob_p95               | 0.908    |
+|    prl_prob_std               | 0.286    |
+|    var_penalty_raw_mean       | 1.24e+03 |
+|    var_penalty_weighted_mean  | 371      |
+|    vz_max                     | 4.13     |
+|    vz_mean                    | 0.055    |
+|    vz_min                     | -1.6     |
+|    vz_p05                     | -1.08    |
+|    vz_p50                     | -0.158   |
+|    vz_p95                     | 2.14     |
+|    vz_std                     | 1.02     |
+--------------------------------------------
+--------------------------------------------
+| time/                         |          |
+|    episodes                   | 12       |
+|    fps                        | 41       |
+|    time_elapsed               | 423      |
+|    total_timesteps            | 17400    |
+| train/                        |          |
+|    actor_loss                 | -162     |
+|    actor_loss_base            | -202     |
+|    alpha_clamped_mean         | 0.214    |
+|    alpha_next_mean            | 0.213    |
+|    alpha_obs_max              | 0.376    |
+|    alpha_obs_mean             | 0.214    |
+|    alpha_obs_min              | 0.177    |
+|    alpha_obs_p05              | 0.178    |
+|    alpha_obs_p50              | 0.194    |
+|    alpha_obs_p95              | 0.359    |
+|    alpha_obs_std              | 0.0543   |
+|    alpha_raw_max              | 0.376    |
+|    alpha_raw_mean             | 0.214    |
+|    alpha_raw_min              | 0.177    |
+|    alpha_raw_p05              | 0.178    |
+|    alpha_raw_p50              | 0.194    |
+|    alpha_raw_p95              | 0.359    |
+|    alpha_raw_std              | 0.0543   |
+|    beta_effective_mean        | 0.859    |
+|    critic_loss                | 0.138    |
+|    cvar_penalty_raw_mean      | 4.25     |
+|    cvar_penalty_weighted_mean | 1.28     |
+|    emergency_rate             | 0        |
+|    entropy_loss               | -3.9     |
+|    penalty_ratio              | 0.2      |
+|    prl_prob_max               | 0.998    |
+|    prl_prob_mean              | 0.188    |
+|    prl_prob_min               | 0.00491  |
+|    prl_prob_p05               | 0.0105   |
+|    prl_prob_p50               | 0.0743   |
+|    prl_prob_p95               | 0.912    |
+|    prl_prob_std               | 0.273    |
+|    var_penalty_raw_mean       | 1.76e+03 |
+|    var_penalty_weighted_mean  | 529      |
+|    vz_max                     | 4.01     |
+|    vz_mean                    | -0.0335  |
+|    vz_min                     | -1.66    |
+|    vz_p05                     | -1.27    |
+|    vz_p50                     | -0.261   |
+|    vz_p95                     | 2.17     |
+|    vz_std                     | 1.04     |
+--------------------------------------------
+--------------------------------------------
+| time/                         |          |
+|    episodes                   | 16       |
+|    fps                        | 41       |
+|    time_elapsed               | 564      |
+|    total_timesteps            | 23200    |
+| train/                        |          |
+|    actor_loss                 | -198     |
+|    actor_loss_base            | -247     |
+|    alpha_clamped_mean         | 0.213    |
+|    alpha_next_mean            | 0.214    |
+|    alpha_obs_max              | 0.376    |
+|    alpha_obs_mean             | 0.213    |
+|    alpha_obs_min              | 0.177    |
+|    alpha_obs_p05              | 0.178    |
+|    alpha_obs_p50              | 0.194    |
+|    alpha_obs_p95              | 0.358    |
+|    alpha_obs_std              | 0.0535   |
+|    alpha_raw_max              | 0.376    |
+|    alpha_raw_mean             | 0.213    |
+|    alpha_raw_min              | 0.177    |
+|    alpha_raw_p05              | 0.178    |
+|    alpha_raw_p50              | 0.194    |
+|    alpha_raw_p95              | 0.358    |
+|    alpha_raw_std              | 0.0535   |
+|    beta_effective_mean        | 0.859    |
+|    critic_loss                | 0.099    |
+|    cvar_penalty_raw_mean      | 4.47     |
+|    cvar_penalty_weighted_mean | 1.34     |
+|    emergency_rate             | 0        |
+|    entropy_loss               | -3.93    |
+|    penalty_ratio              | 0.2      |
+|    prl_prob_max               | 0.997    |
+|    prl_prob_mean              | 0.187    |
+|    prl_prob_min               | 0.0053   |
+|    prl_prob_p05               | 0.0113   |
+|    prl_prob_p50               | 0.0773   |
+|    prl_prob_p95               | 0.908    |
+|    prl_prob_std               | 0.269    |
+|    var_penalty_raw_mean       | 2.72e+03 |
+|    var_penalty_weighted_mean  | 816      |
+|    vz_max                     | 3.89     |
+|    vz_mean                    | -0.0517  |
+|    vz_min                     | -1.62    |
+|    vz_p05                     | -1.24    |
+|    vz_p50                     | -0.24    |
+|    vz_p95                     | 2.14     |
+|    vz_std                     | 0.991    |
+--------------------------------------------
+--------------------------------------------
+| time/                         |          |
+|    episodes                   | 20       |
+|    fps                        | 41       |
+|    time_elapsed               | 705      |
+|    total_timesteps            | 29000    |
+| train/                        |          |
+|    actor_loss                 | -220     |
+|    actor_loss_base            | -274     |
+|    alpha_clamped_mean         | 0.217    |
+|    alpha_next_mean            | 0.217    |
+|    alpha_obs_max              | 0.376    |
+|    alpha_obs_mean             | 0.217    |
+|    alpha_obs_min              | 0.177    |
+|    alpha_obs_p05              | 0.179    |
+|    alpha_obs_p50              | 0.196    |
+|    alpha_obs_p95              | 0.359    |
+|    alpha_obs_std              | 0.0544   |
+|    alpha_raw_max              | 0.376    |
+|    alpha_raw_mean             | 0.217    |
+|    alpha_raw_min              | 0.177    |
+|    alpha_raw_p05              | 0.179    |
+|    alpha_raw_p50              | 0.196    |
+|    alpha_raw_p95              | 0.359    |
+|    alpha_raw_std              | 0.0544   |
+|    beta_effective_mean        | 0.858    |
+|    critic_loss                | 0.0817   |
+|    cvar_penalty_raw_mean      | 6        |
+|    cvar_penalty_weighted_mean | 1.8      |
+|    emergency_rate             | 0        |
+|    entropy_loss               | -4       |
+|    penalty_ratio              | 0.2      |
+|    prl_prob_max               | 0.998    |
+|    prl_prob_mean              | 0.206    |
+|    prl_prob_min               | 0.00551  |
+|    prl_prob_p05               | 0.0132   |
+|    prl_prob_p50               | 0.091    |
+|    prl_prob_p95               | 0.915    |
+|    prl_prob_std               | 0.274    |
+|    var_penalty_raw_mean       | 3.23e+03 |
+|    var_penalty_weighted_mean  | 968      |
+|    vz_max                     | 4.08     |
+|    vz_mean                    | 0.0442   |
+|    vz_min                     | -1.6     |
+|    vz_p05                     | -1.16    |
+|    vz_p50                     | -0.151   |
+|    vz_p95                     | 2.19     |
+|    vz_std                     | 1        |
+--------------------------------------------
+--------------------------------------------
+| time/                         |          |
+|    episodes                   | 24       |
+|    fps                        | 41       |
+|    time_elapsed               | 843      |
+|    total_timesteps            | 34800    |
+| train/                        |          |
+|    actor_loss                 | -244     |
+|    actor_loss_base            | -305     |
+|    alpha_clamped_mean         | 0.219    |
+|    alpha_next_mean            | 0.219    |
+|    alpha_obs_max              | 0.376    |
+|    alpha_obs_mean             | 0.219    |
+|    alpha_obs_min              | 0.177    |
+|    alpha_obs_p05              | 0.178    |
+|    alpha_obs_p50              | 0.193    |
+|    alpha_obs_p95              | 0.364    |
+|    alpha_obs_std              | 0.0591   |
+|    alpha_raw_max              | 0.376    |
+|    alpha_raw_mean             | 0.219    |
+|    alpha_raw_min              | 0.177    |
+|    alpha_raw_p05              | 0.178    |
+|    alpha_raw_p50              | 0.193    |
+|    alpha_raw_p95              | 0.364    |
+|    alpha_raw_std              | 0.0591   |
+|    beta_effective_mean        | 0.872    |
+|    critic_loss                | 0.119    |
+|    cvar_penalty_raw_mean      | 7.38     |
+|    cvar_penalty_weighted_mean | 2.21     |
+|    emergency_rate             | 0        |
+|    entropy_loss               | -4.05    |
+|    penalty_ratio              | 0.2      |
+|    prl_prob_max               | 0.998    |
+|    prl_prob_mean              | 0.215    |
+|    prl_prob_min               | 0.00491  |
+|    prl_prob_p05               | 0.0114   |
+|    prl_prob_p50               | 0.0715   |
+|    prl_prob_p95               | 0.939    |
+|    prl_prob_std               | 0.297    |
+|    var_penalty_raw_mean       | 4.39e+03 |
+|    var_penalty_weighted_mean  | 1.32e+03 |
+|    vz_max                     | 4.18     |
+|    vz_mean                    | 0.0598   |
+|    vz_min                     | -1.66    |
+|    vz_p05                     | -1.23    |
+|    vz_p50                     | -0.282   |
+|    vz_p95                     | 2.37     |
+|    vz_std                     | 1.15     |
+--------------------------------------------
+--------------------------------------------
+| time/                         |          |
+|    episodes                   | 28       |
+|    fps                        | 41       |
+|    time_elapsed               | 986      |
+|    total_timesteps            | 40600    |
+| train/                        |          |
+|    actor_loss                 | -249     |
+|    actor_loss_base            | -312     |
+|    alpha_clamped_mean         | 0.213    |
+|    alpha_next_mean            | 0.213    |
+|    alpha_obs_max              | 0.376    |
+|    alpha_obs_mean             | 0.213    |
+|    alpha_obs_min              | 0.177    |
+|    alpha_obs_p05              | 0.179    |
+|    alpha_obs_p50              | 0.195    |
+|    alpha_obs_p95              | 0.353    |
+|    alpha_obs_std              | 0.0495   |
+|    alpha_raw_max              | 0.376    |
+|    alpha_raw_mean             | 0.213    |
+|    alpha_raw_min              | 0.177    |
+|    alpha_raw_p05              | 0.179    |
+|    alpha_raw_p50              | 0.195    |
+|    alpha_raw_p95              | 0.353    |
+|    alpha_raw_std              | 0.0495   |
+|    beta_effective_mean        | 0.862    |
+|    critic_loss                | 0.0815   |
+|    cvar_penalty_raw_mean      | 10.3     |
+|    cvar_penalty_weighted_mean | 3.1      |
+|    emergency_rate             | 0        |
+|    entropy_loss               | -3.93    |
+|    penalty_ratio              | 0.2      |
+|    prl_prob_max               | 0.998    |
+|    prl_prob_mean              | 0.184    |
+|    prl_prob_min               | 0.00491  |
+|    prl_prob_p05               | 0.0123   |
+|    prl_prob_p50               | 0.0827   |
+|    prl_prob_p95               | 0.885    |
+|    prl_prob_std               | 0.249    |
+|    var_penalty_raw_mean       | 4.37e+03 |
+|    var_penalty_weighted_mean  | 1.31e+03 |
+|    vz_max                     | 4.08     |
+|    vz_mean                    | -0.0181  |
+|    vz_min                     | -1.66    |
+|    vz_p05                     | -1.19    |
+|    vz_p50                     | -0.203   |
+|    vz_p95                     | 2.02     |
+|    vz_std                     | 0.982    |
+--------------------------------------------
+--------------------------------------------
+| time/                         |          |
+|    episodes                   | 32       |
+|    fps                        | 41       |
+|    time_elapsed               | 1128     |
+|    total_timesteps            | 46400    |
+| train/                        |          |
+|    actor_loss                 | -264     |
+|    actor_loss_base            | -330     |
+|    alpha_clamped_mean         | 0.215    |
+|    alpha_next_mean            | 0.216    |
+|    alpha_obs_max              | 0.376    |
+|    alpha_obs_mean             | 0.215    |
+|    alpha_obs_min              | 0.177    |
+|    alpha_obs_p05              | 0.179    |
+|    alpha_obs_p50              | 0.196    |
+|    alpha_obs_p95              | 0.358    |
+|    alpha_obs_std              | 0.0523   |
+|    alpha_raw_max              | 0.376    |
+|    alpha_raw_mean             | 0.215    |
+|    alpha_raw_min              | 0.177    |
+|    alpha_raw_p05              | 0.179    |
+|    alpha_raw_p50              | 0.196    |
+|    alpha_raw_p95              | 0.358    |
+|    alpha_raw_std              | 0.0523   |
+|    beta_effective_mean        | 0.858    |
+|    critic_loss                | 0.0749   |
+|    cvar_penalty_raw_mean      | 11.2     |
+|    cvar_penalty_weighted_mean | 3.37     |
+|    emergency_rate             | 0        |
+|    entropy_loss               | -3.98    |
+|    penalty_ratio              | 0.2      |
+|    prl_prob_max               | 0.998    |
+|    prl_prob_mean              | 0.196    |
+|    prl_prob_min               | 0.00482  |
+|    prl_prob_p05               | 0.0147   |
+|    prl_prob_p50               | 0.0878   |
+|    prl_prob_p95               | 0.907    |
+|    prl_prob_std               | 0.263    |
+|    var_penalty_raw_mean       | 5.49e+03 |
+|    var_penalty_weighted_mean  | 1.65e+03 |
+|    vz_max                     | 4.01     |
+|    vz_mean                    | 0.00739  |
+|    vz_min                     | -1.67    |
+|    vz_p05                     | -1.1     |
+|    vz_p50                     | -0.17    |
+|    vz_p95                     | 2.14     |
+|    vz_std                     | 0.963    |
+--------------------------------------------
+--------------------------------------------
+| time/                         |          |
+|    episodes                   | 36       |
+|    fps                        | 41       |
+|    time_elapsed               | 1269     |
+|    total_timesteps            | 52200    |
+| train/                        |          |
+|    actor_loss                 | -268     |
+|    actor_loss_base            | -335     |
+|    alpha_clamped_mean         | 0.213    |
+|    alpha_next_mean            | 0.214    |
+|    alpha_obs_max              | 0.376    |
+|    alpha_obs_mean             | 0.213    |
+|    alpha_obs_min              | 0.177    |
+|    alpha_obs_p05              | 0.179    |
+|    alpha_obs_p50              | 0.195    |
+|    alpha_obs_p95              | 0.356    |
+|    alpha_obs_std              | 0.0501   |
+|    alpha_raw_max              | 0.376    |
+|    alpha_raw_mean             | 0.213    |
+|    alpha_raw_min              | 0.177    |
+|    alpha_raw_p05              | 0.179    |
+|    alpha_raw_p50              | 0.195    |
+|    alpha_raw_p95              | 0.356    |
+|    alpha_raw_std              | 0.0501   |
+|    beta_effective_mean        | 0.852    |
+|    critic_loss                | 0.0735   |
+|    cvar_penalty_raw_mean      | 20.8     |
+|    cvar_penalty_weighted_mean | 6.23     |
+|    emergency_rate             | 0        |
+|    entropy_loss               | -3.95    |
+|    penalty_ratio              | 0.2      |
+|    prl_prob_max               | 0.997    |
+|    prl_prob_mean              | 0.186    |
+|    prl_prob_min               | 0.00482  |
+|    prl_prob_p05               | 0.0149   |
+|    prl_prob_p50               | 0.0822   |
+|    prl_prob_p95               | 0.897    |
+|    prl_prob_std               | 0.252    |
+|    var_penalty_raw_mean       | 9.53e+03 |
+|    var_penalty_weighted_mean  | 2.86e+03 |
+|    vz_max                     | 3.95     |
+|    vz_mean                    | -0.0122  |
+|    vz_min                     | -1.67    |
+|    vz_p05                     | -1.1     |
+|    vz_p50                     | -0.207   |
+|    vz_p95                     | 2.08     |
+|    vz_std                     | 0.937    |
+--------------------------------------------
+--------------------------------------------
+| time/                         |          |
+|    episodes                   | 40       |
+|    fps                        | 41       |
+|    time_elapsed               | 1410     |
+|    total_timesteps            | 58000    |
+| train/                        |          |
+|    actor_loss                 | -275     |
+|    actor_loss_base            | -344     |
+|    alpha_clamped_mean         | 0.214    |
+|    alpha_next_mean            | 0.214    |
+|    alpha_obs_max              | 0.376    |
+|    alpha_obs_mean             | 0.214    |
+|    alpha_obs_min              | 0.177    |
+|    alpha_obs_p05              | 0.179    |
+|    alpha_obs_p50              | 0.194    |
+|    alpha_obs_p95              | 0.354    |
+|    alpha_obs_std              | 0.0533   |
+|    alpha_raw_max              | 0.376    |
+|    alpha_raw_mean             | 0.214    |
+|    alpha_raw_min              | 0.177    |
+|    alpha_raw_p05              | 0.179    |
+|    alpha_raw_p50              | 0.194    |
+|    alpha_raw_p95              | 0.354    |
+|    alpha_raw_std              | 0.0533   |
+|    beta_effective_mean        | 0.859    |
+|    critic_loss                | 0.0901   |
+|    cvar_penalty_raw_mean      | 11.1     |
+|    cvar_penalty_weighted_mean | 3.33     |
+|    emergency_rate             | 0        |
+|    entropy_loss               | -3.96    |
+|    penalty_ratio              | 0.2      |
+|    prl_prob_max               | 0.998    |
+|    prl_prob_mean              | 0.19     |
+|    prl_prob_min               | 0.00482  |
+|    prl_prob_p05               | 0.0134   |
+|    prl_prob_p50               | 0.0746   |
+|    prl_prob_p95               | 0.888    |
+|    prl_prob_std               | 0.268    |
+|    var_penalty_raw_mean       | 5.22e+03 |
+|    var_penalty_weighted_mean  | 1.57e+03 |
+|    vz_max                     | 4.17     |
+|    vz_mean                    | -0.0268  |
+|    vz_min                     | -1.67    |
+|    vz_p05                     | -1.15    |
+|    vz_p50                     | -0.259   |
+|    vz_p95                     | 2.04     |
+|    vz_std                     | 0.983    |
+--------------------------------------------
+--------------------------------------------
+| time/                         |          |
+|    episodes                   | 44       |
+|    fps                        | 41       |
+|    time_elapsed               | 1547     |
+|    total_timesteps            | 63800    |
+| train/                        |          |
+|    actor_loss                 | -282     |
+|    actor_loss_base            | -352     |
+|    alpha_clamped_mean         | 0.217    |
+|    alpha_next_mean            | 0.217    |
+|    alpha_obs_max              | 0.376    |
+|    alpha_obs_mean             | 0.217    |
+|    alpha_obs_min              | 0.177    |
+|    alpha_obs_p05              | 0.179    |
+|    alpha_obs_p50              | 0.197    |
+|    alpha_obs_p95              | 0.359    |
+|    alpha_obs_std              | 0.0516   |
+|    alpha_raw_max              | 0.376    |
+|    alpha_raw_mean             | 0.217    |
+|    alpha_raw_min              | 0.177    |
+|    alpha_raw_p05              | 0.179    |
+|    alpha_raw_p50              | 0.197    |
+|    alpha_raw_p95              | 0.359    |
+|    alpha_raw_std              | 0.0516   |
+|    beta_effective_mean        | 0.859    |
+|    critic_loss                | 0.0764   |
+|    cvar_penalty_raw_mean      | 14.2     |
+|    cvar_penalty_weighted_mean | 4.27     |
+|    emergency_rate             | 0        |
+|    entropy_loss               | -4.01    |
+|    penalty_ratio              | 0.2      |
+|    prl_prob_max               | 0.998    |
+|    prl_prob_mean              | 0.203    |
+|    prl_prob_min               | 0.00482  |
+|    prl_prob_p05               | 0.0132   |
+|    prl_prob_p50               | 0.0959   |
+|    prl_prob_p95               | 0.914    |
+|    prl_prob_std               | 0.259    |
+|    var_penalty_raw_mean       | 6.19e+03 |
+|    var_penalty_weighted_mean  | 1.86e+03 |
+|    vz_max                     | 4.15     |
+|    vz_mean                    | 0.0459   |
+|    vz_min                     | -1.67    |
+|    vz_p05                     | -1.16    |
+|    vz_p50                     | -0.122   |
+|    vz_p95                     | 2.18     |
+|    vz_std                     | 0.977    |
+--------------------------------------------
+--------------------------------------------
+| time/                         |          |
+|    episodes                   | 48       |
+|    fps                        | 41       |
+|    time_elapsed               | 1685     |
+|    total_timesteps            | 69600    |
+| train/                        |          |
+|    actor_loss                 | -282     |
+|    actor_loss_base            | -352     |
+|    alpha_clamped_mean         | 0.211    |
+|    alpha_next_mean            | 0.211    |
+|    alpha_obs_max              | 0.376    |
+|    alpha_obs_mean             | 0.211    |
+|    alpha_obs_min              | 0.177    |
+|    alpha_obs_p05              | 0.178    |
+|    alpha_obs_p50              | 0.195    |
+|    alpha_obs_p95              | 0.356    |
+|    alpha_obs_std              | 0.0484   |
+|    alpha_raw_max              | 0.376    |
+|    alpha_raw_mean             | 0.211    |
+|    alpha_raw_min              | 0.177    |
+|    alpha_raw_p05              | 0.178    |
+|    alpha_raw_p50              | 0.195    |
+|    alpha_raw_p95              | 0.356    |
+|    alpha_raw_std              | 0.0484   |
+|    beta_effective_mean        | 0.856    |
+|    critic_loss                | 0.0974   |
+|    cvar_penalty_raw_mean      | 12       |
+|    cvar_penalty_weighted_mean | 3.61     |
+|    emergency_rate             | 0        |
+|    entropy_loss               | -3.88    |
+|    penalty_ratio              | 0.2      |
+|    prl_prob_max               | 0.998    |
+|    prl_prob_mean              | 0.173    |
+|    prl_prob_min               | 0.00517  |
+|    prl_prob_p05               | 0.0115   |
+|    prl_prob_p50               | 0.0821   |
+|    prl_prob_p95               | 0.897    |
+|    prl_prob_std               | 0.244    |
+|    var_penalty_raw_mean       | 4.86e+03 |
+|    var_penalty_weighted_mean  | 1.46e+03 |
+|    vz_max                     | 4.17     |
+|    vz_mean                    | -0.0823  |
+|    vz_min                     | -1.63    |
+|    vz_p05                     | -1.23    |
+|    vz_p50                     | -0.207   |
+|    vz_p95                     | 2.08     |
+|    vz_std                     | 0.967    |
+--------------------------------------------
+--------------------------------------------
+| time/                         |          |
+|    episodes                   | 52       |
+|    fps                        | 41       |
+|    time_elapsed               | 1826     |
+|    total_timesteps            | 75400    |
+| train/                        |          |
+|    actor_loss                 | -286     |
+|    actor_loss_base            | -358     |
+|    alpha_clamped_mean         | 0.218    |
+|    alpha_next_mean            | 0.219    |
+|    alpha_obs_max              | 0.376    |
+|    alpha_obs_mean             | 0.218    |
+|    alpha_obs_min              | 0.177    |
+|    alpha_obs_p05              | 0.179    |
+|    alpha_obs_p50              | 0.193    |
+|    alpha_obs_p95              | 0.356    |
+|    alpha_obs_std              | 0.0571   |
+|    alpha_raw_max              | 0.376    |
+|    alpha_raw_mean             | 0.218    |
+|    alpha_raw_min              | 0.177    |
+|    alpha_raw_p05              | 0.179    |
+|    alpha_raw_p50              | 0.193    |
+|    alpha_raw_p95              | 0.356    |
+|    alpha_raw_std              | 0.0571   |
+|    beta_effective_mean        | 0.872    |
+|    critic_loss                | 0.066    |
+|    cvar_penalty_raw_mean      | 11.1     |
+|    cvar_penalty_weighted_mean | 3.33     |
+|    emergency_rate             | 0        |
+|    entropy_loss               | -4.02    |
+|    penalty_ratio              | 0.2      |
+|    prl_prob_max               | 0.998    |
+|    prl_prob_mean              | 0.209    |
+|    prl_prob_min               | 0.00525  |
+|    prl_prob_p05               | 0.0135   |
+|    prl_prob_p50               | 0.0689   |
+|    prl_prob_p95               | 0.898    |
+|    prl_prob_std               | 0.287    |
+|    var_penalty_raw_mean       | 5.03e+03 |
+|    var_penalty_weighted_mean  | 1.51e+03 |
+|    vz_max                     | 4.18     |
+|    vz_mean                    | 0.024    |
+|    vz_min                     | -1.62    |
+|    vz_p05                     | -1.15    |
+|    vz_p50                     | -0.302   |
+|    vz_p95                     | 2.09     |
+|    vz_std                     | 1.04     |
+--------------------------------------------
+--------------------------------------------
+| time/                         |          |
+|    episodes                   | 56       |
+|    fps                        | 41       |
+|    time_elapsed               | 1964     |
+|    total_timesteps            | 81200    |
+| train/                        |          |
+|    actor_loss                 | -286     |
+|    actor_loss_base            | -358     |
+|    alpha_clamped_mean         | 0.218    |
+|    alpha_next_mean            | 0.218    |
+|    alpha_obs_max              | 0.376    |
+|    alpha_obs_mean             | 0.218    |
+|    alpha_obs_min              | 0.177    |
+|    alpha_obs_p05              | 0.179    |
+|    alpha_obs_p50              | 0.194    |
+|    alpha_obs_p95              | 0.358    |
+|    alpha_obs_std              | 0.0558   |
+|    alpha_raw_max              | 0.376    |
+|    alpha_raw_mean             | 0.218    |
+|    alpha_raw_min              | 0.177    |
+|    alpha_raw_p05              | 0.179    |
+|    alpha_raw_p50              | 0.194    |
+|    alpha_raw_p95              | 0.358    |
+|    alpha_raw_std              | 0.0558   |
+|    beta_effective_mean        | 0.87     |
+|    critic_loss                | 0.0897   |
+|    cvar_penalty_raw_mean      | 13.3     |
+|    cvar_penalty_weighted_mean | 3.98     |
+|    emergency_rate             | 0        |
+|    entropy_loss               | -4.02    |
+|    penalty_ratio              | 0.2      |
+|    prl_prob_max               | 0.998    |
+|    prl_prob_mean              | 0.209    |
+|    prl_prob_min               | 0.0055   |
+|    prl_prob_p05               | 0.0129   |
+|    prl_prob_p50               | 0.0781   |
+|    prl_prob_p95               | 0.907    |
+|    prl_prob_std               | 0.281    |
+|    var_penalty_raw_mean       | 5.46e+03 |
+|    var_penalty_weighted_mean  | 1.64e+03 |
+|    vz_max                     | 4.13     |
+|    vz_mean                    | 0.0389   |
+|    vz_min                     | -1.6     |
+|    vz_p05                     | -1.17    |
+|    vz_p50                     | -0.235   |
+|    vz_p95                     | 2.14     |
+|    vz_std                     | 1.04     |
+--------------------------------------------
+--------------------------------------------
+| time/                         |          |
+|    episodes                   | 60       |
+|    fps                        | 41       |
+|    time_elapsed               | 2104     |
+|    total_timesteps            | 87000    |
+| train/                        |          |
+|    actor_loss                 | -285     |
+|    actor_loss_base            | -356     |
+|    alpha_clamped_mean         | 0.208    |
+|    alpha_next_mean            | 0.208    |
+|    alpha_obs_max              | 0.376    |
+|    alpha_obs_mean             | 0.208    |
+|    alpha_obs_min              | 0.177    |
+|    alpha_obs_p05              | 0.179    |
+|    alpha_obs_p50              | 0.193    |
+|    alpha_obs_p95              | 0.35     |
+|    alpha_obs_std              | 0.0458   |
+|    alpha_raw_max              | 0.376    |
+|    alpha_raw_mean             | 0.208    |
+|    alpha_raw_min              | 0.177    |
+|    alpha_raw_p05              | 0.179    |
+|    alpha_raw_p50              | 0.193    |
+|    alpha_raw_p95              | 0.35     |
+|    alpha_raw_std              | 0.0458   |
+|    beta_effective_mean        | 0.862    |
+|    critic_loss                | 0.0877   |
+|    cvar_penalty_raw_mean      | 11.9     |
+|    cvar_penalty_weighted_mean | 3.56     |
+|    emergency_rate             | 0        |
+|    entropy_loss               | -3.85    |
+|    penalty_ratio              | 0.2      |
+|    prl_prob_max               | 0.998    |
+|    prl_prob_mean              | 0.162    |
+|    prl_prob_min               | 0.00517  |
+|    prl_prob_p05               | 0.0139   |
+|    prl_prob_p50               | 0.0679   |
+|    prl_prob_p95               | 0.871    |
+|    prl_prob_std               | 0.231    |
+|    var_penalty_raw_mean       | 4.66e+03 |
+|    var_penalty_weighted_mean  | 1.4e+03  |
+|    vz_max                     | 4.01     |
+|    vz_mean                    | -0.108   |
+|    vz_min                     | -1.63    |
+|    vz_p05                     | -1.13    |
+|    vz_p50                     | -0.31    |
+|    vz_p95                     | 1.96     |
+|    vz_std                     | 0.899    |
+--------------------------------------------
+--------------------------------------------
+| time/                         |          |
+|    episodes                   | 64       |
+|    fps                        | 41       |
+|    time_elapsed               | 2244     |
+|    total_timesteps            | 92800    |
+| train/                        |          |
+|    actor_loss                 | -288     |
+|    actor_loss_base            | -360     |
+|    alpha_clamped_mean         | 0.212    |
+|    alpha_next_mean            | 0.212    |
+|    alpha_obs_max              | 0.375    |
+|    alpha_obs_mean             | 0.212    |
+|    alpha_obs_min              | 0.177    |
+|    alpha_obs_p05              | 0.178    |
+|    alpha_obs_p50              | 0.192    |
+|    alpha_obs_p95              | 0.353    |
+|    alpha_obs_std              | 0.0524   |
+|    alpha_raw_max              | 0.375    |
+|    alpha_raw_mean             | 0.212    |
+|    alpha_raw_min              | 0.177    |
+|    alpha_raw_p05              | 0.178    |
+|    alpha_raw_p50              | 0.192    |
+|    alpha_raw_p95              | 0.353    |
+|    alpha_raw_std              | 0.0524   |
+|    beta_effective_mean        | 0.865    |
+|    critic_loss                | 0.0759   |
+|    cvar_penalty_raw_mean      | 11.6     |
+|    cvar_penalty_weighted_mean | 3.48     |
+|    emergency_rate             | 0        |
+|    entropy_loss               | -3.9     |
+|    penalty_ratio              | 0.2      |
+|    prl_prob_max               | 0.997    |
+|    prl_prob_mean              | 0.176    |
+|    prl_prob_min               | 0.00482  |
+|    prl_prob_p05               | 0.0101   |
+|    prl_prob_p50               | 0.0623   |
+|    prl_prob_p95               | 0.884    |
+|    prl_prob_std               | 0.264    |
+|    var_penalty_raw_mean       | 4.8e+03  |
+|    var_penalty_weighted_mean  | 1.44e+03 |
+|    vz_max                     | 3.83     |
+|    vz_mean                    | -0.115   |
+|    vz_min                     | -1.67    |
+|    vz_p05                     | -1.29    |
+|    vz_p50                     | -0.356   |
+|    vz_p95                     | 2.01     |
+|    vz_std                     | 0.985    |
+--------------------------------------------
+--------------------------------------------
+| time/                         |          |
+|    episodes                   | 68       |
+|    fps                        | 41       |
+|    time_elapsed               | 2378     |
+|    total_timesteps            | 98600    |
+| train/                        |          |
+|    actor_loss                 | -284     |
+|    actor_loss_base            | -355     |
+|    alpha_clamped_mean         | 0.214    |
+|    alpha_next_mean            | 0.214    |
+|    alpha_obs_max              | 0.376    |
+|    alpha_obs_mean             | 0.214    |
+|    alpha_obs_min              | 0.177    |
+|    alpha_obs_p05              | 0.179    |
+|    alpha_obs_p50              | 0.194    |
+|    alpha_obs_p95              | 0.354    |
+|    alpha_obs_std              | 0.0528   |
+|    alpha_raw_max              | 0.376    |
+|    alpha_raw_mean             | 0.214    |
+|    alpha_raw_min              | 0.177    |
+|    alpha_raw_p05              | 0.179    |
+|    alpha_raw_p50              | 0.194    |
+|    alpha_raw_p95              | 0.354    |
+|    alpha_raw_std              | 0.0528   |
+|    beta_effective_mean        | 0.854    |
+|    critic_loss                | 0.0617   |
+|    cvar_penalty_raw_mean      | 20.1     |
+|    cvar_penalty_weighted_mean | 6.04     |
+|    emergency_rate             | 0        |
+|    entropy_loss               | -3.96    |
+|    penalty_ratio              | 0.2      |
+|    prl_prob_max               | 0.998    |
+|    prl_prob_mean              | 0.188    |
+|    prl_prob_min               | 0.00552  |
+|    prl_prob_p05               | 0.0161   |
+|    prl_prob_p50               | 0.0788   |
+|    prl_prob_p95               | 0.891    |
+|    prl_prob_std               | 0.266    |
+|    var_penalty_raw_mean       | 7.36e+03 |
+|    var_penalty_weighted_mean  | 2.21e+03 |
+|    vz_max                     | 4.18     |
+|    vz_mean                    | 0.00078  |
+|    vz_min                     | -1.6     |
+|    vz_p05                     | -1.06    |
+|    vz_p50                     | -0.23    |
+|    vz_p95                     | 2.05     |
+|    vz_std                     | 0.992    |
+--------------------------------------------
+Model saved to /workspace/execution-aware-portfolio-rl/paper/forecasting_workshop/generalization/multi_split_compact_v1/splits/split_a/train_control/models/20260414T153125Z_9123e2fe_seed2_prl_123a_final.zip
+[TRAIN-END] split=split_a seed=2
+[WAIT] all expected models are present for split_a
+[FINALIZER-START] split=split_a
+[INFO] phase=control_eta_validation_first
+[INFO] current_config=/workspace/execution-aware-portfolio-rl/paper/forecasting_workshop/generalization/multi_split_compact_v1/prepared/configs/split_a/current_config.yaml
+[INFO] seeds=0 1 2 3 4 5 6 7 8 9
+[INFO] etas=1.0 0.5 0.2 0.1 0.082 0.05 0.02
+[INFO] kappas=0.0 0.0005 0.001
+[INFO] validation_window=2016-01-01~2017-12-31
+[INFO] final_window=2018-01-01~2019-12-31
+[INFO] run_root=/workspace/execution-aware-portfolio-rl/paper/forecasting_workshop/generalization/multi_split_compact_v1/splits/split_a
+[INFO] python_cmd=/workspace/execution-aware-portfolio-rl/.venv/bin/python
+[INFO] final_mode=selected_plus_baseline
+[STEP-START] materialize_validation_and_final_configs :: 2026-04-14T16:11:29Z
+{
+  "generated_at": "20260414T161129Z",
+  "current_config": "/workspace/execution-aware-portfolio-rl/paper/forecasting_workshop/generalization/multi_split_compact_v1/prepared/configs/split_a/current_config.yaml",
+  "snapshot_config_out": "/workspace/execution-aware-portfolio-rl/paper/forecasting_workshop/generalization/multi_split_compact_v1/splits/split_a/configs/snapshot_control.yaml",
+  "signal_snapshot_out": "/workspace/execution-aware-portfolio-rl/paper/forecasting_workshop/generalization/multi_split_compact_v1/splits/split_a/configs/selected_signals_snapshot.json",
+  "validation_config_out": "/workspace/execution-aware-portfolio-rl/paper/forecasting_workshop/generalization/multi_split_compact_v1/splits/split_a/configs/validation_eta.yaml",
+  "final_config_out": "/workspace/execution-aware-portfolio-rl/paper/forecasting_workshop/generalization/multi_split_compact_v1/splits/split_a/configs/final_eta.yaml",
+  "forward_config_out": "",
+  "processed_dir": "data/processed_u27",
+  "returns_path": "data/processed_u27/returns.parquet",
+  "cache_max_date": "2026-03-20",
+  "validation_start": "2016-01-01",
+  "validation_end": "2017-12-31",
+  "final_start": "2018-01-01",
+  "final_end": "2019-12-31",
+  "forward_start": "2026-01-01",
+  "selected_signals": [
+    "reversal_5d",
+    "short_term_reversal"
+  ],
+  "sac_total_timesteps": 25000,
+  "train_output_root": "/workspace/execution-aware-portfolio-rl/paper/forecasting_workshop/generalization/multi_split_compact_v1/splits/split_a/train_control",
+  "validation_output_root": "/workspace/execution-aware-portfolio-rl/paper/forecasting_workshop/generalization/multi_split_compact_v1/splits/split_a/validation_eta",
+  "final_output_root": "/workspace/execution-aware-portfolio-rl/paper/forecasting_workshop/generalization/multi_split_compact_v1/splits/split_a/final_eta",
+  "forward_output_root": null
+}
+[STEP-END] materialize_validation_and_final_configs rc=0 :: 2026-04-14T16:11:29Z
+[INFO] skip training phase (RUN_TRAIN=0)
+[STEP-START] validation_eta_frontier :: 2026-04-14T16:11:29Z
+INFO:__main__:Using metadata config for model compatibility: /workspace/execution-aware-portfolio-rl/paper/forecasting_workshop/generalization/multi_split_compact_v1/splits/split_a/configs/snapshot_control.yaml
+INFO:prl.data:Loading processed cache from data/processed_u27
+STEP6_SANITY_METRICS {"avg_turnover_exec_eta02": 0.0005141011453666008, "avg_turnover_exec_eta1": 0.01778052582778262, "test2_ratio": 0.02891372000727346}
+STEP6 SANITY PASSED
+Traceback (most recent call last):
+  File "/workspace/execution-aware-portfolio-rl/prl-dow30/scripts/step6_run_matrix.py", line 368, in _resolve_model_path_by_seed
+    ctx = build_eval_context(
+          ^^^^^^^^^^^^^^^^^^^
+  File "/workspace/execution-aware-portfolio-rl/prl-dow30/scripts/step6_sanity.py", line 335, in build_eval_context
+    raise FileNotFoundError(f"Model not found: {model_path}")
+FileNotFoundError: Model not found: /workspace/execution-aware-portfolio-rl/paper/forecasting_workshop/generalization/multi_split_compact_v1/splits/split_a/train_control/models/prl_seed3_final.zip
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/workspace/execution-aware-portfolio-rl/prl-dow30/scripts/step6_run_matrix.py", line 642, in <module>
+    main()
+  File "/workspace/execution-aware-portfolio-rl/prl-dow30/scripts/step6_run_matrix.py", line 454, in main
+    model_path_by_seed = _resolve_model_path_by_seed(
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/execution-aware-portfolio-rl/prl-dow30/scripts/step6_run_matrix.py", line 380, in _resolve_model_path_by_seed
+    raise FileNotFoundError(
+FileNotFoundError: Independent seed model resolution failed. missing_seed=3, expected_path=/workspace/execution-aware-portfolio-rl/paper/forecasting_workshop/generalization/multi_split_compact_v1/splits/split_a/train_control/models/prl_seed3_final.zip, resolution=Train/export this seed model (or run with --seed-model-mode shared).
+[STEP-END] validation_eta_frontier rc=1 :: 2026-04-14T16:11:41Z

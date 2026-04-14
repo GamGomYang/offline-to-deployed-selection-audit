@@ -1,0 +1,4 @@
+INFO:prl.data:Loading processed cache from data/processed_u27
+STEP6_SANITY_METRICS {"avg_turnover_exec_eta02": 0.00058722751897015, "avg_turnover_exec_eta1": 0.021129022210569136, "test2_ratio": 0.027792460678866992}
+STEP6 SANITY PASSED
+EXIT:

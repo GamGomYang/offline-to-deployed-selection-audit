@@ -1,0 +1,17 @@
+{
+  "split_id": "split_a",
+  "label": "Split A",
+  "status": "launch",
+  "train": {
+    "start": "2010-01-01",
+    "end": "2015-12-31"
+  },
+  "validation": {
+    "start": "2016-01-01",
+    "end": "2017-12-31"
+  },
+  "test": {
+    "start": "2018-01-01",
+    "end": "2019-12-31"
+  }
+}

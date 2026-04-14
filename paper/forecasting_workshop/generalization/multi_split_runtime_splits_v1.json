@@ -1,0 +1,80 @@
+{
+  "experiment_family": "forecasting_workshop_multi_split_v1",
+  "parent_baseline_id": "paper_v3_frozen_control_eta_20260324",
+  "notes": [
+    "Within each split, the same trained policy is reused across the eta arms.",
+    "Only the forecast-to-execution interface varies inside the selected-point comparison for each split.",
+    "The canonical 2024-2025 split is reused as a frozen reference rather than rerun."
+  ],
+  "splits": [
+    {
+      "split_id": "split_a",
+      "label": "Split A",
+      "status": "launch",
+      "train": {
+        "start": "2010-01-01",
+        "end": "2015-12-31"
+      },
+      "validation": {
+        "start": "2016-01-01",
+        "end": "2017-12-31"
+      },
+      "test": {
+        "start": "2018-01-01",
+        "end": "2019-12-31"
+      }
+    },
+    {
+      "split_id": "split_b",
+      "label": "Split B",
+      "status": "launch",
+      "train": {
+        "start": "2010-01-01",
+        "end": "2017-12-31"
+      },
+      "validation": {
+        "start": "2018-01-01",
+        "end": "2019-12-31"
+      },
+      "test": {
+        "start": "2020-01-01",
+        "end": "2021-12-31"
+      }
+    },
+    {
+      "split_id": "split_c",
+      "label": "Split C",
+      "status": "launch",
+      "train": {
+        "start": "2010-01-01",
+        "end": "2019-12-31"
+      },
+      "validation": {
+        "start": "2020-01-01",
+        "end": "2021-12-31"
+      },
+      "test": {
+        "start": "2022-01-01",
+        "end": "2023-12-31"
+      }
+    },
+    {
+      "split_id": "split_d",
+      "label": "Split D",
+      "status": "canonical_reference",
+      "train": {
+        "start": "2010-01-01",
+        "end": "2021-12-31"
+      },
+      "validation": {
+        "start": "2022-01-01",
+        "end": "2023-12-31"
+      },
+      "test": {
+        "start": "2024-01-01",
+        "end": "2025-12-31"
+      },
+      "canonical_run_root": "/workspace/execution-aware-portfolio-rl/repro/rebuilds/paper_rebuild_20260324T065755Z"
+    }
+  ]
+}

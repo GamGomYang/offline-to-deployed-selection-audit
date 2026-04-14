@@ -1,0 +1,17 @@
+{
+  "split_id": "split_b",
+  "label": "Split B",
+  "status": "launch",
+  "train": {
+    "start": "2010-01-01",
+    "end": "2017-12-31"
+  },
+  "validation": {
+    "start": "2018-01-01",
+    "end": "2019-12-31"
+  },
+  "test": {
+    "start": "2020-01-01",
+    "end": "2021-12-31"
+  }
+}
