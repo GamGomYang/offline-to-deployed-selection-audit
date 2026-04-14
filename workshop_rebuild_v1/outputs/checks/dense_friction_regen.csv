@@ -1,0 +1,5 @@
+kappa,locked_selected_eta,selected_point_delta_sharpe,selected_point_turnover_reduction,best_interior_delta_sharpe,best_interior_turnover_reduction,per_kappa_selected_eta,best_interior_line_role,regeneration_basis
+2e-4,0.5,0.0041,0.01105,0.0113,0.02143,1.0,diagnostic_only,preserved_locked_manuscript_and_figure_inputs
+5e-4,0.5,0.0105,0.01105,0.0230,0.02143,1.0,diagnostic_only,preserved_locked_manuscript_and_figure_inputs
+1e-3,0.5,0.0213,0.01105,0.0424,0.02143,0.5,diagnostic_only,preserved_locked_manuscript_and_figure_inputs
+2e-3,0.5,0.0409,0.01105,0.0761,0.02143,0.2,diagnostic_only,preserved_locked_manuscript_and_figure_inputs

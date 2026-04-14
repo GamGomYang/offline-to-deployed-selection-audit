@@ -1,0 +1,5 @@
+c_value,validation_role,net_sharpe_kappa_5e-4,delta_vs_c0_kappa_5e-4,toexec_kappa_5e-4,net_sharpe_kappa_1e-3,delta_vs_c0_kappa_1e-3,toexec_kappa_1e-3
+0,baseline_c0,0.0661,0.0000,1.29032,-1.0529,0.0000,1.29032
+2000,below_validation_threshold,0.9328,0.8667,0.16936,0.9549,2.0078,0.09178
+3000,selected_on_validation,1.0199,0.9539,0.11894,0.9679,2.0208,0.06333
+4000,qualifies_not_selected,1.0314,0.9654,0.09178,0.9709,2.0238,0.04843

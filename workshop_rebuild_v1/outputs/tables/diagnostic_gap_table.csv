@@ -1,0 +1,4 @@
+kappa,TOexec,TOtgt,TOtgt_over_TOexec,tracking_discrepancy,final_equity_gap,mean_abs_return_gap
+0,0.01095,0.02190,2.00,0.00259,0.00067,0.00003
+5e-4,0.01095,0.02190,2.00,0.00259,0.00369,0.00003
+1e-3,0.01095,0.02190,2.00,0.00259,0.00739,0.00003
