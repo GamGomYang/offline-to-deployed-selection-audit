@@ -1,0 +1,39 @@
+name: u27_current
+description: Exact fixed 27-name snapshot used by the current main workshop paper and frozen U27 protocol.
+construction_rule: >
+  Copy the current paper U27 exactly from the frozen protocol. This is the main reference
+  universe for comparison and should match the current main U27 ticker list without changes.
+seed: null
+tickers:
+  - AAPL
+  - AMGN
+  - AXP
+  - BA
+  - CAT
+  - CRM
+  - CSCO
+  - CVX
+  - DIS
+  - GS
+  - HD
+  - HON
+  - IBM
+  - INTC
+  - JNJ
+  - JPM
+  - KO
+  - MCD
+  - MMM
+  - MRK
+  - MSFT
+  - NKE
+  - PG
+  - UNH
+  - V
+  - VZ
+  - WMT
+evaluation_role: main_reference_control
+notes:
+  - Exact main-paper U27 reference universe.
+  - Fixed reproducible snapshot, not a survivorship-free historical universe.
+  - Serves as the control basket for multi-universe robustness checks.

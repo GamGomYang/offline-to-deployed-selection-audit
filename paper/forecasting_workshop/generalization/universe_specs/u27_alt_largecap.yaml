@@ -1,0 +1,43 @@
+name: u27_alt_largecap
+description: >
+  Alternative fixed 27-name large-cap snapshot designed to reduce the risk that the workshop
+  result is a U27-only artifact while staying close to the same large-cap U.S. equity regime.
+construction_rule: >
+  Use a fixed liquid large-cap snapshot that allows partial overlap with the current U27 but is
+  still meaningfully different from it. The basket favors broad large-cap comparability over
+  sector balancing and is intended as a primary support universe rather than a replacement main
+  universe.
+seed: null
+tickers:
+  - AAPL
+  - ABT
+  - ACN
+  - ADBE
+  - ADP
+  - AMGN
+  - BDX
+  - BLK
+  - BMY
+  - CAT
+  - CMCSA
+  - COP
+  - COST
+  - CVX
+  - DHR
+  - GS
+  - JPM
+  - LLY
+  - MA
+  - MSFT
+  - NEE
+  - ORCL
+  - PEP
+  - PG
+  - UNH
+  - V
+  - WMT
+evaluation_role: primary_support_fixed_universe
+notes:
+  - Partial overlap with `u27_current` is intentional.
+  - The basket is kept large-cap and liquid, but is materially different from the current U27.
+  - Fixed reproducible snapshot, not a survivorship-free historical universe.

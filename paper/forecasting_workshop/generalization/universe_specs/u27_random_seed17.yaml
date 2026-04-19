@@ -1,0 +1,42 @@
+name: u27_random_seed17
+description: >
+  Frozen random 27-name large-cap snapshot recorded as an appendix-only support universe for a
+  reproducible seeded sensitivity check.
+construction_rule: >
+  Treat this file as the frozen realization of a seeded random draw from an internal liquid
+  large-cap candidate pool, using seed 17. The realized draw is fixed here for reproducibility
+  and should be interpreted as appendix-only support rather than a main support axis.
+seed: 17
+tickers:
+  - ABT
+  - ACN
+  - ADBE
+  - AEP
+  - BA
+  - BDX
+  - BLK
+  - BMY
+  - CAT
+  - CMCSA
+  - COP
+  - COST
+  - CVX
+  - DE
+  - DHR
+  - GILD
+  - JPM
+  - LOW
+  - MA
+  - MDT
+  - MS
+  - NEE
+  - ORCL
+  - PEP
+  - RTX
+  - TGT
+  - TXN
+evaluation_role: appendix_only_random_support
+notes:
+  - Appendix-only support universe.
+  - "Reproducible seeded frozen draw using `seed: 17`."
+  - Fixed reproducible snapshot, not a survivorship-free historical universe.

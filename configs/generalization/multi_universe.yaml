@@ -1,0 +1,41 @@
+experiment_name: forecasting_workshop_multi_universe
+
+universe_spec_dir: paper/forecasting_workshop/generalization/universe_specs
+
+universes:
+  - u27_current
+  - u27_alt_largecap
+  - u27_sector_balanced
+
+optional_universes:
+  - u27_random_seed17
+
+include_optional_random: false
+
+template_configs:
+  train: frozen_protocol/paper_v3/snapshot_control.yaml
+  validation: frozen_protocol/paper_v3/validation_eta.yaml
+  final: frozen_protocol/paper_v3/final_eta.yaml
+
+paths:
+  runtime_root: outputs/generalization/multi_universe
+  raw_output_root: paper/forecasting_workshop/generalization/outputs/multi_universe/raw
+  processed_root: data/processed_generalization/multi_universe
+  preserve_default_processed_dir_for_current: true
+
+execution:
+  model_type: prl
+  offline: true
+  seeds:
+    - 0
+    - 1
+    - 2
+  etas:
+    - 1.0
+    - 0.5
+  kappas:
+    - 0.0
+    - 0.0005
+    - 0.001
+  max_steps: 0
+  save_trace: true

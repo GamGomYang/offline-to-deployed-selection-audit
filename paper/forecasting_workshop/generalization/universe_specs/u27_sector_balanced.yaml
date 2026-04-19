@@ -1,0 +1,42 @@
+name: u27_sector_balanced
+description: >
+  Sector-balanced fixed 27-name large-cap snapshot built to spread the support test across
+  multiple represented sectors as evenly as feasible in a compact 27-name basket.
+construction_rule: >
+  Use three names per represented sector across nine liquid large-cap sector buckets. The goal is
+  not exhaustive market coverage; it is a more sector-even fixed snapshot that can test whether
+  the evaluation-object discrepancy persists beyond the current U27 composition.
+seed: null
+tickers:
+  - CMCSA
+  - GOOGL
+  - NFLX
+  - AMZN
+  - HD
+  - SBUX
+  - KO
+  - PEP
+  - WMT
+  - COP
+  - CVX
+  - XOM
+  - BLK
+  - JPM
+  - MS
+  - ABT
+  - JNJ
+  - LLY
+  - CAT
+  - DE
+  - HON
+  - AAPL
+  - MSFT
+  - ORCL
+  - AEP
+  - DUK
+  - NEE
+evaluation_role: primary_support_fixed_universe
+notes:
+  - Intended to be more sector-even than `u27_current`, not to be a full historical sector index.
+  - Represented sectors are kept evenly sized where feasible in a 27-name support basket.
+  - Fixed reproducible snapshot, not a survivorship-free historical universe.
