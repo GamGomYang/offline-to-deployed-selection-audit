@@ -1,0 +1,47 @@
+experiment_name: forecasting_workshop_arch_vol_scaled_eta
+
+architecture_name: arch_vol_scaled_eta
+architecture_spec: paper/forecasting_workshop/generalization/architecture_specs/arch_vol_scaled_eta.yaml
+shared_target_config: configs/generalization/shared_target_mapping.yaml
+
+periods:
+  - validation
+  - final
+
+paths:
+  raw_output_root: paper/forecasting_workshop/generalization/outputs/architecture_matrix/raw_candidates_v2/arch_vol_scaled_eta
+  runtime_root: outputs/generalization/architecture_matrix/arch_vol_scaled_eta
+
+execution:
+  offline: true
+  seeds:
+    - 0
+  kappas:
+    - 0.0
+    - 0.0005
+    - 0.001
+  alpha_grid:
+    - 0.024
+    - 0.025
+    - 0.026
+    - 0.027
+    - 0.028
+  eta_min_grid:
+    - 0.9
+    - 0.95
+    - 0.98
+    - 0.99
+  lookback: 20
+  eps: 1.0e-8
+  eta_cap: 1.0
+  near_flat_threshold: 0.005
+  suppression_ratio: 0.25
+  save_trace: true
+
+reference:
+  arm_label: full_rebalance_baseline
+  force_full_rebalance: true
+
+selection_policy:
+  status: not_applied_in_this_step
+  intended_rule: redesigned_validation_grid_focused_on_near_flat_plus_positive_cost_disagreement_then_prefer_higher_eta_min_and_higher_alpha

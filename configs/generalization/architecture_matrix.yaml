@@ -1,0 +1,42 @@
+experiment_name: forecasting_workshop_architecture_matrix
+
+architecture_spec_dir: paper/forecasting_workshop/generalization/architecture_specs
+
+architectures:
+  - arch_rl_selected
+  - arch_rule_eta_fixed
+  - arch_linear_prox
+
+optional_architectures:
+  - arch_threshold_rebalance
+
+include_optional_threshold: false
+
+paths:
+  raw_output_root: paper/forecasting_workshop/generalization/outputs/architecture_matrix/raw
+  runtime_root: outputs/generalization/architecture_matrix
+  rl_validation_config: paper/forecasting_workshop/generalization/outputs/multi_universe/raw/u27_current/configs/validation_snapshot.yaml
+  rl_final_config: paper/forecasting_workshop/generalization/outputs/multi_universe/raw/u27_current/configs/final_snapshot.yaml
+  rl_model_root: outputs/generalization/multi_universe/u27_current/train_control
+  talibp_validation_config: prl-dow30/configs/exp/paper_u27_talibp_validation.yaml
+  talibp_final_config: prl-dow30/configs/exp/paper_u27_talibp_final.yaml
+
+execution:
+  offline: true
+  seeds:
+    - 0
+  kappas:
+    - 0.0
+    - 0.0005
+    - 0.001
+  near_flat_threshold: 0.005
+  suppression_ratio: 0.25
+  save_trace: true
+
+talibp:
+  taus:
+    - 0.0
+    - 0.03
+    - 0.1
+    - 0.3
+    - 1.0

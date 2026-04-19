@@ -1,0 +1,40 @@
+name: arch_vol_scaled_eta
+family: independent_non_rl_volatility_scaled_execution
+forecast_source: >
+  Shared frozen forecast signal and shared deterministic target mapping defined by
+  `configs/generalization/shared_target_mapping.yaml`. This arm does not use RL target replay.
+decision_rule: >
+  Let `w_target_t` be the shared deterministic target. Build a scalar volatility proxy
+  `sigma_t` from a documented rolling rule over market returns, then compute
+  `eta_t = clip(alpha / (sigma_t + eps), eta_min, 1.0)`. Execute a simplex-preserving partial
+  step: `w_exec_t = (1 - eta_t) * w_prev + eta_t * w_target_t`.
+params:
+  target_generator: shared_deterministic_target_mapping
+  shared_target_config: configs/generalization/shared_target_mapping.yaml
+  volatility_proxy: target_weighted_mean_of_rolling_asset_volatility
+  rolling_rule: 20_day_std_of_arithmetic_returns_with_bfill_startup
+  alpha_grid:
+    - 0.024
+    - 0.025
+    - 0.026
+    - 0.027
+    - 0.028
+  eta_min_grid:
+    - 0.9
+    - 0.95
+    - 0.98
+    - 0.99
+  lookback: 20
+  eps: 1.0e-8
+  eta_cap: 1.0
+  reference_behavior: full_rebalance_baseline
+  long_only: true
+  fully_invested: true
+  champion_selection_status: not_applied_in_this_step
+compare_arm: candidate_vol_scaled_eta_grid_vs_full_rebalance_under_shared_target_mapping
+evaluation_role: pending_main_support_non_rl_comparator
+notes:
+  - Independent non-RL execution comparator built on the same shared target mapping as deadband.
+  - This arm differs from deadband by using a continuous volatility-conditioned eta schedule instead of a thresholded trade gate.
+  - The current grid is intentionally narrowed around the validation boundary where zero-cost near-flat behavior and positive-cost disagreement can coexist.
+  - Keep all validation and final candidates visible until a later validation-only selection step is applied.

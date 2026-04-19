@@ -1,0 +1,29 @@
+experiment_name: forecasting_workshop_shared_target_mapping
+
+template_configs:
+  validation: prl-dow30/configs/exp/paper_u27_talibp_validation.yaml
+  final: prl-dow30/configs/exp/paper_u27_talibp_final.yaml
+
+forecast_source:
+  family: frozen_signal_package
+  signal_selection_snapshot: frozen_protocol/paper_v3/selected_signals_snapshot.json
+  selection_policy: paper_control_frozen
+  signal_names:
+    - reversal_5d
+    - short_term_reversal
+  score_aggregation: equal_weight_mean_across_selected_signals
+
+score_processing:
+  cross_sectional_zscore: true
+  clip_abs_zscore: 3.0
+  missing_row_fallback: equal_weight
+
+target_mapping:
+  rule: stable_softmax
+  softmax_scale: 1.0
+  long_only: true
+  fully_invested: true
+  invalid_row_fallback: equal_weight
+
+execution:
+  offline: true

@@ -1,0 +1,24 @@
+name: arch_threshold_rebalance
+family: threshold_or_no_trade_execution
+forecast_source: >
+  Frozen target stream from the locked companion architecture family. The target source remains
+  fixed while only the thresholded rebalance rule changes.
+decision_rule: >
+  Rebalance only when the gap between the current executed portfolio and the proposed target
+  exceeds a documented threshold; otherwise retain the previous executed weights.
+params:
+  threshold_metric: turnover_l1_gap
+  threshold_grid:
+    - 0.01
+    - 0.02
+    - 0.05
+  rebalance_action: full_target_step
+  baseline_threshold: 0.0
+  simplex_feasible: true
+  exploratory_only: true
+compare_arm: selected_threshold_vs_zero_threshold_immediate_rebalance
+evaluation_role: appendix_only_optional_support
+notes:
+  - Optional appendix-only support arm for a no-trade or thresholded execution diagnostic.
+  - Use only if an additional non-RL execution probe is needed after the main architecture package is assessed.
+  - Do not promote this arm into the main architecture support story by default.

@@ -1,0 +1,35 @@
+name: arch_deadband_partial
+family: independent_non_rl_deadband_partial_execution
+forecast_source: >
+  Shared frozen forecast signal and shared deterministic target mapping defined by
+  `configs/generalization/shared_target_mapping.yaml`. This arm does not use RL target replay.
+decision_rule: >
+  Let `w_prev` be previous executed weights and `w_target_t` the shared deterministic target.
+  Compute `gap_t = ||w_target_t - w_prev||_1`. If `gap_t <= delta`, keep `w_exec_t = w_prev`.
+  Otherwise execute a partial move toward target:
+  `w_exec_t = (1 - eta_db) * w_prev + eta_db * w_target_t`.
+params:
+  target_generator: shared_deterministic_target_mapping
+  shared_target_config: configs/generalization/shared_target_mapping.yaml
+  gap_metric: l1_weight_gap
+  delta_grid:
+    - 0.0
+    - 0.02
+    - 0.05
+    - 0.1
+    - 0.15
+  eta_db_grid:
+    - 0.995
+    - 0.999
+    - 0.9995
+    - 0.9999
+  reference_behavior: full_rebalance_baseline
+  long_only: true
+  fully_invested: true
+  champion_selection_status: not_applied_in_this_step
+compare_arm: candidate_deadband_partial_grid_vs_full_rebalance_under_shared_target_mapping
+evaluation_role: pending_main_support_non_rl_comparator
+notes:
+  - Independent non-RL execution comparator built on the shared deterministic target mapping.
+  - The comparator difference is execution only: deadband no-trade or partial move versus full rebalance.
+  - Keep all validation and final candidates visible until a later validation-only champion rule is applied.

@@ -1,0 +1,26 @@
+name: arch_linear_prox
+family: turnover_aware_linear_information_parity
+forecast_source: >
+  Fixed same-state linear ridge forecast map fit once on the training split and then frozen for
+  validation and held-out evaluation. The information set is fixed before the execution-layer
+  comparison is run.
+decision_rule: >
+  Long-only convex target construction with a proximal or anchored penalty toward previous
+  executed weights, using a linear expected-return map and the same executed-path accounting.
+params:
+  target_generator: linear_ridge_expected_return_map
+  optimizer: anchored_mean_variance_or_turnover_aware_convex_program
+  target_mode: anchored_mean_variance
+  anchor_penalty_symbol: tau
+  baseline_tau: 0.0
+  selected_tau_rule: validation_smallest_positive_tau_within_95pct_of_best_positive_cost_score
+  covariance_lookback: 252
+  covariance_history_min: 30
+  include_prev_weights: true
+  simplex_feasible: true
+compare_arm: selected_tau_vs_tau_0_under_the_same_frozen_linear_forecast_map
+evaluation_role: main_support_non_rl_comparator
+notes:
+  - Designed to reduce RL-only artifact concerns with a classical linear or convex comparator.
+  - Forecast source is fixed within the family; the comparison is about decision translation and execution regularization, not predictive retraining.
+  - Keep paper-facing use auxiliary or support-only even if the direction is aligned.

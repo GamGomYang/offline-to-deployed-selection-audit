@@ -1,0 +1,27 @@
+name: arch_rl_selected
+family: rl_policy_plus_fixed_eta_execution
+forecast_source: >
+  Frozen nonlinear PRL target generator from the current main workshop pipeline. The learned
+  policy, signal package, and target stream remain locked while only the execution interface
+  and evaluation arm are compared.
+decision_rule: >
+  Long-only simplex-preserving fixed-eta proximal execution update over the RL target weights:
+  w_exec_t = (1 - eta) * w_exec_{t-1} + eta * w_tgt_t.
+params:
+  target_generator: frozen_prl_policy
+  execution_map: fixed_eta_convex_combination
+  selected_eta: 0.5
+  baseline_eta: 1.0
+  eta_selection_rule: validation_selected_largest_qualifying_eta
+  relative_threshold: 0.95
+  simplex_feasible: true
+  transaction_cost_grid:
+    - 0.0
+    - 0.0005
+    - 0.001
+compare_arm: eta_0.5_vs_eta_1.0_on_the_same_frozen_rl_target_stream
+evaluation_role: main_reference_architecture_control
+notes:
+  - Exact current main RL interface used as the architecture reference arm.
+  - Forecast source is frozen inside the comparison; this is not an end-to-end retraining study.
+  - Keep as the anchor architecture for architecture-robustness interpretation.

@@ -1,0 +1,21 @@
+\begin{table}[t]
+\centering
+\scriptsize
+\begin{tabular}{llrrrrrrrllll}
+\toprule
+Architecture & $\kappa$ & Ref & Sel & $\Delta$Exec & RefTgt & SelTgt & $\Delta$Tgt & TO red.\% & D & Z0 & P+ & Verdict \\
+\midrule
+Linear-Prox & 0 & 1.2129 & 1.0074 & -0.2055 & 1.2129 & 1.0074 & -0.2055 & 88.4 & none & no & n/a & Red \\
+Linear-Prox & 5e-4 & 0.0923 & 0.8910 & 0.7987 & 0.0923 & 0.8910 & 0.7987 & 88.4 & none & n/a & yes & Yellow \\
+Linear-Prox & 1e-3 & -1.0260 & 0.7746 & 1.8005 & -1.0260 & 0.7746 & 1.8005 & 88.4 & none & n/a & yes & Yellow \\
+RL-Selected & 0 & 1.1587 & 1.1616 & 0.0029 & 1.1587 & 1.1587 & -0.0000 & 48.9 & none & yes & n/a & Green \\
+RL-Selected & 5e-4 & 1.1388 & 1.1514 & 0.0126 & 1.1388 & 1.1384 & -0.0005 & 48.9 & ranking\_mismatch & n/a & yes & Green \\
+RL-Selected & 1e-3 & 1.1190 & 1.1413 & 0.0223 & 1.1190 & 1.1181 & -0.0009 & 48.9 & ranking\_mismatch & n/a & yes & Green \\
+Rule-EtaFixed & 0 & 1.1587 & 1.1616 & 0.0029 & 1.1587 & 1.1587 & -0.0000 & 48.9 & none & yes & n/a & Green \\
+Rule-EtaFixed & 5e-4 & 1.1388 & 1.1514 & 0.0126 & 1.1388 & 1.1384 & -0.0005 & 48.9 & ranking\_mismatch & n/a & yes & Green \\
+Rule-EtaFixed & 1e-3 & 1.1190 & 1.1413 & 0.0223 & 1.1190 & 1.1181 & -0.0009 & 48.9 & ranking\_mismatch & n/a & yes & Green \\
+\bottomrule
+\end{tabular}
+\caption{Decision-architecture support summary under frozen-source comparisons. `Ref` and `Sel` denote the reference and selected arms within each architecture family. `D` reports the conservative target-versus-executed disagreement label, `Z0` reports the documented zero-cost near-flat check, and `P+` reports positive-cost executed-path direction.}
+\label{tab:decision_architecture_summary}
+\end{table}

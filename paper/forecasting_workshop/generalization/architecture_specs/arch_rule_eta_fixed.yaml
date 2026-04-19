@@ -1,0 +1,29 @@
+name: arch_rule_eta_fixed
+family: deterministic_partial_execution_rule
+forecast_source: >
+  Frozen target stream from the locked architecture family under test. The proposed targets are
+  held fixed before evaluation so the comparison isolates the partial-execution rule rather than
+  predictive-model changes.
+decision_rule: >
+  Deterministic fixed-eta smoothing of proposed targets with no learned execution adaptation:
+  w_exec_t = (1 - eta) * w_exec_{t-1} + eta * w_tgt_t.
+params:
+  target_generator: frozen_family_specific_target_stream
+  execution_map: fixed_eta_convex_combination
+  eta_grid:
+    - 1.0
+    - 0.5
+  selected_eta: 0.5
+  baseline_eta: 1.0
+  state_dependent_adjustment: false
+  simplex_feasible: true
+  transaction_cost_grid:
+    - 0.0
+    - 0.0005
+    - 0.001
+compare_arm: eta_0.5_vs_eta_1.0_under_the_same_frozen_target_stream
+evaluation_role: core_support_execution_rule_variant
+notes:
+  - Minimal one-parameter smoothing rule for checking whether the discrepancy survives a simple execution map.
+  - Intended to separate the execution-interface effect from more elaborate controller design.
+  - Support-only rule-based arm, not a new main empirical result.

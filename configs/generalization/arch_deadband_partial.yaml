@@ -1,0 +1,44 @@
+experiment_name: forecasting_workshop_arch_deadband_partial
+
+architecture_name: arch_deadband_partial
+architecture_spec: paper/forecasting_workshop/generalization/architecture_specs/arch_deadband_partial.yaml
+shared_target_config: configs/generalization/shared_target_mapping.yaml
+
+periods:
+  - validation
+  - final
+
+paths:
+  raw_output_root: paper/forecasting_workshop/generalization/outputs/architecture_matrix/raw_candidates_v3/arch_deadband_partial
+  runtime_root: outputs/generalization/architecture_matrix/arch_deadband_partial
+
+execution:
+  offline: true
+  seeds:
+    - 0
+  kappas:
+    - 0.0
+    - 0.0005
+    - 0.001
+  delta_grid:
+    - 0.0
+    - 0.02
+    - 0.05
+    - 0.1
+    - 0.15
+  eta_db_grid:
+    - 0.995
+    - 0.999
+    - 0.9995
+    - 0.9999
+  near_flat_threshold: 0.005
+  suppression_ratio: 0.25
+  save_trace: true
+
+reference:
+  arm_label: full_rebalance_baseline
+  force_full_rebalance: true
+
+selection_policy:
+  status: not_applied_in_this_step
+  intended_rule: validation_smallest_positive_intervention_within_95pct_of_best_positive_cost_score_subject_to_zero_cost_guardrail
