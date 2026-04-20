@@ -1,0 +1,50 @@
+experiment_name: forecasting_workshop_arch_vol_spike_eta
+
+architecture_name: arch_vol_spike_eta
+architecture_spec: paper/forecasting_workshop/generalization/architecture_specs/arch_vol_spike_eta.yaml
+shared_target_config: configs/generalization/shared_target_mapping.yaml
+
+periods:
+  - validation
+  - final
+
+paths:
+  raw_output_root: paper/forecasting_workshop/generalization/outputs/architecture_matrix/raw_candidates_v2/arch_vol_spike_eta
+  runtime_root: outputs/generalization/architecture_matrix/arch_vol_spike_eta
+
+execution:
+  offline: true
+  seeds:
+    - 0
+  kappas:
+    - 0.0
+    - 0.0005
+    - 0.001
+  trigger_grid:
+    - 1.1
+    - 1.15
+    - 1.2
+    - 1.25
+  eta_low_grid:
+    - 0.985
+    - 0.987
+    - 0.988
+    - 0.989
+    - 0.99
+    - 0.992
+    - 0.994
+    - 0.996
+  lookback_sigma: 20
+  lookback_ref: 60
+  eps: 1.0e-8
+  near_flat_threshold: 0.005
+  suppression_ratio: 0.25
+  save_trace: true
+
+reference:
+  arm_label: full_rebalance_baseline
+  force_full_rebalance: true
+
+selection_policy:
+  status: not_applied_in_this_step
+  intended_rule: redesigned_validation_only_stability_first_selection_for_triggered_fixed_eta_family

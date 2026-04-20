@@ -9,7 +9,7 @@ periods:
   - final
 
 paths:
-  raw_output_root: paper/forecasting_workshop/generalization/outputs/architecture_matrix/raw_candidates_v3/arch_deadband_partial
+  raw_output_root: paper/forecasting_workshop/generalization/outputs/architecture_matrix/raw_candidates_v4/arch_deadband_partial
   runtime_root: outputs/generalization/architecture_matrix/arch_deadband_partial
 
 execution:
@@ -21,16 +21,24 @@ execution:
     - 0.0005
     - 0.001
   delta_grid:
-    - 0.0
-    - 0.02
+    - 0.03
+    - 0.04
     - 0.05
-    - 0.1
-    - 0.15
+    - 0.06
+    - 0.07
+    - 0.08
+    - 0.09
   eta_db_grid:
-    - 0.995
+    - 0.9988
+    - 0.9989
     - 0.999
+    - 0.9991
+    - 0.9992
+    - 0.9993
+    - 0.9994
     - 0.9995
-    - 0.9999
+    - 0.9996
+    - 0.9997
   near_flat_threshold: 0.005
   suppression_ratio: 0.25
   save_trace: true
@@ -41,4 +49,4 @@ reference:
 
 selection_policy:
   status: not_applied_in_this_step
-  intended_rule: validation_smallest_positive_intervention_within_95pct_of_best_positive_cost_score_subject_to_zero_cost_guardrail
+  intended_rule: validation_micro_grid_search_near_green_yellow_boundary_then_stability_first_reselection

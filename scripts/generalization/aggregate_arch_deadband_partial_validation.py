@@ -19,7 +19,7 @@ DEFAULT_RAW_ROOT = (
     / "generalization"
     / "outputs"
     / "architecture_matrix"
-    / "raw_candidates_v3"
+    / "raw_candidates_v4"
     / "arch_deadband_partial"
     / "validation"
 )
@@ -42,6 +42,8 @@ DEFAULT_OUTPUT_NOTE = (
 )
 VALIDATION_NEAR_FLAT_THRESHOLD = 0.01
 POSITIVE_KAPPAS = [5e-4, 1e-3]
+CHAMPION_RELATIVE_FLOOR = 0.80
+RUNNERUP_RELATIVE_FLOOR = 0.40
 
 
 def parse_args() -> argparse.Namespace:
@@ -151,11 +153,6 @@ def _build_row_metrics(raw_df: pd.DataFrame) -> pd.DataFrame:
     return out_df.sort_values(["delta", "eta_db", "kappa"], key=lambda s: s.map(kappa_sort_key) if s.name == "kappa" else s).reset_index(drop=True)
 
 
-def _simplicity_sort_tuple(delta: float, eta_db: float) -> tuple[float, float]:
-    # Simpler means wider deadband and smaller partial move.
-    return (-float(delta), float(eta_db))
-
-
 def _attach_config_summary(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
     config_rows: list[dict[str, object]] = []
     for (delta, eta_db), group in df.groupby(["delta", "eta_db"], sort=True):
@@ -173,6 +170,9 @@ def _attach_config_summary(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame
         mean_positive_turnover_reduction = (
             float(pos_rows["turnover_reduction_pct"].mean()) if not pos_rows.empty else float("nan")
         )
+        zero_cost_abs_delta_exec = (
+            float(zero_row["delta_sharpe_exec"].abs().iloc[0]) if not zero_row.empty else float("nan")
+        )
 
         config_rows.append(
             {
@@ -186,37 +186,92 @@ def _attach_config_summary(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame
                 "mean_positive_cost_delta_sharpe_exec": mean_positive_cost_delta,
                 "sum_positive_cost_disagreement_strength": sum_positive_disagreement,
                 "mean_positive_cost_turnover_reduction_pct": mean_positive_turnover_reduction,
-                "simplicity_delta_preference": -float(delta),
-                "simplicity_eta_preference": float(eta_db),
+                "zero_cost_abs_delta_sharpe_exec": zero_cost_abs_delta_exec,
             }
         )
 
-    config_df = pd.DataFrame(config_rows).sort_values(
-        by=[
-            "eligibility_flag",
-            "mean_positive_cost_delta_sharpe_exec",
-            "sum_positive_cost_disagreement_strength",
-            "mean_positive_cost_turnover_reduction_pct",
-            "simplicity_delta_preference",
-            "simplicity_eta_preference",
-        ],
-        ascending=[False, False, False, False, True, True],
-    ).reset_index(drop=True)
-
-    champion_key = None
+    config_df = pd.DataFrame(config_rows)
     eligible_df = config_df[config_df["eligibility_flag"] == "yes"].copy()
+    champion_key = None
+    runnerup_key = None
+    champion_pool = pd.DataFrame()
+    runnerup_pool = pd.DataFrame()
+    best_positive_cost = float("nan")
     if not eligible_df.empty:
-        champion_key = str(eligible_df.iloc[0]["config_key"])
+        best_positive_cost = float(eligible_df["mean_positive_cost_delta_sharpe_exec"].max())
+        champion_floor = float(CHAMPION_RELATIVE_FLOOR) * best_positive_cost
+        champion_pool = eligible_df[
+            eligible_df["mean_positive_cost_delta_sharpe_exec"] >= champion_floor - 1e-12
+        ].copy()
+        champion_pool = champion_pool.sort_values(
+            by=[
+                "zero_cost_abs_delta_sharpe_exec",
+                "mean_positive_cost_turnover_reduction_pct",
+                "delta",
+                "eta_db",
+                "mean_positive_cost_delta_sharpe_exec",
+            ],
+            ascending=[True, True, False, False, False],
+        ).reset_index(drop=True)
+        champion_key = str(champion_pool.iloc[0]["config_key"])
+
+        remaining_eligible = eligible_df[eligible_df["config_key"] != champion_key].copy()
+        if not remaining_eligible.empty:
+            runnerup_floor = float(RUNNERUP_RELATIVE_FLOOR) * best_positive_cost
+            runnerup_pool = remaining_eligible[
+                remaining_eligible["mean_positive_cost_delta_sharpe_exec"] >= runnerup_floor - 1e-12
+            ].copy()
+            if runnerup_pool.empty:
+                runnerup_pool = remaining_eligible.copy()
+            runnerup_pool = runnerup_pool.sort_values(
+                by=[
+                    "zero_cost_abs_delta_sharpe_exec",
+                    "mean_positive_cost_turnover_reduction_pct",
+                    "delta",
+                    "eta_db",
+                    "mean_positive_cost_delta_sharpe_exec",
+                ],
+                ascending=[True, True, False, False, False],
+            ).reset_index(drop=True)
+            runnerup_key = str(runnerup_pool.iloc[0]["config_key"])
     elif not config_df.empty:
+        config_df = config_df.sort_values(
+            by=[
+                "eligibility_flag",
+                "mean_positive_cost_delta_sharpe_exec",
+                "sum_positive_cost_disagreement_strength",
+                "mean_positive_cost_turnover_reduction_pct",
+                "zero_cost_abs_delta_sharpe_exec",
+            ],
+            ascending=[False, False, False, False, True],
+        ).reset_index(drop=True)
         champion_key = str(config_df.iloc[0]["config_key"])
 
     out_df = df.merge(
-        config_df.drop(columns=["simplicity_delta_preference", "simplicity_eta_preference"]),
+        pd.DataFrame(config_rows),
         on=["config_key", "delta", "eta_db"],
         how="left",
     )
     out_df["champion_recommendation"] = out_df["config_key"].map(lambda key: "yes" if key == champion_key else "no")
+    out_df["runnerup_recommendation"] = out_df["config_key"].map(lambda key: "yes" if key == runnerup_key else "no")
+    config_df = pd.DataFrame(config_rows)
     config_df["champion_recommendation"] = config_df["config_key"].map(lambda key: "yes" if key == champion_key else "no")
+    config_df["runnerup_recommendation"] = config_df["config_key"].map(lambda key: "yes" if key == runnerup_key else "no")
+    config_df["champion_pool_flag"] = config_df["config_key"].isin(set(champion_pool.get("config_key", []))).map(lambda flag: "yes" if flag else "no")
+    config_df["runnerup_pool_flag"] = config_df["config_key"].isin(set(runnerup_pool.get("config_key", []))).map(lambda flag: "yes" if flag else "no")
+    config_df = config_df.sort_values(
+        by=[
+            "champion_recommendation",
+            "runnerup_recommendation",
+            "eligibility_flag",
+            "zero_cost_abs_delta_sharpe_exec",
+            "mean_positive_cost_turnover_reduction_pct",
+            "delta",
+            "eta_db",
+            "mean_positive_cost_delta_sharpe_exec",
+        ],
+        ascending=[False, False, False, True, True, False, False, False],
+    ).reset_index(drop=True)
     return out_df, config_df
 
 
@@ -229,11 +284,16 @@ def _write_note(config_df: pd.DataFrame, output_note: Path) -> None:
     output_note.parent.mkdir(parents=True, exist_ok=True)
     eligible_df = config_df[config_df["eligibility_flag"] == "yes"].copy()
     champion = eligible_df.iloc[0] if not eligible_df.empty else None
+    champion_row = config_df[config_df["champion_recommendation"] == "yes"].copy()
+    champion_row = champion_row.iloc[0] if not champion_row.empty else None
+    runnerup_row = config_df[config_df["runnerup_recommendation"] == "yes"].copy()
+    runnerup_row = runnerup_row.iloc[0] if not runnerup_row.empty else None
 
     eligible_list = []
     for row in eligible_df.itertuples(index=False):
         eligible_list.append(
-            f"- `{row.config_key}`: mean positive-cost `ΔSharpe_exec={format_float(row.mean_positive_cost_delta_sharpe_exec)}`, "
+            f"- `{row.config_key}`: zero-cost `|ΔSharpe_exec|={format_float(row.zero_cost_abs_delta_sharpe_exec)}`, "
+            f"mean positive-cost `ΔSharpe_exec={format_float(row.mean_positive_cost_delta_sharpe_exec)}`, "
             f"sum disagreement strength `{int(row.sum_positive_cost_disagreement_strength)}`, "
             f"mean turnover reduction `{format_float(row.mean_positive_cost_turnover_reduction_pct, digits=1)}%`"
         )
@@ -251,11 +311,34 @@ def _write_note(config_df: pd.DataFrame, output_note: Path) -> None:
         champion_text = "No champion is recommended yet because no configuration satisfied the validation eligibility rule."
     else:
         champion_text = (
-            "The recommended deadband configuration for later test evaluation is "
-            f"`{champion.config_key}`. "
-            "It is selected by largest mean positive-cost `ΔSharpe_exec`, then largest summed disagreement strength, "
-            "then largest mean positive-cost turnover reduction, and finally by the simpler parameter preference "
-            "(wider deadband, smaller partial step)."
+            "The redesigned stability-first selection rule first keeps only eligible configurations, then forms a champion band "
+            f"with mean positive-cost `ΔSharpe_exec >= {int(CHAMPION_RELATIVE_FLOOR * 100)}%` of the best eligible score. "
+            "Inside that band, it prefers smaller zero-cost `|ΔSharpe_exec|`, then smaller mean turnover reduction, then wider deadband, "
+            "and finally larger `eta_db`."
+        )
+
+    runnerup_text = (
+        "No runner-up is recommended yet."
+        if runnerup_row is None
+        else (
+            "The runner-up is selected from the remaining eligible configurations using a secondary band with "
+            f"mean positive-cost `ΔSharpe_exec >= {int(RUNNERUP_RELATIVE_FLOOR * 100)}%` of the best eligible score, then the same "
+            "stability-first tie-break."
+        )
+    )
+
+    selected_lines = []
+    if champion_row is not None:
+        selected_lines.append(
+            f"- Champion: `{champion_row.config_key}` with zero-cost `|ΔSharpe_exec|={format_float(champion_row.zero_cost_abs_delta_sharpe_exec)}`, "
+            f"mean positive-cost `ΔSharpe_exec={format_float(champion_row.mean_positive_cost_delta_sharpe_exec)}`, "
+            f"mean turnover reduction `{format_float(champion_row.mean_positive_cost_turnover_reduction_pct, digits=1)}%`"
+        )
+    if runnerup_row is not None:
+        selected_lines.append(
+            f"- Runner-up: `{runnerup_row.config_key}` with zero-cost `|ΔSharpe_exec|={format_float(runnerup_row.zero_cost_abs_delta_sharpe_exec)}`, "
+            f"mean positive-cost `ΔSharpe_exec={format_float(runnerup_row.mean_positive_cost_delta_sharpe_exec)}`, "
+            f"mean turnover reduction `{format_float(runnerup_row.mean_positive_cost_turnover_reduction_pct, digits=1)}%`"
         )
 
     text = f"""# Deadband Partial Validation Note
@@ -277,6 +360,11 @@ Eligible configurations:
 {chr(10).join(eligible_list)}
 
 {champion_text}
+
+{runnerup_text}
+
+Selected pair for test rerun:
+{chr(10).join(selected_lines) if selected_lines else "- No selected pair yet."}
 """
     output_note.write_text(text)
 

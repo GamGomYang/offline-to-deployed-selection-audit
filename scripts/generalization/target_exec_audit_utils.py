@@ -67,6 +67,10 @@ def display_universe_name(name: str) -> str:
 def display_architecture_name(name: str) -> str:
     mapping = {
         "arch_rl_selected": "RL-Selected",
+        "arch_deadband_partial_champion": "Deadband-Champion",
+        "arch_deadband_partial_runnerup": "Deadband-RunnerUp",
+        "arch_vol_spike_eta_champion": "VolScaledEta-Champion",
+        "arch_vol_spike_eta_runnerup": "VolScaledEta-RunnerUp",
         "arch_rule_eta_fixed": "Rule-EtaFixed",
         "arch_linear_prox": "Linear-Prox",
         "arch_threshold_rebalance": "Threshold-Rebalance",

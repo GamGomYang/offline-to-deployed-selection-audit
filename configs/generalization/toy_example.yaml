@@ -1,0 +1,40 @@
+name: toy_target_vs_executed_mismatch
+seed: 7
+time_horizon: 200
+friction_grid:
+  - 0.0
+  - 0.1
+  - 0.25
+  - 0.5
+  - 1.0
+process:
+  description: Generic scalar decision process with a latent desired action and a noisy forecast.
+  forecast_noise_std: 0.06
+  desired_action:
+    base_level: 0.5
+    lower_clip: 0.02
+    upper_clip: 0.98
+    components:
+      - kind: sin
+        amplitude: 0.35
+        period: 20
+      - kind: sin
+        amplitude: 0.18
+        period: 5
+arms:
+  responsive:
+    gain: 1.0
+    description: Uses the frozen forecast directly.
+  tempered:
+    gain: 0.88
+    description: Shrinks the same frozen forecast toward the neutral action.
+execution:
+  zero_friction_step_cap: 1.0
+  positive_friction_base_step_cap: 0.30
+  friction_scale: 2.8
+evaluation:
+  target_view: Score the proposed action as if it were realized directly.
+  executed_view: Score the realized action after the frictional execution rule.
+outputs:
+  csv: paper/forecasting_workshop/generalization/outputs/toy_example_results.csv
+  figure: paper/forecasting_workshop/generalization/figures/fig_toy_example.pdf

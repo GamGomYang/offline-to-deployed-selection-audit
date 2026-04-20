@@ -14,6 +14,8 @@ import pandas as pd
 from matplotlib.colors import BoundaryNorm, ListedColormap
 
 from target_exec_audit_utils import (
+    ZERO_COST_NEAR_FLAT_THRESHOLD,
+    ZERO_COST_YELLOW_THRESHOLD,
     classify_pair,
     display_architecture_name,
     display_universe_name,
@@ -53,11 +55,26 @@ def parse_args() -> argparse.Namespace:
 def _paper_use_for_architecture(name: str) -> str:
     mapping = {
         "arch_rl_selected": "support_only_reference",
+        "arch_deadband_partial_champion": "support_only_independent_nonrl_primary",
+        "arch_deadband_partial_runnerup": "support_only_independent_nonrl_secondary",
+        "arch_vol_spike_eta_champion": "support_only_independent_nonrl_primary",
+        "arch_vol_spike_eta_runnerup": "support_only_independent_nonrl_secondary",
         "arch_rule_eta_fixed": "support_only_nonindependent",
         "arch_linear_prox": "support_only_mixed",
         "arch_threshold_rebalance": "appendix_only_optional_support",
     }
     return mapping.get(name, "support_only")
+
+
+def _architecture_zero_cost_threshold(name: str) -> float:
+    if name in {
+        "arch_deadband_partial_champion",
+        "arch_deadband_partial_runnerup",
+        "arch_vol_spike_eta_champion",
+        "arch_vol_spike_eta_runnerup",
+    }:
+        return ZERO_COST_YELLOW_THRESHOLD
+    return ZERO_COST_NEAR_FLAT_THRESHOLD
 
 
 def _load_cost_sweep_rows(path: Path) -> list[dict[str, object]]:
@@ -138,13 +155,14 @@ def _load_architecture_rows(path: Path) -> list[dict[str, object]]:
     df = pd.read_csv(path)
     rows: list[dict[str, object]] = []
     for row in df.itertuples(index=False):
+        threshold = _architecture_zero_cost_threshold(str(row.architecture))
         audit = classify_pair(
             metric_exec_a=float(row.median_sharpe_exec_selected),
             metric_exec_b=float(row.median_sharpe_exec_reference),
             metric_tgt_a=float(row.median_sharpe_tgt_selected),
             metric_tgt_b=float(row.median_sharpe_tgt_reference),
         )
-        audit = zero_cost_near_flat_override(audit, kappa=float(row.kappa))
+        audit = zero_cost_near_flat_override(audit, kappa=float(row.kappa), near_flat_threshold=threshold)
         rows.append(
             {
                 "setting_group": "architecture_matrix",
@@ -225,9 +243,13 @@ def _sort_rows(df: pd.DataFrame) -> pd.DataFrame:
         "u27_sector_balanced": 2,
         "u27_random_seed17": 3,
         "arch_rl_selected": 0,
-        "arch_rule_eta_fixed": 1,
-        "arch_linear_prox": 2,
-        "arch_threshold_rebalance": 3,
+        "arch_deadband_partial_champion": 1,
+        "arch_deadband_partial_runnerup": 2,
+        "arch_vol_spike_eta_champion": 3,
+        "arch_vol_spike_eta_runnerup": 4,
+        "arch_rule_eta_fixed": 5,
+        "arch_linear_prox": 6,
+        "arch_threshold_rebalance": 7,
     }
     out = df.copy()
     out["_group_order"] = out["setting_group"].map(group_order).fillna(99)
@@ -247,18 +269,41 @@ def _write_heatmap(df: pd.DataFrame, output_fig: Path) -> None:
         "Cost Sweep",
         "Split D Ref",
         "U: Current",
-        "U: Alt-LargeCap",
-        "U: Sector-Balanced",
+        "U: Alt-LC",
+        "U: Sector-Bal.",
         "A: RL-Selected",
-        "A: Rule-EtaFixed",
+        "A: Deadband-C*",
+        "A: Deadband-R",
+        "A: VolEta-C*",
+        "A: VolEta-R",
+        "A: Replay",
         "A: Linear-Prox",
     ]
-    plot_df = df[df["row_label"].isin(row_order)].copy()
+    plot_df = df.copy()
+    display_map = {
+        "Cost Sweep": "Cost Sweep",
+        "Split D Ref": "Split D Ref",
+        "U: Current": "U: Current",
+        "U: Alt-LargeCap": "U: Alt-LC",
+        "U: Sector-Balanced": "U: Sector-Bal.",
+        "A: RL-Selected": "A: RL-Selected",
+        "A: Deadband-Champion": "A: Deadband-C*",
+        "A: Deadband-RunnerUp": "A: Deadband-R",
+        "A: VolScaledEta-Champion": "A: VolEta-C*",
+        "A: VolScaledEta-RunnerUp": "A: VolEta-R",
+        "A: Rule-EtaFixed": "A: Replay",
+        "A: Linear-Prox": "A: Linear-Prox",
+    }
+    plot_df["row_label_display"] = plot_df["row_label"].map(display_map)
+    plot_df = plot_df[plot_df["row_label_display"].isin(row_order)].copy()
     kappas = sorted(pd.unique(plot_df["kappa"]).tolist(), key=kappa_sort_key)
     matrix = np.full((len(row_order), len(kappas)), np.nan, dtype=np.float64)
     for i, row_label in enumerate(row_order):
         for j, kappa in enumerate(kappas):
-            match = plot_df[(plot_df["row_label"] == row_label) & np.isclose(plot_df["kappa"], float(kappa), atol=1e-15)]
+            match = plot_df[
+                (plot_df["row_label_display"] == row_label)
+                & np.isclose(plot_df["kappa"], float(kappa), atol=1e-15)
+            ]
             if not match.empty:
                 matrix[i, j] = float(match.iloc[0]["disagreement_strength"])
 
@@ -266,7 +311,7 @@ def _write_heatmap(df: pd.DataFrame, output_fig: Path) -> None:
     cmap.set_bad(color="#ffffff")
     norm = BoundaryNorm([-0.5, 0.5, 1.5, 2.5, 3.5], cmap.N)
 
-    fig, ax = plt.subplots(figsize=(7.4, 4.2))
+    fig, ax = plt.subplots(figsize=(7.6, 4.4))
     masked = np.ma.masked_invalid(matrix)
     im = ax.imshow(masked, cmap=cmap, norm=norm, aspect="auto")
     ax.set_xticks(np.arange(len(kappas)))
@@ -274,7 +319,7 @@ def _write_heatmap(df: pd.DataFrame, output_fig: Path) -> None:
     ax.set_yticks(np.arange(len(row_order)))
     ax.set_yticklabels(row_order)
     ax.set_xlabel(r"$\kappa$")
-    ax.set_title("Target-vs-Executed Disagreement Strength")
+    ax.set_title("Detailed Target-vs-Executed Disagreement Audit")
 
     for i in range(matrix.shape[0]):
         for j in range(matrix.shape[1]):
@@ -289,6 +334,9 @@ def _write_heatmap(df: pd.DataFrame, output_fig: Path) -> None:
     ax.set_yticks(np.arange(-0.5, len(row_order), 1), minor=True)
     ax.grid(which="minor", color="#d1d5db", linestyle="-", linewidth=0.6)
     ax.tick_params(which="minor", bottom=False, left=False)
+
+    for separator in (0.5, 1.5, 4.5):
+        ax.axhline(separator, color="#4b5563", linewidth=1.2)
     fig.tight_layout()
     fig.savefig(output_fig, bbox_inches="tight")
     plt.close(fig)
@@ -308,11 +356,31 @@ def _write_note(df: pd.DataFrame, output_note: Path) -> None:
     cost_magnitude = cost_df[cost_df["disagreement_type"] == "magnitude_only"]
     universe_sign_flips = universe_df[universe_df["disagreement_type"] == "sign_flip"]
     universe_rank = universe_df[universe_df["disagreement_type"] == "ranking_mismatch"]
-    arch_rank = arch_df[
-        (arch_df["setting_name"].isin(["arch_rl_selected", "arch_rule_eta_fixed"]))
+    rl_rank = arch_df[
+        (arch_df["setting_name"] == "arch_rl_selected")
+        & (arch_df["disagreement_type"] == "ranking_mismatch")
+    ]
+    deadband_rank = arch_df[
+        (arch_df["setting_name"].isin(["arch_deadband_partial_champion", "arch_deadband_partial_runnerup"]))
+        & (arch_df["disagreement_type"] == "ranking_mismatch")
+    ]
+    vol_spike_rank = arch_df[
+        (arch_df["setting_name"].isin(["arch_vol_spike_eta_champion", "arch_vol_spike_eta_runnerup"]))
+        & (arch_df["disagreement_type"] == "ranking_mismatch")
+    ]
+    replay_rank = arch_df[
+        (arch_df["setting_name"] == "arch_rule_eta_fixed")
         & (arch_df["disagreement_type"] == "ranking_mismatch")
     ]
     linear_none = arch_df[(arch_df["setting_name"] == "arch_linear_prox") & (arch_df["disagreement_type"] == "none")]
+    deadband_zero = arch_df[
+        (arch_df["setting_name"].isin(["arch_deadband_partial_champion", "arch_deadband_partial_runnerup"]))
+        & np.isclose(arch_df["kappa"], 0.0, atol=1e-15)
+    ]
+    vol_spike_zero = arch_df[
+        (arch_df["setting_name"].isin(["arch_vol_spike_eta_champion", "arch_vol_spike_eta_runnerup"]))
+        & np.isclose(arch_df["kappa"], 0.0, atol=1e-15)
+    ]
 
     text = f"""# Target-vs-Executed Summary
 
@@ -324,11 +392,11 @@ The cost-sweep rows remain the clearest single block of evidence. Positive-cost 
 
 The multi-universe package also supports the same narrow reading. Across the positive-cost universe rows, the audit records `{len(universe_rank)}` ranking-mismatch row(s) and `{len(universe_sign_flips)}` sign-flip row(s). This means the evaluation-object discrepancy is not confined to the current U27 basket, even though one zero-cost alternative universe remains mixed and should still be described that way.
 
-The architecture package is mixed by design and should be written that way. The RL-source rows still produce disagreement, with `{len(arch_rank)}` ranking-mismatch row(s) under the conservative audit, while the linear/prox support arm contributes `{len(linear_none)}` row(s) with `none` because target and executed metrics are effectively identical inside that family. That mixed outcome is informative: it supports executed-path primacy for architectures where the realized path diverges from the proposed target, but it does not justify claiming universal target-versus-executed disagreement across all decision-layer designs.
+The architecture package is now better read in four layers. First, the RL-source reference row still produces disagreement, with `{len(rl_rank)}` ranking-mismatch row(s) under the conservative audit. Second, the independent non-RL deadband pair adds `{len(deadband_rank)}` ranking-mismatch positive-cost row(s) while keeping `{len(deadband_zero[deadband_zero["disagreement_type"] == "none"])}` zero-cost deadband row(s) neutral under the validation-aligned near-flat qualification screen. Third, the independent non-RL volatility-scaled pair adds `{len(vol_spike_rank)}` more ranking-mismatch positive-cost row(s) while keeping `{len(vol_spike_zero[vol_spike_zero["disagreement_type"] == "none"])}` zero-cost volatility-scaled row(s) neutral under the same screen. Fourth, the replay-only `arch_rule_eta_fixed` row still contributes `{len(replay_rank)}` ranking-mismatch row(s), but it should be read as implementation consistency rather than as new independent evidence. The linear/prox support arm still contributes `{len(linear_none)}` row(s) with `none` because target and executed metrics are effectively identical inside that family. That mixed outcome is informative: it supports executed-path primacy for architectures where the realized path diverges from the proposed target, but it does not justify claiming universal target-versus-executed disagreement across all decision-layer designs.
 
 The optional canonical split reference remains aligned with the original main diagnostic. In the available split-D reference rows, the zero-cost row is near-flat, while the positive-cost rows continue to show an executed-path advantage that target-based evaluation does not preserve at the same strength. This reference block is useful as a consistency anchor, not as a new main empirical centerpiece.
 
-The safe paper-facing reading is therefore narrow. Executed-path evaluation remains the primary object in the settings where friction and execution constraints separate realized portfolios from proposed targets. The audit is strongest in the cost sweep, repeats across the fixed-universe package, and stays visible in the RL-source architecture rows. It is weaker or absent in some support architectures, so the paper should explicitly say that the disagreement is setting-dependent rather than universal.
+The safe paper-facing reading is therefore narrow but stronger than before. Executed-path evaluation remains the primary object in the settings where friction and execution constraints separate realized portfolios from proposed targets. The audit is strongest in the cost sweep, repeats across the fixed-universe package, remains visible in the RL-source architecture row, and now also appears in two independent non-RL execution families: the deadband pair and the volatility-scaled pair. It is weaker or absent in some support architectures, so the paper should explicitly say that the disagreement is setting-dependent rather than universal.
 """
     output_note.write_text(text)
 

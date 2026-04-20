@@ -1,0 +1,45 @@
+name: arch_vol_spike_eta
+family: independent_non_rl_volatility_spike_execution
+forecast_source: >
+  Shared frozen forecast signal and shared deterministic target mapping defined by
+  `configs/generalization/shared_target_mapping.yaml`. This arm does not use RL target replay.
+decision_rule: >
+  Let `w_target_t` be the shared deterministic target. Build a scalar volatility proxy `sigma_t`
+  from target-weighted rolling asset volatility, then form a relative spike score
+  `spike_t = sigma_t / (sigma_ref_t + eps)` where `sigma_ref_t` is a rolling median reference.
+  If `spike_t <= trigger`, use `eta_t = 1.0`. Otherwise use a fixed gated step
+  `eta_t = eta_low`, then execute
+  `w_exec_t = (1 - eta_t) * w_prev + eta_t * w_target_t`.
+params:
+  target_generator: shared_deterministic_target_mapping
+  shared_target_config: configs/generalization/shared_target_mapping.yaml
+  volatility_proxy: target_weighted_mean_of_rolling_asset_volatility
+  rolling_rule: 20_day_std_of_arithmetic_returns_with_bfill_startup
+  reference_rule: 60_day_rolling_median_of_scalar_sigma
+  trigger_grid:
+    - 1.1
+    - 1.15
+    - 1.2
+    - 1.25
+  eta_low_grid:
+    - 0.985
+    - 0.987
+    - 0.988
+    - 0.989
+    - 0.99
+    - 0.992
+    - 0.994
+    - 0.996
+  lookback_sigma: 20
+  lookback_ref: 60
+  eps: 1.0e-8
+  reference_behavior: full_rebalance_baseline
+  long_only: true
+  fully_invested: true
+  champion_selection_status: not_applied_in_this_step
+compare_arm: candidate_vol_spike_eta_grid_vs_full_rebalance_under_shared_target_mapping
+evaluation_role: pending_main_support_non_rl_comparator
+notes:
+  - Independent non-RL execution comparator built on the same shared target mapping as deadband.
+  - This redesign stays near full rebalance in normal conditions and applies a fixed partial step only under relative volatility spikes.
+  - Keep all validation and final candidates visible until a later validation-only selection step is applied.

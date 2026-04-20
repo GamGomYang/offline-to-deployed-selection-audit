@@ -32,6 +32,12 @@ ZERO_COST_NEAR_FLAT_THRESHOLD = 0.005
 ZERO_COST_YELLOW_THRESHOLD = 0.01
 TARGET_SUPPRESSION_RATIO = 0.25
 TARGET_SUPPRESSION_MIN_EXEC_DELTA = 0.005
+UNIVERSE_ORDER = {
+    "u27_current": 0,
+    "u27_alt_largecap": 1,
+    "u27_sector_balanced": 2,
+    "u27_random_seed17": 3,
+}
 
 
 @dataclass(frozen=True)
@@ -239,9 +245,9 @@ def _aggregate_final_rows(df: pd.DataFrame) -> pd.DataFrame:
             )
 
     out_df = pd.DataFrame(rows)
-    out_df = out_df.sort_values(["universe", "kappa"], key=lambda s: s.map(_kappa_sort_key) if s.name == "kappa" else s).reset_index(
-        drop=True
-    )
+    out_df["_universe_order"] = out_df["universe"].map(UNIVERSE_ORDER).fillna(99)
+    out_df = out_df.sort_values(["_universe_order", "kappa"], key=lambda s: s.map(_kappa_sort_key) if s.name == "kappa" else s)
+    out_df = out_df.drop(columns=["_universe_order"]).reset_index(drop=True)
     return out_df
 
 
@@ -304,13 +310,26 @@ def _write_results_csv(df: pd.DataFrame, output_csv: Path) -> None:
 
 def _write_table_tex(df: pd.DataFrame, output_tex: Path) -> None:
     output_tex.parent.mkdir(parents=True, exist_ok=True)
+    verdict_lookup = {
+        universe: group["universe_verdict"].iloc[0]
+        for universe, group in df.groupby("universe", sort=False)
+    }
+    summary_line = (
+        "Universe-level summary: "
+        f"Current = {verdict_lookup.get('u27_current', 'n/a')}, "
+        f"Sector-Balanced = {verdict_lookup.get('u27_sector_balanced', 'n/a')}, "
+        f"Alt-LargeCap = {verdict_lookup.get('u27_alt_largecap', 'n/a')} "
+        "(mixed only in the zero-cost row)."
+    )
     lines = [
         "\\begin{table}[t]",
         "\\centering",
         "\\scriptsize",
+        "\\setlength{\\tabcolsep}{3pt}",
+        "\\resizebox{\\columnwidth}{!}{%",
         "\\begin{tabular}{llrrrrrrrllll}",
         "\\toprule",
-        "Universe & $\\kappa$ & Exec$_{1.0}$ & Exec$_{0.5}$ & $\\Delta$Exec & Tgt$_{1.0}$ & Tgt$_{0.5}$ & $\\Delta$Tgt & TO red.\\% & D & Z0 & P+ & Verdict \\\\",
+        "Universe & $\\kappa$ & Exec$_{1.0}$ & Exec$_{0.5}$ & $\\Delta$Exec & Tgt$_{1.0}$ & Tgt$_{0.5}$ & $\\Delta$Tgt & TO red.\\% & Disag. & Near-flat@0 & Pos-cost dir. & Verdict \\\\",
         "\\midrule",
     ]
     for row in df.itertuples(index=False):
@@ -338,7 +357,9 @@ def _write_table_tex(df: pd.DataFrame, output_tex: Path) -> None:
         [
             "\\bottomrule",
             "\\end{tabular}",
-            "\\caption{Held-out multi-universe support summary for the locked `eta=1.0` versus `eta=0.5` comparison. Marginal Sharpe and turnover columns report seed medians; the delta columns report paired seed-aligned medians. `D` marks target-versus-executed disagreement, `Z0` marks the documented zero-cost near-flat check, and `P+` marks positive-cost executed-path direction.}",
+            "}",
+            f"\\par\\smallskip\\parbox{{0.98\\columnwidth}}{{\\scriptsize {summary_line}}}",
+            "\\caption{Held-out multi-universe support summary for the locked `eta=1.0` versus `eta=0.5` comparison. Marginal Sharpe and turnover columns report seed medians; the delta columns report paired seed-aligned medians. `Disag.` marks target-versus-executed disagreement, `Near-flat@0` marks the documented zero-cost near-flat check, and `Pos-cost dir.` marks positive-cost executed-path direction.}",
             "\\label{tab:multi_universe_summary}",
             "\\end{table}",
         ]

@@ -1,21 +1,31 @@
 \begin{table}[t]
 \centering
 \scriptsize
+\setlength{\tabcolsep}{3pt}
+\resizebox{\columnwidth}{!}{%
 \begin{tabular}{llrrrrrrrllll}
 \toprule
-Architecture & $\kappa$ & Ref & Sel & $\Delta$Exec & RefTgt & SelTgt & $\Delta$Tgt & TO red.\% & D & Z0 & P+ & Verdict \\
+Architecture & $\kappa$ & Exec(ref) & Exec(sel) & $\Delta$Exec & Tgt(ref) & Tgt(sel) & $\Delta$Tgt & TO red.\% & Disag. & Near-flat@0 & Pos-cost dir. & Support verdict \\
 \midrule
-Linear-Prox & 0 & 1.2129 & 1.0074 & -0.2055 & 1.2129 & 1.0074 & -0.2055 & 88.4 & none & no & n/a & Red \\
-Linear-Prox & 5e-4 & 0.0923 & 0.8910 & 0.7987 & 0.0923 & 0.8910 & 0.7987 & 88.4 & none & n/a & yes & Yellow \\
-Linear-Prox & 1e-3 & -1.0260 & 0.7746 & 1.8005 & -1.0260 & 0.7746 & 1.8005 & 88.4 & none & n/a & yes & Yellow \\
 RL-Selected & 0 & 1.1587 & 1.1616 & 0.0029 & 1.1587 & 1.1587 & -0.0000 & 48.9 & none & yes & n/a & Green \\
 RL-Selected & 5e-4 & 1.1388 & 1.1514 & 0.0126 & 1.1388 & 1.1384 & -0.0005 & 48.9 & ranking\_mismatch & n/a & yes & Green \\
 RL-Selected & 1e-3 & 1.1190 & 1.1413 & 0.0223 & 1.1190 & 1.1181 & -0.0009 & 48.9 & ranking\_mismatch & n/a & yes & Green \\
+Deadband-Champion & 0 & -5.9405 & -5.9327 & 0.0078 & -5.9405 & -5.9405 & 0.0000 & 0.2 & none & yes & n/a & Green \\
+Deadband-Champion & 5e-4 & -6.1148 & -6.1068 & 0.0080 & -6.1148 & -6.1149 & -0.0001 & 0.2 & ranking\_mismatch & n/a & yes & Green \\
+Deadband-Champion & 1e-3 & -6.2883 & -6.2801 & 0.0082 & -6.2883 & -6.2886 & -0.0003 & 0.2 & ranking\_mismatch & n/a & yes & Green \\
+VolScaledEta-Champion & 0 & -5.9405 & -5.9359 & 0.0046 & -5.9405 & -5.9405 & 0.0000 & 0.3 & none & yes & n/a & Green \\
+VolScaledEta-Champion & 5e-4 & -6.1148 & -6.1105 & 0.0042 & -6.1148 & -6.1148 & -0.0000 & 0.3 & ranking\_mismatch & n/a & yes & Green \\
+VolScaledEta-Champion & 1e-3 & -6.2883 & -6.2844 & 0.0039 & -6.2883 & -6.2883 & -0.0000 & 0.3 & ranking\_mismatch & n/a & yes & Green \\
 Rule-EtaFixed & 0 & 1.1587 & 1.1616 & 0.0029 & 1.1587 & 1.1587 & -0.0000 & 48.9 & none & yes & n/a & Green \\
 Rule-EtaFixed & 5e-4 & 1.1388 & 1.1514 & 0.0126 & 1.1388 & 1.1384 & -0.0005 & 48.9 & ranking\_mismatch & n/a & yes & Green \\
 Rule-EtaFixed & 1e-3 & 1.1190 & 1.1413 & 0.0223 & 1.1190 & 1.1181 & -0.0009 & 48.9 & ranking\_mismatch & n/a & yes & Green \\
+Linear-Prox & 0 & 1.2129 & 1.0074 & -0.2055 & 1.2129 & 1.0074 & -0.2055 & 88.4 & none & no & n/a & Red \\
+Linear-Prox & 5e-4 & 0.0923 & 0.8910 & 0.7987 & 0.0923 & 0.8910 & 0.7987 & 88.4 & none & n/a & yes & Yellow \\
+Linear-Prox & 1e-3 & -1.0260 & 0.7746 & 1.8005 & -1.0260 & 0.7746 & 1.8005 & 88.4 & none & n/a & yes & Yellow \\
 \bottomrule
 \end{tabular}
-\caption{Decision-architecture support summary under frozen-source comparisons. `Ref` and `Sel` denote the reference and selected arms within each architecture family. `D` reports the conservative target-versus-executed disagreement label, `Z0` reports the documented zero-cost near-flat check, and `P+` reports positive-cost executed-path direction.}
+}
+\par\smallskip\parbox{0.98\columnwidth}{\scriptsize TO red.\% is computed relative to the reference arm within each architecture family. Small values for the deadband and volatility-scaled families reflect near-matched turnover within those family-local comparisons and should not be read as cross-family inefficiency. Support verdicts are also family-local; runner-up configurations remain in the CSV and notes and are omitted from this compact visible table only for readability.}
+\caption{Support-only decision-architecture summary under frozen-source comparisons. Verdicts are computed within each architecture family using the documented zero-cost, positive-cost, and disagreement checks; the table is not intended for cross-family ranking by absolute Sharpe level. `Disag.` reports the conservative target-versus-executed disagreement label, `Near-flat@0` reports the documented zero-cost near-flat check, and `Pos-cost dir.` reports positive-cost executed-path direction.}
 \label{tab:decision_architecture_summary}
 \end{table}
