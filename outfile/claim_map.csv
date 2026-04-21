@@ -1,0 +1,5 @@
+claim_id,claim_text_short,supported_by_steps,required_evidence_count,current_support_status,notes
+C1,"same forecast or proposal path, different interface can change realized outcomes under friction",step2;step3;step4,2,supported_required_plus_support,Step 2 synthetic and Step 4 inventory are required; Step 3 portfolio exact-control remains support-only
+C2,"under a fixed interface, forecast ranking does not reliably determine deployed ranking",step2;step4;step5,2,supported_required_repackaged_q2,Step 5 repackages Step 2 and Step 4 Q2 evidence and does not add independent required evidence count
+C3,zero-friction mismatch is low while positive-friction mismatch emerges,step2;step4;step5,2,supported_required_repackaged_q2,Supported in synthetic and inventory; Step 5 packages the same required Q2 evidence for paper-facing use
+C4,portfolio provides Q1 support but portfolio Q2 is excluded from the paper-facing Step 5 package,step3;step5,0,supported_contextual,Portfolio exact-control remains support-only and Step 5 portfolio Q2 stays excluded by the stretch gate

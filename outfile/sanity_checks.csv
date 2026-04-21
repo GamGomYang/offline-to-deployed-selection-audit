@@ -1,0 +1,92 @@
+check_name,step_id,domain,scenario_id,pass_fail,measured_value,threshold,note
+forecast_identity_locked,step2,synthetic,step2_synthetic_q1_same_forecast_diff_interface,pass,0.0,<=1e-12,max forecast_metric delta across interface arms within each seed x friction
+forecast_identity_locked,step2,synthetic,step2_synthetic_q2_diff_forecasts_same_interface,na,,na,Q2 different-forecast package
+friction_sweep_order_preserved,step2,synthetic,step2_synthetic_q1_same_forecast_diff_interface,pass,0.0|0.25|0.5|1.0,strictly ascending,observed order of friction values in canonical source
+friction_sweep_order_preserved,step2,synthetic,step2_synthetic_q2_diff_forecasts_same_interface,pass,0.0|0.25|0.5|1.0,strictly ascending,observed order of friction values in canonical source
+interface_expected_match,step2,synthetic,step2_synthetic_q1_same_forecast_diff_interface,pass,responsive|tempered,responsive|tempered,observed vs expected interface ids
+interface_expected_match,step2,synthetic,step2_synthetic_q2_diff_forecasts_same_interface,pass,tempered,tempered,observed vs expected interface ids
+min_forecasters_per_seed_friction_ok,step2,synthetic,step2_synthetic_q1_same_forecast_diff_interface,na,,na,Q1 package
+min_forecasters_per_seed_friction_ok,step2,synthetic,step2_synthetic_q2_diff_forecasts_same_interface,pass,4,>=4,raw Q2 per-seed-per-friction minimum forecaster count
+no_nan_inf,step2,synthetic,step2_synthetic_q1_same_forecast_diff_interface,pass,0,0,raw Q1 numeric fields
+no_nan_inf,step2,synthetic,step2_synthetic_q2_diff_forecasts_same_interface,pass,0,0,raw Q2 numeric fields
+no_sign_inversion_from_bug,step2,synthetic,step2_synthetic_q1_same_forecast_diff_interface,na,,na,Q1 package
+no_sign_inversion_from_bug,step2,synthetic,step2_synthetic_q2_diff_forecasts_same_interface,pass,0,0,raw Q2 rank columns should follow descending score order
+paired_seeds_aligned,step2,synthetic,step2_synthetic_q1_same_forecast_diff_interface,pass,0,0,expected exactly two interface rows per seed x friction
+paired_seeds_aligned,step2,synthetic,step2_synthetic_q2_diff_forecasts_same_interface,pass,0,0,expected one interface and at least four forecasters per seed x friction
+positive_friction_gap_emergence,step2,synthetic,step2_synthetic_q1_same_forecast_diff_interface,pass,0.2226211778901178,>0 at any positive friction,Q1 mean_abs_target_executed_gap emergence
+positive_friction_gap_emergence,step2,synthetic,step2_synthetic_q2_diff_forecasts_same_interface,pass,0.5,>0 flip-rate delta vs zero,Q2 positive-friction ranking mismatch emergence
+source_manifest_hash_present,step2,synthetic,step2_synthetic_q1_same_forecast_diff_interface,na,,na,non-Step-5 package
+source_manifest_hash_present,step2,synthetic,step2_synthetic_q2_diff_forecasts_same_interface,na,,na,non-Step-5 package
+target_executed_gap_nonnegative_where_definition_requires,step2,synthetic,step2_synthetic_q1_same_forecast_diff_interface,pass,0.0,>=0,mean_abs_target_executed_gap
+target_executed_gap_nonnegative_where_definition_requires,step2,synthetic,step2_synthetic_q2_diff_forecasts_same_interface,na,,na,Q2 package
+zero_friction_near_flat,step2,synthetic,step2_synthetic_q1_same_forecast_diff_interface,pass,0.0,<=1e-12,mean_abs_target_executed_gap at friction 0
+zero_friction_near_flat,step2,synthetic,step2_synthetic_q2_diff_forecasts_same_interface,pass,flip=0.000000;spearman=1.000000,flip<=0.10 & spearman>=0.80,Step 2 Q2 zero-friction mismatch gate
+forecast_identity_locked,step3,portfolio,step3_portfolio_q1_exact_control,pass,0,0,forecast/proposal hash mismatch plus pairing failures
+friction_sweep_order_preserved,step3,portfolio,step3_portfolio_q1_exact_control,pass,0.0|0.0005|0.001,strictly ascending,observed order of friction values in canonical source
+interface_expected_match,step3,portfolio,step3_portfolio_q1_exact_control,pass,eta_0_5|eta_1_0,eta_0_5|eta_1_0,observed vs expected interface ids
+min_forecasters_per_seed_friction_ok,step3,portfolio,step3_portfolio_q1_exact_control,na,,na,Q1 package
+no_nan_inf,step3,portfolio,step3_portfolio_q1_exact_control,pass,0,0,exact-control numeric fields
+no_sign_inversion_from_bug,step3,portfolio,step3_portfolio_q1_exact_control,na,,na,Q1 package
+paired_seeds_aligned,step3,portfolio,step3_portfolio_q1_exact_control,pass,0,0,expected exactly two replay interfaces per universe x seed x kappa
+positive_friction_gap_emergence,step3,portfolio,step3_portfolio_q1_exact_control,pass,3/3 universes,3/3 universes,positive-cost recurrence via effect_size_mean > 0
+source_manifest_hash_present,step3,portfolio,step3_portfolio_q1_exact_control,na,,na,non-Step-5 package
+target_executed_gap_nonnegative_where_definition_requires,step3,portfolio,step3_portfolio_q1_exact_control,pass,final_path_gap_min=0.000000;tracking_error_min=0.000000,>=0,final_path_gap and tracking_error_l2_mean
+zero_friction_near_flat,step3,portfolio,step3_portfolio_q1_exact_control,pass,7/9 within 0.005,>=7/9 within 0.005,zero-cost executed Sharpe delta across eta_0_5 vs eta_1_0
+forecast_identity_locked,step4,inventory,step4_inventory_q1_same_forecast_diff_interface,pass,0,0,freeze-check identity flags and pairing failures
+forecast_identity_locked,step4,inventory,step4_inventory_q2_diff_forecasts_same_interface,na,,na,Q2 different-forecast package
+friction_sweep_order_preserved,step4,inventory,step4_inventory_q1_same_forecast_diff_interface,pass,0.0|0.25|0.5|1.0,strictly ascending,observed order of friction values in canonical source
+friction_sweep_order_preserved,step4,inventory,step4_inventory_q2_diff_forecasts_same_interface,pass,0.0|0.25|0.5|1.0,strictly ascending,observed order of friction values in canonical source
+interface_expected_match,step4,inventory,step4_inventory_q1_same_forecast_diff_interface,pass,responsive|tempered,responsive|tempered,observed vs expected interface ids
+interface_expected_match,step4,inventory,step4_inventory_q2_diff_forecasts_same_interface,pass,responsive,responsive,observed vs expected interface ids
+min_forecasters_per_seed_friction_ok,step4,inventory,step4_inventory_q1_same_forecast_diff_interface,na,,na,Q1 package
+min_forecasters_per_seed_friction_ok,step4,inventory,step4_inventory_q2_diff_forecasts_same_interface,pass,4,>=4,raw Q2 per-seed-per-friction minimum forecaster count
+no_nan_inf,step4,inventory,step4_inventory_q1_same_forecast_diff_interface,pass,0,0,raw Q1 numeric fields
+no_nan_inf,step4,inventory,step4_inventory_q2_diff_forecasts_same_interface,pass,0,0,raw Q2 numeric fields
+no_sign_inversion_from_bug,step4,inventory,step4_inventory_q1_same_forecast_diff_interface,na,,na,Q1 package
+no_sign_inversion_from_bug,step4,inventory,step4_inventory_q2_diff_forecasts_same_interface,pass,0,0,raw Q2 rank columns should follow descending score order
+paired_seeds_aligned,step4,inventory,step4_inventory_q1_same_forecast_diff_interface,pass,0,0,expected exactly two interface rows per seed x friction
+paired_seeds_aligned,step4,inventory,step4_inventory_q2_diff_forecasts_same_interface,pass,0,0,expected one interface and at least four forecasters per seed x friction
+positive_friction_gap_emergence,step4,inventory,step4_inventory_q1_same_forecast_diff_interface,pass,1.0,>0.5 at friction 1.0,threshold support appears at sufficiently high friction
+positive_friction_gap_emergence,step4,inventory,step4_inventory_q2_diff_forecasts_same_interface,pass,0.48333333333333334,>0 flip-rate delta vs zero,Q2 positive-friction ranking mismatch emergence
+source_manifest_hash_present,step4,inventory,step4_inventory_q1_same_forecast_diff_interface,na,,na,non-Step-5 package
+source_manifest_hash_present,step4,inventory,step4_inventory_q2_diff_forecasts_same_interface,na,,na,non-Step-5 package
+target_executed_gap_nonnegative_where_definition_requires,step4,inventory,step4_inventory_q1_same_forecast_diff_interface,pass,4.440892098500626e-17,>=0,mean_abs_target_executed_gap_tempered
+target_executed_gap_nonnegative_where_definition_requires,step4,inventory,step4_inventory_q2_diff_forecasts_same_interface,na,,na,Q2 package
+zero_friction_near_flat,step4,inventory,step4_inventory_q1_same_forecast_diff_interface,pass,4.440892098500626e-17,<=1e-12,mean_abs_target_executed_gap_tempered at friction 0
+zero_friction_near_flat,step4,inventory,step4_inventory_q2_diff_forecasts_same_interface,pass,flip=0.083333;spearman=0.880000,flip<=0.10 & spearman>=0.80,Step 4 Q2 zero-friction mismatch gate
+forecast_identity_locked,step5,synthetic,step5_q2_same_interface_package,na,,na,Step 5 is a Q2 package
+friction_sweep_order_preserved,step5,synthetic,step5_q2_same_interface_package,pass,0.0|0.25|0.5|1.0,strictly ascending,Step 5 packaged friction order
+interface_expected_match,step5,synthetic,step5_q2_same_interface_package,pass,tempered,tempered,Step 5 package expected-interface validation
+min_forecasters_per_seed_friction_ok,step5,synthetic,step5_q2_same_interface_package,pass,4,>=4,manifest min_n_forecasters_per_seed_friction
+no_nan_inf,step5,synthetic,step5_q2_same_interface_package,pass,0,0,Step 5 seed-level and rank-correlation numeric fields
+no_sign_inversion_from_bug,step5,synthetic,step5_q2_same_interface_package,pass,0,0,Step 5 packaged Q2 should preserve descending score ordering
+paired_seeds_aligned,step5,synthetic,step5_q2_same_interface_package,pass,min=20;max=20,constant across friction,Step 5 package should keep the same seed count across friction
+positive_friction_gap_emergence,step5,synthetic,step5_q2_same_interface_package,pass,0.5,>0 flip-rate delta vs zero,Step 5 packaged Q2 positive-friction mismatch emergence
+source_manifest_hash_present,step5,synthetic,step5_q2_same_interface_package,pass,1,1,manifest source_path and source_sha256 presence
+target_executed_gap_nonnegative_where_definition_requires,step5,synthetic,step5_q2_same_interface_package,na,,na,Q2 package
+zero_friction_near_flat,step5,synthetic,step5_q2_same_interface_package,pass,flip=0.000000;spearman=1.000000,flip<=0.10 & spearman>=0.80,Step 5 zero-friction mismatch gate
+forecast_identity_locked,step5,inventory,step5_q2_same_interface_package,na,,na,Step 5 is a Q2 package
+friction_sweep_order_preserved,step5,inventory,step5_q2_same_interface_package,pass,0.0|0.25|0.5|1.0,strictly ascending,Step 5 packaged friction order
+interface_expected_match,step5,inventory,step5_q2_same_interface_package,pass,responsive,responsive,Step 5 package expected-interface validation
+min_forecasters_per_seed_friction_ok,step5,inventory,step5_q2_same_interface_package,pass,4,>=4,manifest min_n_forecasters_per_seed_friction
+no_nan_inf,step5,inventory,step5_q2_same_interface_package,pass,0,0,Step 5 seed-level and rank-correlation numeric fields
+no_sign_inversion_from_bug,step5,inventory,step5_q2_same_interface_package,pass,0,0,Step 5 packaged Q2 should preserve descending score ordering
+paired_seeds_aligned,step5,inventory,step5_q2_same_interface_package,pass,min=10;max=10,constant across friction,Step 5 package should keep the same seed count across friction
+positive_friction_gap_emergence,step5,inventory,step5_q2_same_interface_package,pass,0.48333333333333334,>0 flip-rate delta vs zero,Step 5 packaged Q2 positive-friction mismatch emergence
+source_manifest_hash_present,step5,inventory,step5_q2_same_interface_package,pass,1,1,manifest source_path and source_sha256 presence
+target_executed_gap_nonnegative_where_definition_requires,step5,inventory,step5_q2_same_interface_package,na,,na,Q2 package
+zero_friction_near_flat,step5,inventory,step5_q2_same_interface_package,pass,flip=0.083333;spearman=0.880000,flip<=0.10 & spearman>=0.80,Step 5 zero-friction mismatch gate
+forecast_identity_locked,step5,portfolio,step5_q2_same_interface_package,na,,na,Step 5 is a Q2 package
+friction_sweep_order_preserved,step5,portfolio,step5_q2_same_interface_package,pass,0.0|0.0005|0.001,strictly ascending,Step 5 packaged friction order
+interface_expected_match,step5,portfolio,step5_q2_same_interface_package,pass,tempered,tempered,Step 5 package expected-interface validation
+min_forecasters_per_seed_friction_ok,step5,portfolio,step5_q2_same_interface_package,pass,4,>=4,manifest min_n_forecasters_per_seed_friction
+no_nan_inf,step5,portfolio,step5_q2_same_interface_package,pass,0,0,Step 5 seed-level and rank-correlation numeric fields
+no_sign_inversion_from_bug,step5,portfolio,step5_q2_same_interface_package,pass,0,0,Step 5 packaged Q2 should preserve descending score ordering
+paired_seeds_aligned,step5,portfolio,step5_q2_same_interface_package,pass,min=3;max=3,constant across friction,Step 5 package should keep the same seed count across friction
+positive_friction_gap_emergence,step5,portfolio,step5_q2_same_interface_package,pass,0.16666666666666674,>0 flip-rate delta vs zero,Step 5 packaged Q2 positive-friction mismatch emergence
+source_manifest_hash_present,step5,portfolio,step5_q2_same_interface_package,pass,1,1,manifest source_path and source_sha256 presence
+target_executed_gap_nonnegative_where_definition_requires,step5,portfolio,step5_q2_same_interface_package,na,,na,Q2 package
+zero_friction_near_flat,step5,portfolio,step5_q2_same_interface_package,fail,flip=0.611111;spearman=-0.200000,flip<=0.10 & spearman>=0.50,Step 5 zero-friction mismatch gate
+duplicate_key_uniqueness,step6,all,master_results_integrity,pass,0,0,"(package_id, record_type, step_id, domain, question_id, scenario_id, seed, friction, forecaster_id, interface_id)"
+duplicate_key_uniqueness,step6,all,rank_flip_summary_integrity,pass,0,0,"(step_id, domain, scenario_id, friction)"
+duplicate_key_uniqueness,step6,all,summary_by_domain_integrity,pass,0,0,"(step_id, domain, question_id, scenario_id, friction)"

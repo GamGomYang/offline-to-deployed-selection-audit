@@ -1,0 +1,9 @@
+\begin{tabular}{lllrlllllll}
+\toprule
+Domain & Role & Status & Seeds & Zero Flip Rate & Zero Spearman & Best Positive Friction & Best Positive Flip Rate & Strongest Flip Pair & Strongest Flip Share & Note \\
+\midrule
+Synthetic & required & pass & 20 & 0.000 & 1.000 & 0.2500 & 0.500 & linear\_ar|noisy\_overreactive & 1.000 & passed\_step5\_gate \\
+Inventory & required & pass & 10 & 0.083 & 0.880 & 1.0000 & 0.567 & mlp\_small|moving\_average\_7 & 1.000 & passed\_step5\_gate \\
+Portfolio & stretch & excluded & 3 & 0.611 & -0.200 & 0.0005 & 0.778 & ewma\_20|rolling\_mean\_20 & 1.000 & zero\_friction\_mean\_flip\_rate\_above\_0.10;zero\_friction\_mean\_spearman\_below\_0.50 \\
+\bottomrule
+\end{tabular}
