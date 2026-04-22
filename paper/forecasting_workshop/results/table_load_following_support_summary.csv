@@ -1,0 +1,2 @@
+Domain,Role,Groups,Resolution,Q1,Q2,Balance,Note
+Aggregate electricity-load proxy,support,8,60min,mixed support,promotion pass,balance_warn,appendix support only

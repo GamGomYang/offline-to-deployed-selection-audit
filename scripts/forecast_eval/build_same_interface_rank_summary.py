@@ -85,6 +85,43 @@ def average_ranks_from_scores(scores_by_model: dict[str, float]) -> dict[str, fl
     return ranks
 
 
+def tied_top_set(scores_by_model: dict[str, float]) -> tuple[str, ...]:
+    if not scores_by_model:
+        return ()
+    ordered = sorted(scores_by_model.items(), key=lambda item: (-float(item[1]), str(item[0])))
+    best_score = float(ordered[0][1])
+    winners = [str(model_id) for model_id, score in ordered if scores_tied(float(score), best_score)]
+    return tuple(sorted(winners))
+
+
+def _representative_from_best_set(
+    best_set: tuple[str, ...],
+    *,
+    tiebreak_scores: dict[str, float],
+) -> str:
+    if not best_set:
+        raise ValueError("best_set must not be empty.")
+    ordered = sorted(
+        best_set,
+        key=lambda model_id: (-float(tiebreak_scores[str(model_id)]), str(model_id)),
+    )
+    return str(ordered[0])
+
+
+def _best_membership_winner(
+    members: dict[str, int],
+    *,
+    mean_scores: dict[str, float],
+) -> str:
+    if not members:
+        return ""
+    ordered = sorted(
+        members,
+        key=lambda model_id: (-int(members[str(model_id)]), -float(mean_scores[str(model_id)]), str(model_id)),
+    )
+    return str(ordered[0])
+
+
 def _constant_like(values: np.ndarray) -> bool:
     if values.size <= 1:
         return True
@@ -173,6 +210,7 @@ def build_domain_rank_summary(
     seed_rows: list[dict[str, object]] = []
     pairwise_event_rows: list[dict[str, object]] = []
     model_rows: list[dict[str, object]] = []
+    selection_rows: list[dict[str, object]] = []
 
     for (seed, friction_level), group in df.groupby(["seed", "friction_level"], sort=True):
         ordered = group.sort_values("forecaster_id").reset_index(drop=True)
@@ -180,6 +218,20 @@ def build_domain_rank_summary(
         executed_scores = {str(row.forecaster_id): float(row.executed_metric) for row in ordered.itertuples(index=False)}
         forecast_ranks = average_ranks_from_scores(forecast_scores)
         executed_ranks = average_ranks_from_scores(executed_scores)
+        forecast_best_set = tied_top_set(forecast_scores)
+        deployed_best_set = tied_top_set(executed_scores)
+        agreement_flag = bool(set(forecast_best_set).intersection(deployed_best_set))
+        forecast_selected_representative = _representative_from_best_set(
+            forecast_best_set,
+            tiebreak_scores=executed_scores,
+        )
+        deployed_selected_representative = _representative_from_best_set(
+            deployed_best_set,
+            tiebreak_scores=executed_scores,
+        )
+        deployed_gap_of_forecast_selected = float(
+            executed_scores[deployed_selected_representative] - executed_scores[forecast_selected_representative]
+        )
 
         models = sorted(forecast_scores)
         n_forecasters = len(models)
@@ -252,6 +304,24 @@ def build_domain_rank_summary(
                 "either_tie_pair_count": int(either_tie_pair_count),
                 "forecast_tied_forecaster_count": int(len(forecast_tied_models)),
                 "executed_tied_forecaster_count": int(len(executed_tied_models)),
+            }
+        )
+        selection_rows.append(
+            {
+                "domain": str(domain),
+                "seed": int(seed),
+                "friction_level": float(friction_level),
+                "interface_id": str(expected_interface_id),
+                "n_forecasters": int(n_forecasters),
+                "forecast_best_set": "|".join(forecast_best_set),
+                "deployed_best_set": "|".join(deployed_best_set),
+                "forecast_best_set_size": int(len(forecast_best_set)),
+                "deployed_best_set_size": int(len(deployed_best_set)),
+                "forecast_selected_representative": str(forecast_selected_representative),
+                "deployed_selected_representative": str(deployed_selected_representative),
+                "agreement_flag": bool(agreement_flag),
+                "selection_disagreement_flag": bool(not agreement_flag),
+                "deployed_gap_of_forecast_selected": deployed_gap_of_forecast_selected,
             }
         )
 
@@ -385,12 +455,80 @@ def build_domain_rank_summary(
         .reset_index(drop=True)
     )
 
+    selection_seed_level = (
+        pd.DataFrame(selection_rows)
+        .sort_values(["domain", "friction_level", "seed"])
+        .reset_index(drop=True)
+    )
+    selection_summary_rows: list[dict[str, object]] = []
+    for (domain_value, friction_level), group in selection_seed_level.groupby(["domain", "friction_level"], sort=True):
+        forecast_membership: dict[str, int] = {}
+        deployed_membership: dict[str, int] = {}
+        mean_forecast_scores = (
+            df[
+                np.isclose(df["friction_level"], float(friction_level), atol=1e-15)
+                & (df["domain"] == str(domain_value))
+            ]
+            .groupby("forecaster_id", as_index=False)["forecast_metric"]
+            .mean()
+        )
+        mean_executed_scores = (
+            df[
+                np.isclose(df["friction_level"], float(friction_level), atol=1e-15)
+                & (df["domain"] == str(domain_value))
+            ]
+            .groupby("forecaster_id", as_index=False)["executed_metric"]
+            .mean()
+        )
+        mean_forecast_map = {
+            str(row.forecaster_id): float(row.forecast_metric) for row in mean_forecast_scores.itertuples(index=False)
+        }
+        mean_executed_map = {
+            str(row.forecaster_id): float(row.executed_metric) for row in mean_executed_scores.itertuples(index=False)
+        }
+
+        for row in group.itertuples(index=False):
+            for model_id in str(row.forecast_best_set).split("|"):
+                if model_id:
+                    forecast_membership[model_id] = forecast_membership.get(model_id, 0) + 1
+            for model_id in str(row.deployed_best_set).split("|"):
+                if model_id:
+                    deployed_membership[model_id] = deployed_membership.get(model_id, 0) + 1
+
+        selection_summary_rows.append(
+            {
+                "domain": str(domain_value),
+                "friction_level": float(friction_level),
+                "n_seeds": int(len(group)),
+                "most_frequent_forecast_best": _best_membership_winner(
+                    forecast_membership,
+                    mean_scores=mean_forecast_map,
+                ),
+                "most_frequent_deployed_best": _best_membership_winner(
+                    deployed_membership,
+                    mean_scores=mean_executed_map,
+                ),
+                "agreement_rate": float(group["agreement_flag"].mean()),
+                "disagreement_rate": float(group["selection_disagreement_flag"].mean()),
+                "mean_deployed_gap_of_forecast_selected": float(group["deployed_gap_of_forecast_selected"].mean()),
+                "median_deployed_gap_of_forecast_selected": float(group["deployed_gap_of_forecast_selected"].median()),
+            }
+        )
+
+    selection_summary_by_friction = (
+        pd.DataFrame(selection_summary_rows)
+        .sort_values(["domain", "friction_level"])
+        .reset_index(drop=True)
+    )
+
     outputs = {
         "seed_level_rank_stats": seed_level,
+        "seed_level_selection_stats": selection_seed_level,
         "rank_correlation_by_friction": rank_correlation_by_friction,
         "pairwise_flip_events": pairwise_events,
         "pairwise_flips_by_friction": pairwise_by_friction,
         "model_rank_summary": model_rank_summary,
+        "selection_summary_by_friction": selection_summary_by_friction,
     }
     return outputs, meta
 
@@ -399,6 +537,7 @@ def validate_q2_source(
     q2_df: pd.DataFrame,
     *,
     expected_interface_id: str,
+    min_forecasters_per_seed_friction: int = 4,
 ) -> list[str]:
     failures: list[str] = []
     question_ids = sorted(str(value) for value in q2_df["question_id"].dropna().unique().tolist())
@@ -411,8 +550,8 @@ def validate_q2_source(
         failures.append(
             f"expected_interface_{expected_interface_id}_observed_{'|'.join(observed_interfaces) or 'none'}"
         )
-    if forecaster_counts.empty or int(forecaster_counts.min()) < 4:
-        failures.append("min_forecasters_below_4")
+    if forecaster_counts.empty or int(forecaster_counts.min()) < int(min_forecasters_per_seed_friction):
+        failures.append(f"min_forecasters_below_{int(min_forecasters_per_seed_friction)}")
     return failures
 
 
@@ -420,10 +559,12 @@ def write_summary_outputs(outputs: dict[str, pd.DataFrame], output_dir: Path) ->
     output_dir.mkdir(parents=True, exist_ok=True)
     filename_map = {
         "seed_level_rank_stats": "seed_level_rank_stats.csv",
+        "seed_level_selection_stats": "seed_level_selection_stats.csv",
         "rank_correlation_by_friction": "rank_correlation_by_friction.csv",
         "pairwise_flip_events": "pairwise_flip_events.csv",
         "pairwise_flips_by_friction": "pairwise_flips_by_friction.csv",
         "model_rank_summary": "model_rank_summary.csv",
+        "selection_summary_by_friction": "selection_summary_by_friction.csv",
     }
     for key, filename in filename_map.items():
         outputs[key].to_csv(output_dir / filename, index=False)

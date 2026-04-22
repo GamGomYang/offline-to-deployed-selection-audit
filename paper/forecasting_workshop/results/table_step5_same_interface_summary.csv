@@ -1,4 +1,4 @@
 Domain,Role,Status,Seeds,Zero Flip Rate,Zero Spearman,Best Positive Friction,Best Positive Flip Rate,Strongest Flip Pair,Strongest Flip Share,Note
-Synthetic,required,pass,20,0.000,1.000,0.2500,0.500,linear_ar|noisy_overreactive,1.000,passed_step5_gate
-Inventory,required,pass,10,0.083,0.880,1.0000,0.567,mlp_small|moving_average_7,1.000,passed_step5_gate
-Portfolio,stretch,excluded,3,0.611,-0.200,0.0005,0.778,ewma_20|rolling_mean_20,1.000,zero_friction_mean_flip_rate_above_0.10;zero_friction_mean_spearman_below_0.50
+Synthetic,required,pass,20,0.000,1.000,0.2500,0.500,Linear AR / Reactive extrapolation heuristic,1.000,passed_step5_gate
+Inventory,required,fail,10,0.120,0.840,1.0000,0.500,Small MLP / Moving average (7),1.000,zero_friction_mean_flip_rate_above_0.10
+Portfolio,stretch,excluded,3,0.611,-0.200,0.0005,0.778,EWMA (20) / Rolling mean (20),1.000,zero_friction_mean_flip_rate_above_0.10;zero_friction_mean_spearman_below_0.50

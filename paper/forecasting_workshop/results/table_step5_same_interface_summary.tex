@@ -1,9 +1,9 @@
-\begin{tabular}{lllrlllllll}
+\begin{tabularx}{\textwidth}{@{}l l l r r r r r >{\raggedright\arraybackslash}X r >{\raggedright\arraybackslash}X@{}}
 \toprule
-Domain & Role & Status & Seeds & Zero Flip Rate & Zero Spearman & Best Positive Friction & Best Positive Flip Rate & Strongest Flip Pair & Strongest Flip Share & Note \\
+Domain & Role & Status & Seeds & Zero flip & Zero rho & Best +fric. & Best +flip & Strongest pair & Flip share & Note \\
 \midrule
-Synthetic & required & pass & 20 & 0.000 & 1.000 & 0.2500 & 0.500 & linear\_ar|noisy\_overreactive & 1.000 & passed\_step5\_gate \\
-Inventory & required & pass & 10 & 0.083 & 0.880 & 1.0000 & 0.567 & mlp\_small|moving\_average\_7 & 1.000 & passed\_step5\_gate \\
-Portfolio & stretch & excluded & 3 & 0.611 & -0.200 & 0.0005 & 0.778 & ewma\_20|rolling\_mean\_20 & 1.000 & zero\_friction\_mean\_flip\_rate\_above\_0.10;zero\_friction\_mean\_spearman\_below\_0.50 \\
+Synthetic & required & pass & 20 & 0.000 & 1.000 & 0.2500 & 0.500 & Linear AR / Reactive heuristic & 1.000 & passed gate \\
+Inventory & required & fail & 10 & 0.120 & 0.840 & 1.0000 & 0.500 & Small MLP / Moving average (7) & 1.000 & flip $>$ 0.10 \\
+Portfolio & stretch & excluded & 3 & 0.611 & -0.200 & 0.0005 & 0.778 & EWMA (20) / Rolling mean (20) & 1.000 & flip $>$ 0.10; rho $<$ 0.50 \\
 \bottomrule
-\end{tabular}
+\end{tabularx}

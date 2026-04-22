@@ -41,8 +41,17 @@ DEFAULT_BURST_AMP = 8.0
 DEFAULT_INITIAL_PREV_ORDER = 0.0
 TEMPERED_POSITIVE_ETA = 0.6
 MLP_EPOCHS = 160
+GRU_LOOKBACK = 28
+GRU_HIDDEN = 8
 TRAIN_END = 112
 DEFAULT_HORIZON = 280
+INVENTORY_Q2_FORECASTER_IDS = (
+    "naive_last",
+    "moving_average_7",
+    "linear_ar_ridge",
+    "mlp_small",
+    "gru_small",
+)
 
 
 def parse_args() -> argparse.Namespace:
@@ -67,6 +76,17 @@ class SmallMLP(nn.Module):
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         return self.net(x)
+
+
+class SmallGRU(nn.Module):
+    def __init__(self, hidden_size: int):
+        super().__init__()
+        self.gru = nn.GRU(input_size=1, hidden_size=hidden_size, num_layers=1, batch_first=True)
+        self.head = nn.Linear(hidden_size, 1)
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        _output, hidden = self.gru(x)
+        return self.head(hidden[-1])
 
 
 def _json_hash(values: np.ndarray) -> tuple[str, str]:
@@ -113,6 +133,21 @@ def _build_supervised_arrays(demand: np.ndarray, train_end: int, horizon: int) -
     x_train = np.vstack([_feature_row(demand, idx) for idx in train_indices]).astype(np.float64)
     y_train = demand[train_indices].astype(np.float64)
     x_eval = np.vstack([_feature_row(demand, idx) for idx in eval_indices]).astype(np.float64)
+    return x_train, y_train, x_eval
+
+
+def _build_sequence_arrays(
+    demand: np.ndarray,
+    *,
+    train_end: int,
+    horizon: int,
+    lookback: int,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    train_indices = np.arange(lookback, train_end, dtype=np.int64)
+    eval_indices = np.arange(train_end, horizon, dtype=np.int64)
+    x_train = np.stack([demand[idx - lookback : idx] for idx in train_indices], axis=0).astype(np.float64)
+    y_train = demand[train_indices].astype(np.float64)
+    x_eval = np.stack([demand[idx - lookback : idx] for idx in eval_indices], axis=0).astype(np.float64)
     return x_train, y_train, x_eval
 
 
@@ -165,6 +200,47 @@ def _fit_and_predict_mlp(x_train: np.ndarray, y_train: np.ndarray, x_eval: np.nd
     return np.clip(y_eval_scaled * y_std + y_mean, 0.0, None)
 
 
+def _fit_and_predict_gru(
+    demand: np.ndarray,
+    *,
+    train_end: int,
+    horizon: int,
+    lookback: int,
+    seed: int,
+) -> np.ndarray:
+    x_train, y_train, x_eval = _build_sequence_arrays(
+        demand,
+        train_end=train_end,
+        horizon=horizon,
+        lookback=lookback,
+    )
+    torch.manual_seed(53_000 + int(seed))
+    train_mean = float(demand[:train_end].mean())
+    train_std = float(demand[:train_end].std())
+    train_std = 1.0 if train_std < 1e-8 else train_std
+
+    x_train_t = torch.tensor(((x_train - train_mean) / train_std)[:, :, None], dtype=torch.float32)
+    y_train_t = torch.tensor(((y_train - train_mean) / train_std)[:, None], dtype=torch.float32)
+    x_eval_t = torch.tensor(((x_eval - train_mean) / train_std)[:, :, None], dtype=torch.float32)
+
+    model = SmallGRU(hidden_size=GRU_HIDDEN).cpu()
+    optimizer = optim.Adam(model.parameters(), lr=1e-2)
+    loss_fn = nn.MSELoss()
+
+    model.train()
+    for _epoch in range(MLP_EPOCHS):
+        optimizer.zero_grad(set_to_none=True)
+        pred = model(x_train_t)
+        loss = loss_fn(pred, y_train_t)
+        loss.backward()
+        optimizer.step()
+
+    model.eval()
+    with torch.no_grad():
+        y_eval_scaled = model(x_eval_t).squeeze(-1).cpu().numpy()
+    return np.clip(y_eval_scaled * train_std + train_mean, 0.0, None)
+
+
 def _build_forecast_cache(seed: int, burst_amp: float, horizon: int, train_end: int) -> dict[str, Any]:
     demand = _generate_demand(seed=seed, horizon=horizon, burst_amp=burst_amp)
     x_train, y_train, x_eval = _build_supervised_arrays(demand, train_end=train_end, horizon=horizon)
@@ -177,6 +253,13 @@ def _build_forecast_cache(seed: int, burst_amp: float, horizon: int, train_end: 
         "moving_average_7": np.array([demand[idx - 7 : idx].mean() for idx in eval_indices], dtype=np.float64),
         "linear_ar_ridge": _predict_linear_ar(linear_model, x_eval),
         "mlp_small": _fit_and_predict_mlp(x_train, y_train, x_eval, seed=seed),
+        "gru_small": _fit_and_predict_gru(
+            demand,
+            train_end=train_end,
+            horizon=horizon,
+            lookback=GRU_LOOKBACK,
+            seed=seed,
+        ),
     }
     forecast_metrics = {name: mae_score(values, eval_demand) for name, values in forecasts.items()}
     return {
@@ -472,7 +555,7 @@ def _run_q2_live(
     diagnostics_rows: list[dict[str, object]] = []
 
     for friction_level in FRICTION_GRID:
-        for forecaster_id in ("naive_last", "moving_average_7", "linear_ar_ridge", "mlp_small"):
+        for forecaster_id in INVENTORY_Q2_FORECASTER_IDS:
             live_result = _run_live_inventory(
                 demand_eval=eval_demand,
                 forecasts_eval=np.asarray(cache_entry["forecast_map"][forecaster_id], dtype=np.float64),
@@ -631,17 +714,18 @@ def _q1_acceptance(q1_df: pd.DataFrame, freeze_df: pd.DataFrame) -> tuple[bool, 
 
 def _q2_acceptance(q2_df: pd.DataFrame) -> tuple[bool, dict[str, Any], list[str]]:
     fail_reasons: list[str] = []
+    tolerance = 1e-12
     disagreement = _pairwise_disagreement_stats(q2_df)
     zero_mean = float(disagreement["mean_disagreement_by_friction"][0.0])
     mean_05 = float(disagreement["mean_disagreement_by_friction"][0.5])
     mean_10 = float(disagreement["mean_disagreement_by_friction"][1.0])
     max_flip_share = float(disagreement["max_pair_flip_share_positive"])
 
-    if zero_mean > 0.10:
+    if zero_mean > 0.10 + tolerance:
         fail_reasons.append("q2_zero_disagreement_too_high")
-    if mean_05 <= 0.0 or mean_10 <= 0.0:
+    if mean_05 <= tolerance or mean_10 <= tolerance:
         fail_reasons.append("q2_positive_disagreement_missing")
-    if max_flip_share < (2.0 / 3.0):
+    if max_flip_share + tolerance < (2.0 / 3.0):
         fail_reasons.append("q2_pair_flip_share_too_low")
 
     return (

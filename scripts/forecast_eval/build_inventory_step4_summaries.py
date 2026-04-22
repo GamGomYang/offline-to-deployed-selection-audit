@@ -9,6 +9,8 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+from build_same_interface_rank_summary import build_domain_rank_summary
+
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_INVENTORY_DIR = REPO_ROOT / "outputs" / "forecast_eval" / "inventory"
@@ -180,18 +182,25 @@ def main() -> int:
     q1_summary = build_q1_threshold_summary(q1_df)
     q2_summary = build_q2_forecast_vs_deployed_summary(q2_df)
     diagnostics_summary = build_diagnostics_share_summary(diagnostics_df)
+    q2_outputs, _meta = build_domain_rank_summary(q2_df, domain="inventory", expected_interface_id="responsive")
 
     q1_path = output_dir / f"{prefix}_q1_friction_threshold_summary.csv"
     q2_path = output_dir / f"{prefix}_q2_forecast_vs_deployed_summary.csv"
     diagnostics_path = output_dir / f"{prefix}_diagnostics_share_by_friction.csv"
+    q2_selection_seed_path = output_dir / f"{prefix}_q2_selection_seed_level.csv"
+    q2_selection_summary_path = output_dir / f"{prefix}_q2_selection_summary_by_friction.csv"
 
     q1_summary.to_csv(q1_path, index=False)
     q2_summary.to_csv(q2_path, index=False)
     diagnostics_summary.to_csv(diagnostics_path, index=False)
+    q2_outputs["seed_level_selection_stats"].to_csv(q2_selection_seed_path, index=False)
+    q2_outputs["selection_summary_by_friction"].to_csv(q2_selection_summary_path, index=False)
 
     print(f"[inventory-step4-summary] wrote {q1_path}")
     print(f"[inventory-step4-summary] wrote {q2_path}")
     print(f"[inventory-step4-summary] wrote {diagnostics_path}")
+    print(f"[inventory-step4-summary] wrote {q2_selection_seed_path}")
+    print(f"[inventory-step4-summary] wrote {q2_selection_summary_path}")
     return 0
 
 

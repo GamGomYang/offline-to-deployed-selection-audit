@@ -40,6 +40,7 @@ class DomainSpec:
     domain_role: str
     source_path: Path
     expected_interface_id: str
+    min_forecasters_per_seed_friction: int
 
 
 CANONICAL_SPECS = [
@@ -48,6 +49,7 @@ CANONICAL_SPECS = [
         domain_role="required",
         source_path=REPO_ROOT / "outputs" / "forecast_eval" / "synthetic_step2_candidate_lock" / "q2_diff_forecasts_same_interface.csv",
         expected_interface_id="tempered",
+        min_forecasters_per_seed_friction=4,
     ),
     DomainSpec(
         domain="inventory",
@@ -58,14 +60,29 @@ CANONICAL_SPECS = [
         / "inventory_step4_seed_stability_locked"
         / "inventory_v2_seed_stability_q2.csv",
         expected_interface_id="responsive",
+        min_forecasters_per_seed_friction=5,
     ),
     DomainSpec(
         domain="portfolio",
         domain_role="stretch",
         source_path=REPO_ROOT / "outputs" / "forecast_eval" / "portfolio" / "q2_diff_forecasts_same_interface.csv",
         expected_interface_id="tempered",
+        min_forecasters_per_seed_friction=4,
     ),
 ]
+
+PAPER_FORECASTER_LABELS = {
+    "naive_last": "Naive persistence",
+    "moving_average": "Moving average",
+    "linear_ar": "Linear AR",
+    "noisy_overreactive": "Reactive extrapolation heuristic",
+    "moving_average_7": "Moving average (7)",
+    "linear_ar_ridge": "Linear AR",
+    "mlp_small": "Small MLP",
+    "gru_small": "Small GRU",
+    "ewma_20": "EWMA (20)",
+    "rolling_mean_20": "Rolling mean (20)",
+}
 
 
 def parse_args() -> argparse.Namespace:
@@ -97,6 +114,16 @@ def _format_float(value: Any, digits: int = 3) -> str:
     if value is None or pd.isna(value):
         return "--"
     return f"{float(value):.{digits}f}"
+
+
+def _paper_label(model_id: str) -> str:
+    return PAPER_FORECASTER_LABELS.get(str(model_id), str(model_id))
+
+
+def _paper_pair_label(pair_value: str) -> str:
+    if not pair_value:
+        return "--"
+    return " / ".join(_paper_label(part) for part in str(pair_value).split("|") if part)
 
 
 def _domain_sort_values(frame: pd.DataFrame) -> pd.DataFrame:
@@ -243,7 +270,7 @@ def _paper_table_from_verdicts(verdict_df: pd.DataFrame) -> pd.DataFrame:
     table["Zero Spearman"] = table["zero_friction_mean_spearman_rho"]
     table["Best Positive Friction"] = table["best_positive_friction"]
     table["Best Positive Flip Rate"] = table["best_positive_flip_rate"]
-    table["Strongest Flip Pair"] = table["strongest_flip_pair"]
+    table["Strongest Flip Pair"] = table["strongest_flip_pair"].map(_paper_pair_label)
     table["Strongest Flip Share"] = table["strongest_flip_share"]
     table["Note"] = table["verdict_note"]
     table = table[
@@ -282,16 +309,105 @@ def _write_paper_table_csv(table: pd.DataFrame, path: Path) -> None:
 
 def _write_paper_table_tex(table: pd.DataFrame, path: Path) -> None:
     formatted = table.copy()
-    digits_by_column = {
-        "Zero Flip Rate": 3,
-        "Zero Spearman": 3,
-        "Best Positive Friction": 4,
-        "Best Positive Flip Rate": 3,
-        "Strongest Flip Share": 3,
-    }
-    for column, digits in digits_by_column.items():
-        formatted[column] = formatted[column].map(lambda value, digits=digits: _format_float(value, digits=digits))
+    formatted["Zero Flip Rate"] = formatted["Zero Flip Rate"].map(lambda value: _format_float(value, digits=3))
+    formatted["Zero Spearman"] = formatted["Zero Spearman"].map(lambda value: _format_float(value, digits=3))
+    formatted["Best Positive Friction"] = formatted["Best Positive Friction"].map(
+        lambda value: _format_float(value, digits=4)
+    )
+    formatted["Best Positive Flip Rate"] = formatted["Best Positive Flip Rate"].map(
+        lambda value: _format_float(value, digits=3)
+    )
+    formatted["Strongest Flip Share"] = formatted["Strongest Flip Share"].map(
+        lambda value: _format_float(value, digits=3)
+    )
+    formatted["Strongest Flip Pair"] = formatted["Strongest Flip Pair"].replace(
+        {"Linear AR / Reactive extrapolation heuristic": "Linear AR / Reactive heuristic"}
+    )
+    formatted["Note"] = formatted["Note"].replace(
+        {
+            "passed_step5_gate": "passed gate",
+            "zero_friction_mean_flip_rate_above_0.10": "flip $>$ 0.10",
+            "zero_friction_mean_spearman_below_0.50": "rho $<$ 0.50",
+            "zero_friction_mean_flip_rate_above_0.10;zero_friction_mean_spearman_below_0.50": "flip $>$ 0.10; rho $<$ 0.50",
+        }
+    )
     formatted = formatted.fillna("--")
+    lines = [
+        "\\begin{tabularx}{\\textwidth}{@{}l l l r r r r r >{\\raggedright\\arraybackslash}X r >{\\raggedright\\arraybackslash}X@{}}",
+        "\\toprule",
+        "Domain & Role & Status & Seeds & Zero flip & Zero rho & Best +fric. & Best +flip & Strongest pair & Flip share & Note \\\\",
+        "\\midrule",
+    ]
+    for row in formatted.itertuples(index=False):
+        lines.append(
+            f"{row.Domain} & {row.Role} & {row.Status} & {row.Seeds} & {row[4]} & {row[5]} & {row[6]} & {row[7]} & {row[8]} & {row[9]} & {row[10]} \\\\"
+        )
+    lines.extend(["\\bottomrule", "\\end{tabularx}"])
+    tex = "\n".join(lines) + "\n"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(tex)
+
+
+def _selection_table_from_inventory_summary(
+    selection_summary: pd.DataFrame,
+    selection_seed_level: pd.DataFrame,
+) -> pd.DataFrame:
+    table = selection_summary.copy()
+    suboptimal_counts = (
+        selection_seed_level.assign(
+            deployed_suboptimal_flag=selection_seed_level["deployed_gap_of_forecast_selected"].gt(1e-12)
+        )
+        .groupby("friction_level", as_index=False)
+        .agg(
+            deployed_suboptimal_seeds=("deployed_suboptimal_flag", "sum"),
+            total_seeds=("seed", "count"),
+        )
+    )
+    suboptimal_counts["Deployed-suboptimal seeds / total"] = suboptimal_counts.apply(
+        lambda row: f"{int(row['deployed_suboptimal_seeds'])}/{int(row['total_seeds'])}",
+        axis=1,
+    )
+    table = table.merge(
+        suboptimal_counts[["friction_level", "Deployed-suboptimal seeds / total"]],
+        on="friction_level",
+        how="left",
+    )
+    table = table.loc[:, [
+        "friction_level",
+        "most_frequent_forecast_best",
+        "most_frequent_deployed_best",
+        "agreement_rate",
+        "mean_deployed_gap_of_forecast_selected",
+        "Deployed-suboptimal seeds / total",
+    ]]
+    table = table.rename(
+        columns={
+            "friction_level": "Friction",
+            "most_frequent_forecast_best": "Forecast-side winner",
+            "most_frequent_deployed_best": "Deployed winner",
+            "agreement_rate": "Agreement rate",
+            "mean_deployed_gap_of_forecast_selected": "Mean deployed gap",
+        }
+    )
+    table["Forecast-side winner"] = table["Forecast-side winner"].map(_paper_label)
+    table["Deployed winner"] = table["Deployed winner"].map(_paper_label)
+    return table
+
+
+def _write_selection_table_csv(table: pd.DataFrame, path: Path) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    formatted = table.copy()
+    formatted["Friction"] = formatted["Friction"].map(lambda value: _format_float(value, digits=2))
+    formatted["Agreement rate"] = formatted["Agreement rate"].map(lambda value: _format_float(value, digits=2))
+    formatted["Mean deployed gap"] = formatted["Mean deployed gap"].map(lambda value: _format_float(value, digits=3))
+    formatted.to_csv(path, index=False)
+
+
+def _write_selection_table_tex(table: pd.DataFrame, path: Path) -> None:
+    formatted = table.copy()
+    formatted["Friction"] = formatted["Friction"].map(lambda value: _format_float(value, digits=2))
+    formatted["Agreement rate"] = formatted["Agreement rate"].map(lambda value: _format_float(value, digits=2))
+    formatted["Mean deployed gap"] = formatted["Mean deployed gap"].map(lambda value: _format_float(value, digits=3))
     tex = formatted.to_latex(index=False, escape=True)
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(tex)
@@ -349,18 +465,37 @@ def _paper_note_lines(verdict_df: pd.DataFrame) -> list[str]:
     lines = [
         "# Step 5: Same-Interface Q2 Summary",
         "",
-        "Step 5 is a Q2 evidence package rather than a new experiment. Its claim is that under a fixed deployed interface, forecast-metric ranking does not reliably determine deployed operational ranking as frictions increase. This is distinct from the Q1 target-versus-executed separation result.",
+        "Step 5 is a descriptive Q2 package rather than a new experiment. Its role is to summarize the same-interface ranking evidence after the fifth inventory baseline is added, while the main text now centers the inventory selection-drift consequence directly.",
         "",
         "## Domain Rows",
     ]
     for row in verdict_df.itertuples(index=False):
         label = {"synthetic": "Synthetic", "inventory": "Inventory", "portfolio": "Portfolio"}[row.domain]
         lines.append(
-            f"- {label}: status={row.inclusion_status}, zero_flip_rate={_format_float(row.zero_friction_mean_flip_rate)}, zero_spearman={_format_float(row.zero_friction_mean_spearman_rho)}, strongest_flip_pair={row.strongest_flip_pair or '--'}"
+            f"- {label}: status={row.inclusion_status}, zero_flip_rate={_format_float(row.zero_friction_mean_flip_rate)}, zero_spearman={_format_float(row.zero_friction_mean_spearman_rho)}, strongest_flip_pair={_paper_pair_label(row.strongest_flip_pair)}"
         )
     lines.extend(["", "## Count-Based Verdict"])
     for line in _count_based_lines(verdict_df):
         lines.append(f"- {line}")
+    return lines
+
+
+def _selection_note_lines(selection_table: pd.DataFrame) -> list[str]:
+    lines = [
+        "# Inventory Q2 Selection Drift",
+        "",
+        "Table 1 reports the operational selection consequence in the required inventory domain under one fixed responsive replenishment interface.",
+        "",
+        "Winner columns report the most frequent seed-level best model at each friction level.",
+        "Positive mean deployed gap means the forecast-selected model underperforms the deployed-selected model by that amount.",
+        "Deployed-suboptimal seeds / total reports the number of seeds in which the forecast-selected model is not a deployed best model.",
+        "",
+        "## Friction Rows",
+    ]
+    for row in selection_table.itertuples(index=False):
+        lines.append(
+            f"- friction={_format_float(row.Friction, digits=2)}: forecast_winner={row[1]}, deployed_winner={row[2]}, agreement_rate={_format_float(row[3], digits=2)}, mean_deployed_gap={_format_float(row[4], digits=3)}, deployed_suboptimal={row[5]}"
+        )
     return lines
 
 
@@ -373,6 +508,7 @@ def main() -> int:
 
     manifest_sources: list[dict[str, object]] = []
     verdict_rows: list[dict[str, object]] = []
+    domain_outputs_by_name: dict[str, dict[str, pd.DataFrame]] = {}
     portfolio_gate_definition = {
         "zero_friction_mean_flip_rate_max": 0.10,
         "zero_friction_mean_spearman_rho_min": 0.50,
@@ -384,7 +520,11 @@ def main() -> int:
     for spec in CANONICAL_SPECS:
         q2_df = pd.read_csv(spec.source_path)
         meta = _collect_meta(q2_df, domain=spec.domain, expected_interface_id=spec.expected_interface_id)
-        validation_failures = validate_q2_source(q2_df, expected_interface_id=spec.expected_interface_id)
+        validation_failures = validate_q2_source(
+            q2_df,
+            expected_interface_id=spec.expected_interface_id,
+            min_forecasters_per_seed_friction=spec.min_forecasters_per_seed_friction,
+        )
 
         source_record = {
             "domain": spec.domain,
@@ -392,6 +532,7 @@ def main() -> int:
             "source_path": str(spec.source_path.resolve()),
             "source_sha256": _sha256_file(spec.source_path),
             "expected_interface_id": spec.expected_interface_id,
+            "min_forecasters_per_seed_friction_required": spec.min_forecasters_per_seed_friction,
             "observed_interface_ids": list(meta.observed_interface_ids),
             "n_rows": meta.n_rows,
             "n_seeds": meta.n_seeds,
@@ -438,6 +579,7 @@ def main() -> int:
             domain=spec.domain,
             expected_interface_id=spec.expected_interface_id,
         )
+        domain_outputs_by_name[spec.domain] = outputs
         domain_output_dir = output_dir / spec.domain
         write_summary_outputs({key: _domain_sort_values(value) for key, value in outputs.items()}, domain_output_dir)
 
@@ -549,12 +691,22 @@ def main() -> int:
     _write_paper_table_tex(paper_table, paper_results_dir / "table_step5_same_interface_summary.tex")
     _write_markdown(paper_results_dir / "step5_same_interface_note_v1.md", _paper_note_lines(verdict_df))
 
+    inventory_selection_summary = domain_outputs_by_name["inventory"]["selection_summary_by_friction"].copy()
+    inventory_selection_seed = domain_outputs_by_name["inventory"]["seed_level_selection_stats"].copy()
+    selection_table = _selection_table_from_inventory_summary(inventory_selection_summary, inventory_selection_seed)
+    _write_selection_table_csv(selection_table, paper_results_dir / "table_q2_selection_drift_inventory.csv")
+    _write_selection_table_tex(selection_table, paper_results_dir / "table_q2_selection_drift_inventory.tex")
+    _write_markdown(paper_results_dir / "selection_drift_note_v1.md", _selection_note_lines(selection_table))
+
     print(f"[step5-package] wrote {manifest_path}")
     print(f"[step5-package] wrote {verdict_path}")
     print(f"[step5-package] wrote {output_dir / 'step5_verdict.md'}")
     print(f"[step5-package] wrote {paper_results_dir / 'table_step5_same_interface_summary.csv'}")
     print(f"[step5-package] wrote {paper_results_dir / 'table_step5_same_interface_summary.tex'}")
     print(f"[step5-package] wrote {paper_results_dir / 'step5_same_interface_note_v1.md'}")
+    print(f"[step5-package] wrote {paper_results_dir / 'table_q2_selection_drift_inventory.csv'}")
+    print(f"[step5-package] wrote {paper_results_dir / 'table_q2_selection_drift_inventory.tex'}")
+    print(f"[step5-package] wrote {paper_results_dir / 'selection_drift_note_v1.md'}")
     return 0
 
 
