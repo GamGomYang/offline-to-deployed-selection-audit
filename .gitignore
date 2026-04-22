@@ -54,5 +54,9 @@ paper_rebuild_*/paper_pack/selection_defense/
 paper_v1_extension_artifacts/
 prl-dow30/data/processed_u27/vol_stats_*.json
 
+# Local large datasets
+data/load_dispatch/LD2011_2014.txt
+data/load_dispatch/household_power_consumption.txt
+
 # OS/editor noise
 .DS_Store
