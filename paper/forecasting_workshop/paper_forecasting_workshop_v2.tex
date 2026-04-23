@@ -31,7 +31,7 @@
 \maketitle
 \vspace{-6mm}
 \begin{abstract}
-Forecasting benchmarks often rank systems by forecast-side quality. Under frictional deployment, however, forecasts pass through a fixed interface before actions and utility are realized, so the ranking appropriate for prediction need not be the ranking appropriate for deployed model selection. We therefore study Q2 as the main benchmark question---whether forecast-side rankings remain deployed-selection robust under a fixed frictional interface---while using Q1 only as mechanism support for why divergence can arise. Synthetic provides the exact zero-friction sanity anchor, event micro provides the main forecasting-native evidence, and inventory provides the main operational corroboration. Event-micro and inventory then show recurrent deployed misselection at moderate-to-high friction. Forecast-side metrics may remain valid for prediction, but forecasting systems under frictional deployment interfaces should report deployed-selection robustness, not forecast-side ranking alone.
+Forecasting benchmarks often rank systems by forecast-side quality. Under frictional deployment, however, forecasts pass through a fixed interface before actions and utility are realized, so the ranking appropriate for prediction need not be the ranking appropriate for deployed model selection. We therefore study Q2 as the main benchmark question---whether forecast-side rankings remain deployed-selection robust under a fixed frictional interface---while using Q1 only as mechanism support for why divergence can arise. Synthetic provides the exact zero-friction sanity anchor; event-micro provides the main forecasting-native evidence, while inventory provides the main operational corroboration, and recurrent deployed misselection appears at moderate-to-high friction. Forecast-side metrics may remain valid for prediction, but forecasting systems under frictional deployment interfaces should report deployed-selection robustness, not forecast-side ranking alone.
 \end{abstract}
 \vspace{1mm}
 \hrule
@@ -132,11 +132,11 @@ Appendix Tables~\ref{tab:q2-recurrence-tests}--\ref{tab:q2-gap-bootstrap-cis} an
 
 Appendix Tables~\ref{tab:q2-stronger-protocol}--\ref{tab:q2-stronger-robustness} widen the inventory comparison set under a stricter standardized package gate. That broader-family sweep strengthens moderate/high-friction mismatch, but the zero- and low-friction rows remain too mixed for headline use and therefore do not overturn the narrower main claim from the locked five-family table.
 
-\paragraph{Q1 mechanism support.} Q1 is mechanism support rather than the paper's claim. Holding the proposed action path fixed, synthetic and inventory runs show that frictional interfaces can separate proposed and realized actions: zero friction coincides or nearly coincides, while positive friction creates realized-action gaps or threshold behavior. In synthetic, the proposal-versus-realization gap rises from $0.000$ at zero friction to $0.223$ at friction $1.0$; in inventory, zero friction is exact while sufficiently high friction favors tempered execution through lower adjustment costs. This explains why forecast-side, target-side, and realized-action evaluation can diverge; Q2 is the benchmark question that shows when the divergence becomes deployed misselection.
+\paragraph{Q1 mechanism support.} Q1 is mechanism support rather than the paper's claim. Holding the proposed action path fixed, synthetic and inventory show that frictional interfaces can separate proposed and realized actions: synthetic yields an increasing proposal-versus-realization gap away from zero friction, while inventory shows a threshold pattern in which sufficiently high friction favors tempered execution. This explains why forecast-side, target-side, and realized-action evaluation can diverge; Q2 shows when that divergence becomes deployed misselection.
 
 \section{Discussion and Limitations}
 
-The paper's practical claim is narrow: forecast-side metrics may remain valid for prediction, yet under a fixed deployed interface they need not be sufficient for deployed model selection. Event micro provides the main forecasting-native Q2 evidence, inventory provides the main operational corroboration, and load-following is retained only as appendix-only secondary corroboration. Q1 explains why; Q2 shows when selection fails.
+The paper's practical claim is narrow: forecast-side metrics may remain valid for prediction, yet under a fixed deployed interface they need not be sufficient for deployed model selection. Event-micro provides the main forecasting-native Q2 evidence, inventory provides the main operational corroboration, and Q1 explains why the evaluation object can change under friction.
 
 Three limitations bound the claim. Forecasting-native Q2 evidence comes from a minimal event-micro benchmark evaluated over 100 seeds, so the paper still relies on one narrow forecasting-native task family rather than a broad benchmark suite. Inventory anchors the paper's operational corroboration, while load-following remains appendix-only secondary corroboration because its zero row stays mixed even after grouping repair. In the expanded-family inventory sweep, moderate/high-friction mismatch strengthens but zero- and low-friction rows remain mixed, so we do not use that stricter-gate transparency block as main-text confirmation.
 
@@ -172,14 +172,14 @@ The resulting implication is evaluative rather than predictive: forecasting syst
 
 \section{Additional Q2 Package Details}
 
-This appendix records a stricter same-interface rank-based transparency layer after the fifth inventory baseline is added and keeps the synthetic result visible. Not clearing this stricter package gate should be read as appendix transparency only; it does not overturn the narrower main claim from the locked five-family inventory table.
+This appendix collects the cross-domain seed-level reliability checks and a stricter same-interface package-gate transparency layer after the fifth inventory baseline is added. These appendix-only additions do not overturn the narrower main claim from the locked five-family inventory table.
 
 \begin{table*}[t]
 \centering
 \small
 \setlength{\tabcolsep}{3pt}
 \input{results/table_step5_same_interface_summary.tex}
-\caption{Additional paper-facing Q2 package summary after the fifth inventory baseline is added. Status here reflects the stricter same-interface package gate used for this transparency layer rather than the narrower main-text claim from the locked five-family inventory table.}
+\caption{Stricter same-interface package-gate summary for the appendix transparency layer. These statuses do not overturn the narrower main-text claim from the locked five-family inventory table.}
 \label{tab:step5-package}
 \end{table*}
 
@@ -197,7 +197,7 @@ The same locked Q2 package also admits simple seed-level reliability checks. Tab
 \centering
 \scriptsize
 \resizebox{\columnwidth}{!}{\input{results/table_q2_gap_bootstrap_cis.tex}}
-\caption{95\% bootstrap intervals for the deployed-gap rows in the main Q2 evidence blocks. Positive intervals indicate that the forecast-selected model underperforms the deployed-selected model on the deployed metric.}
+\caption{95\% bootstrap intervals for deployed-gap rows in the main Q2 evidence blocks. Event-micro and inventory provide the strongest positive-gap support, while load-following remains directional secondary corroboration.}
 \label{tab:q2-gap-bootstrap-cis}
 \end{table}
 

@@ -263,7 +263,14 @@ def _paper_table_from_verdicts(verdict_df: pd.DataFrame) -> pd.DataFrame:
             "portfolio": "Portfolio",
         }
     )
-    table["Status"] = table["inclusion_status"]
+    table["Status"] = table["inclusion_status"].replace(
+        {
+            "pass": "clears stricter gate",
+            "fail": "mixed zero row",
+            "included": "included stretch support",
+            "excluded": "not included in headline package",
+        }
+    )
     table["Role"] = table["domain_role"]
     table["Seeds"] = table["n_seeds"]
     table["Zero Flip Rate"] = table["zero_friction_mean_flip_rate"]
@@ -272,7 +279,14 @@ def _paper_table_from_verdicts(verdict_df: pd.DataFrame) -> pd.DataFrame:
     table["Best Positive Flip Rate"] = table["best_positive_flip_rate"]
     table["Strongest Flip Pair"] = table["strongest_flip_pair"].map(_paper_pair_label)
     table["Strongest Flip Share"] = table["strongest_flip_share"]
-    table["Note"] = table["verdict_note"]
+    table["Note"] = table["verdict_note"].replace(
+        {
+            "passed_step5_gate": "passed stricter gate",
+            "zero_friction_mean_flip_rate_above_0.10": "does not clear stricter gate",
+            "zero_friction_mean_spearman_below_0.50": "does not clear stricter gate",
+            "zero_friction_mean_flip_rate_above_0.10;zero_friction_mean_spearman_below_0.50": "does not clear stricter gate",
+        }
+    )
     table = table[
         [
             "Domain",
@@ -465,14 +479,26 @@ def _paper_note_lines(verdict_df: pd.DataFrame) -> list[str]:
     lines = [
         "# Step 5: Same-Interface Q2 Summary",
         "",
-        "Step 5 is a descriptive Q2 package rather than a new experiment. Its role is to summarize the same-interface ranking evidence after the fifth inventory baseline is added, while the main text now centers the inventory selection-drift consequence directly.",
+        "Step 5 is a stricter-gate transparency layer rather than a new experiment. Its role is to summarize the same-interface ranking evidence after the fifth inventory baseline is added, while the main text now centers the inventory selection-drift consequence directly.",
         "",
         "## Domain Rows",
     ]
     for row in verdict_df.itertuples(index=False):
         label = {"synthetic": "Synthetic", "inventory": "Inventory", "portfolio": "Portfolio"}[row.domain]
+        status = {
+            "pass": "clears stricter gate",
+            "fail": "mixed zero row",
+            "included": "included stretch support",
+            "excluded": "not included in headline package",
+        }.get(str(row.inclusion_status), str(row.inclusion_status))
+        note = {
+            "passed_step5_gate": "passed stricter gate",
+            "zero_friction_mean_flip_rate_above_0.10": "does not clear stricter gate",
+            "zero_friction_mean_spearman_below_0.50": "does not clear stricter gate",
+            "zero_friction_mean_flip_rate_above_0.10;zero_friction_mean_spearman_below_0.50": "does not clear stricter gate",
+        }.get(str(row.verdict_note), str(row.verdict_note))
         lines.append(
-            f"- {label}: status={row.inclusion_status}, zero_flip_rate={_format_float(row.zero_friction_mean_flip_rate)}, zero_spearman={_format_float(row.zero_friction_mean_spearman_rho)}, strongest_flip_pair={_paper_pair_label(row.strongest_flip_pair)}"
+            f"- {label}: status={status}, zero_flip_rate={_format_float(row.zero_friction_mean_flip_rate)}, zero_spearman={_format_float(row.zero_friction_mean_spearman_rho)}, strongest_flip_pair={_paper_pair_label(row.strongest_flip_pair)}, note={note}"
         )
     lines.extend(["", "## Count-Based Verdict"])
     for line in _count_based_lines(verdict_df):

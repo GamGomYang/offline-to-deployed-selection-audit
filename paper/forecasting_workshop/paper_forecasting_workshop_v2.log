@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.4.20)  23 APR 2026 02:57
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.4.20)  23 APR 2026 11:10
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -807,18 +807,12 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 (/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-msb.cfg
 File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 )
-Underfull \vbox (badness 10000) has occurred while \output is active []
+Underfull \vbox (badness 1817) has occurred while \output is active []
 
 
-Underfull \hbox (badness 1275) in paragraph at lines 83--84
+Underfull \hbox (badness 1275) in paragraph at lines 85--86
 \T1/ptm/b/n/10 (+20) Q2 (fixed in-ter-face, dif-fer-ent fore-casts). \T1/ptm/m/
 n/10 (+20) Q2 is the
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 89--90
-\T1/ptm/m/n/10 (+20) Our ev-i-dence hi-er-ar-chy sep-a-rates san-ity an-chor-in
-g,
  []
 
 [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texlive/texmf-
@@ -826,164 +820,268 @@ dist/fonts/enc/dvips/base/8r.enc}
 
 
 ]
-(./results/table_q2_selection_drift_inventory.tex)
-<assets/figures/fig_q2_results_v2.pdf, id=67, 499.867pt x 196.33302pt>
+<assets/figures/fig_q2_results_v2.pdf, id=75, 499.867pt x 196.33302pt>
 File: assets/figures/fig_q2_results_v2.pdf Graphic file (type pdf)
 <use assets/figures/fig_q2_results_v2.pdf>
 Package pdftex.def Info: assets/figures/fig_q2_results_v2.pdf  used on input li
-ne 110.
+ne 103.
 (pdftex.def)             Requested size: 242.53899pt x 95.26334pt.
 
-(./results/table_q2_selection_drift_event_micro_main.tex) [2
+(./results/table_q2_selection_drift_event_micro_main.tex)
+(./results/table_q2_selection_drift_inventory.tex)
+Underfull \vbox (badness 2293) has occurred while \output is active []
+
+ [2
 pdfTeX warning (ext4): destination with the same identifier (name{figure.1}) ha
 s been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.128 
+l.134 
       
 pdfTeX warning (ext4): destination with the same identifier (name{table.1}) has
  been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.128 
-      
-pdfTeX warning (ext4): destination with the same identifier (name{figure.2}) ha
-s been already used, duplicate ignored
-<argument> ...shipout:D \box_use:N \l_shipout_box 
-                                                  \__shipout_drop_firstpage_...
-l.128 
+l.134 
       
 pdfTeX warning (ext4): destination with the same identifier (name{table.2}) has
  been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.128 
-       <./assets/figures/fig_q2_results_v2.pdf>]
-<assets/figures/fig_q1_results_v2.pdf, id=134, 499.867pt x 196.33302pt>
-File: assets/figures/fig_q1_results_v2.pdf Graphic file (type pdf)
-<use assets/figures/fig_q1_results_v2.pdf>
-Package pdftex.def Info: assets/figures/fig_q1_results_v2.pdf  used on input li
-ne 135.
-(pdftex.def)             Requested size: 242.53899pt x 95.26334pt.
-
-(./results/table_evidence_map_v2.tex)
-(./results/table_step5_same_interface_summary.tex)
-(./results/table_q2_stronger_baseline_protocol.tex)
-(./results/table_q2_stronger_baseline_selection.tex)
-(./results/table_q2_stronger_baseline_robustness.tex) [3
-pdfTeX warning (ext4): destination with the same identifier (name{figure.3}) ha
+l.134 
+      
+pdfTeX warning (ext4): destination with the same identifier (name{figure.2}) ha
 s been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.221 
-      
+l.134 
+       <./assets/figures/fig_q2_results_v2.pdf>]
+(./results/table_evidence_map_v2.tex)
+<assets/figures/fig_q1_results_v2.pdf, id=140, 499.867pt x 196.33302pt>
+File: assets/figures/fig_q1_results_v2.pdf Graphic file (type pdf)
+<use assets/figures/fig_q1_results_v2.pdf>
+Package pdftex.def Info: assets/figures/fig_q1_results_v2.pdf  used on input li
+ne 168.
+(pdftex.def)             Requested size: 242.53899pt x 95.26334pt.
+
+Underfull \vbox (badness 2096) has occurred while \output is active []
+
+
+(./results/table_step5_same_interface_summary.tex)
+(./results/table_q2_recurrence_tests.tex)
+(./results/table_q2_gap_bootstrap_cis.tex)
+<assets/figures/fig_q2_uncertainty_appendix.pdf, id=145, 531.57005pt x 203.5600
+1pt>
+File: assets/figures/fig_q2_uncertainty_appendix.pdf Graphic file (type pdf)
+<use assets/figures/fig_q2_uncertainty_appendix.pdf>
+Package pdftex.def Info: assets/figures/fig_q2_uncertainty_appendix.pdf  used o
+n input line 206.
+(pdftex.def)             Requested size: 242.53899pt x 92.87773pt.
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [3
 pdfTeX warning (ext4): destination with the same identifier (name{table.A1}) ha
 s been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.221 
-      
-pdfTeX warning (ext4): destination with the same identifier (name{table.A5}) ha
-s been already used, duplicate ignored
-<argument> ...shipout:D \box_use:N \l_shipout_box 
-                                                  \__shipout_drop_firstpage_...
-l.221 
-       <./assets/figures/fig_q1_results_v2.pdf>]
-(./results/table_q2_selection_drift_event_micro.tex)
-<assets/figures/fig_q2_event_micro_support.pdf, id=189, 246.92203pt x 181.87903
-pt>
-File: assets/figures/fig_q2_event_micro_support.pdf Graphic file (type pdf)
-<use assets/figures/fig_q2_event_micro_support.pdf>
-Package pdftex.def Info: assets/figures/fig_q2_event_micro_support.pdf  used on
- input line 232.
-(pdftex.def)             Requested size: 242.53899pt x 178.65927pt.
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
-(./results/table_q2_selection_drift_event_micro_threshold_robustness.tex)
-(./results/table_q2_selection_drift_event_micro_logloss.tex)
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [4
-pdfTeX warning (ext4): destination with the same identifier (name{table.A2}) ha
-s been already used, duplicate ignored
-<argument> ...shipout:D \box_use:N \l_shipout_box 
-                                                  \__shipout_drop_firstpage_...
-l.252 
-      
-pdfTeX warning (ext4): destination with the same identifier (name{table.A3}) ha
-s been already used, duplicate ignored
-<argument> ...shipout:D \box_use:N \l_shipout_box 
-                                                  \__shipout_drop_firstpage_...
-l.252 
-      
-pdfTeX warning (ext4): destination with the same identifier (name{table.A6}) ha
-s been already used, duplicate ignored
-<argument> ...shipout:D \box_use:N \l_shipout_box 
-                                                  \__shipout_drop_firstpage_...
-l.252 
+l.210 
       
 pdfTeX warning (ext4): destination with the same identifier (name{figure.A1}) h
 as been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.252 
+l.210 
+      
+pdfTeX warning (ext4): destination with the same identifier (name{table.A3}) ha
+s been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.210 
+      
+pdfTeX warning (ext4): destination with the same identifier (name{table.A4}) ha
+s been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.210 
+       <./assets/figures/fig_q1_results_v2.pdf>]
+<assets/figures/fig_q2_seed_recurrence_appendix.pdf, id=203, 528.75975pt x 196.
+33302pt>
+File: assets/figures/fig_q2_seed_recurrence_appendix.pdf Graphic file (type pdf
+)
+<use assets/figures/fig_q2_seed_recurrence_appendix.pdf>
+Package pdftex.def Info: assets/figures/fig_q2_seed_recurrence_appendix.pdf  us
+ed on input line 213.
+(pdftex.def)             Requested size: 242.53899pt x 90.05664pt.
+
+(./results/table_q2_selection_drift_event_micro.tex)
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+<assets/figures/fig_q2_event_micro_support.pdf, id=204, 246.92203pt x 181.87903
+pt>
+File: assets/figures/fig_q2_event_micro_support.pdf Graphic file (type pdf)
+<use assets/figures/fig_q2_event_micro_support.pdf>
+Package pdftex.def Info: assets/figures/fig_q2_event_micro_support.pdf  used on
+ input line 233.
+(pdftex.def)             Requested size: 242.53899pt x 178.65927pt.
+
+(./results/table_q2_selection_drift_event_micro_threshold_robustness.tex)
+(./results/table_q2_selection_drift_event_micro_logloss.tex)
+(./results/table_q2_selection_drift_event_micro_hysteresis_robustness.tex)
+[4
+pdfTeX warning (ext4): destination with the same identifier (name{table.A2}) ha
+s been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.261 
+      
+pdfTeX warning (ext4): destination with the same identifier (name{figure.A2}) h
+as been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.261 
+      
+pdfTeX warning (ext4): destination with the same identifier (name{figure.A3}) h
+as been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.261 
+      
+pdfTeX warning (ext4): destination with the same identifier (name{table.A5}) ha
+s been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.261 
+      
+pdfTeX warning (ext4): destination with the same identifier (name{figure.A4}) h
+as been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.261 
+      
+pdfTeX warning (ext4): destination with the same identifier (name{table.A6}) ha
+s been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.261 
       
 pdfTeX warning (ext4): destination with the same identifier (name{table.A7}) ha
 s been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.252 
-       <./assets/figures/fig_q2_event_micro_support.pdf>]
+l.261 
+       <./assets/figures/fig_q2_uncertainty_appendix.pdf> <./assets/figures/fig
+_q2_seed_recurrence_appendix.pdf> <./assets/figures/fig_q2_event_micro_support.
+pdf>] (./results/table_event_micro_interface_recurrence_tests.tex)
+(./results/table_event_micro_interface_gap_bootstrap_cis.tex)
+<assets/figures/fig_event_micro_interface_uncertainty_appendix.pdf, id=341, 556
+.94145pt x 355.32701pt>
+File: assets/figures/fig_event_micro_interface_uncertainty_appendix.pdf Graphic
+ file (type pdf)
+<use assets/figures/fig_event_micro_interface_uncertainty_appendix.pdf>
+Package pdftex.def Info: assets/figures/fig_event_micro_interface_uncertainty_a
+ppendix.pdf  used on input line 287.
+(pdftex.def)             Requested size: 242.53899pt x 154.73949pt.
+<assets/figures/fig_event_micro_interface_seed_recurrence_appendix.pdf, id=342,
+ 514.26785pt x 210.78702pt>
+File: assets/figures/fig_event_micro_interface_seed_recurrence_appendix.pdf Gra
+phic file (type pdf)
+<use assets/figures/fig_event_micro_interface_seed_recurrence_appendix.pdf>
+Package pdftex.def Info: assets/figures/fig_event_micro_interface_seed_recurren
+ce_appendix.pdf  used on input line 294.
+(pdftex.def)             Requested size: 242.53899pt x 99.41084pt.
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
 (./results/table_load_following_support_summary.tex) [5
-pdfTeX warning (ext4): destination with the same identifier (name{table.A4}) ha
-s been already used, duplicate ignored
-<argument> ...shipout:D \box_use:N \l_shipout_box 
-                                                  \__shipout_drop_firstpage_...
-l.272 \end{document}
-                    
 pdfTeX warning (ext4): destination with the same identifier (name{table.A8}) ha
 s been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.272 \end{document}
-                    
+l.322 
+      
 pdfTeX warning (ext4): destination with the same identifier (name{table.A9}) ha
 s been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.272 \end{document}
+l.322 
+      
+pdfTeX warning (ext4): destination with the same identifier (name{table.A10}) h
+as been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.322 
+      
+pdfTeX warning (ext4): destination with the same identifier (name{figure.A5}) h
+as been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.322 
+      
+pdfTeX warning (ext4): destination with the same identifier (name{figure.A6}) h
+as been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.322 
+      
+pdfTeX warning (ext4): destination with the same identifier (name{table.A11}) h
+as been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.322 
+       <./assets/figures/fig_event_micro_interface_uncertainty_appendix.pdf> <.
+/assets/figures/fig_event_micro_interface_seed_recurrence_appendix.pdf>]
+(./results/table_q2_stronger_baseline_protocol.tex)
+(./results/table_q2_stronger_baseline_selection.tex)
+(./results/table_q2_stronger_baseline_robustness.tex) [6
+pdfTeX warning (ext4): destination with the same identifier (name{table.A14}) h
+as been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.359 \end{document}
                     
 
-] (./paper_forecasting_workshop_v2.aux)
+] [7
+pdfTeX warning (ext4): destination with the same identifier (name{table.A12}) h
+as been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.359 \end{document}
+                    
+pdfTeX warning (ext4): destination with the same identifier (name{table.A13}) h
+as been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.359 \end{document}
+                    ] (./paper_forecasting_workshop_v2.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
  ***********
 Package rerunfilecheck Info: File `paper_forecasting_workshop_v2.out' has not c
 hanged.
-(rerunfilecheck)             Checksum: D87069C79017CD44DDBB9145AFACEB81;2303.
+(rerunfilecheck)             Checksum: 7049EE84331D79ED901F038C00B042B9;2857.
  ) 
 Here is how much of TeX's memory you used:
- 24091 strings out of 476182
- 443867 string characters out of 5795595
- 1960975 words of memory out of 5000000
- 45432 multiletter control sequences out of 15000+600000
- 604303 words of font info for 211 fonts, out of 8000000 for 9000
+ 24183 strings out of 476182
+ 447940 string characters out of 5795595
+ 1957975 words of memory out of 5000000
+ 45487 multiletter control sequences out of 15000+600000
+ 604683 words of font info for 217 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 84i,11n,87p,1152b,846s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 84i,10n,87p,1026b,846s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></us
 r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share
-/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb></usr/share/texliv
-e/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf
--dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fo
-nts/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/t
-imes/utmr8a.pfb>
-Output written on paper_forecasting_workshop_v2.pdf (5 pages, 142767 bytes).
+/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texliv
+e/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-
+dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/f
+onts/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/
+times/utmr8a.pfb>
+Output written on paper_forecasting_workshop_v2.pdf (7 pages, 204972 bytes).
 PDF statistics:
- 275 PDF objects out of 1000 (max. 8388607)
- 140 compressed objects within 2 object streams
- 34 named destinations out of 1000 (max. 500000)
- 46716 words of extra memory for PDF output out of 51595 (max. 10000000)
+ 488 PDF objects out of 1000 (max. 8388607)
+ 193 compressed objects within 2 object streams
+ 48 named destinations out of 1000 (max. 500000)
+ 46752 words of extra memory for PDF output out of 51595 (max. 10000000)
 

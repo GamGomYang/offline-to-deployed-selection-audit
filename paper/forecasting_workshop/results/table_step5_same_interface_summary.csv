@@ -1,3 +1,3 @@
 Domain,Role,Status,Seeds,Zero Flip Rate,Zero Spearman,Best Positive Friction,Best Positive Flip Rate,Strongest Flip Pair,Strongest Flip Share,Note
-Synthetic,required,clears_gate,20,0.000,1.000,0.2500,0.500,Linear AR / Reactive extrapolation heuristic,1.000,passed_stricter_gate
-Inventory,required,mixed_zero_row,10,0.120,0.840,1.0000,0.500,Small MLP / Moving average (7),1.000,does_not_clear_stricter_gate
+Synthetic,required,clears stricter gate,20,0.000,1.000,0.2500,0.500,Linear AR / Reactive extrapolation heuristic,1.000,passed stricter gate
+Inventory,required,mixed zero row,10,0.120,0.840,1.0000,0.500,Small MLP / Moving average (7),1.000,does not clear stricter gate
