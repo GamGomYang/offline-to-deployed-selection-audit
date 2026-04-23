@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.4.20)  22 APR 2026 09:44
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.4.20)  23 APR 2026 02:57
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -670,7 +670,7 @@ File: pgflibraryarrows.meta.code.tex 2023-01-15 v3.1.10 (3.1.10)
 zlibrarypositioning.code.tex
 File: tikzlibrarypositioning.code.tex 2023-01-15 v3.1.10 (3.1.10)
 )
-LaTeX Font Info:    Trying to load font information for T1+ptm on input line 32
+LaTeX Font Info:    Trying to load font information for T1+ptm on input line 28
 .
 
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/t1ptm.fd
@@ -684,24 +684,24 @@ File: l3backend-pdftex.def 2024-01-04 L3 backend support: PDF output (pdfTeX)
 (./paper_forecasting_workshop_v2.aux)
 \openout1 = `paper_forecasting_workshop_v2.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 32.
-LaTeX Font Info:    ... okay on input line 32.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 32.
-LaTeX Font Info:    ... okay on input line 32.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 32.
-LaTeX Font Info:    ... okay on input line 32.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 32.
-LaTeX Font Info:    ... okay on input line 32.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 32.
-LaTeX Font Info:    ... okay on input line 32.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 32.
-LaTeX Font Info:    ... okay on input line 32.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 32.
-LaTeX Font Info:    ... okay on input line 32.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 32.
-LaTeX Font Info:    ... okay on input line 32.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 32.
-LaTeX Font Info:    ... okay on input line 32.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 28.
+LaTeX Font Info:    ... okay on input line 28.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 28.
+LaTeX Font Info:    ... okay on input line 28.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 28.
+LaTeX Font Info:    ... okay on input line 28.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 28.
+LaTeX Font Info:    ... okay on input line 28.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 28.
+LaTeX Font Info:    ... okay on input line 28.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 28.
+LaTeX Font Info:    ... okay on input line 28.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 28.
+LaTeX Font Info:    ... okay on input line 28.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 28.
+LaTeX Font Info:    ... okay on input line 28.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 28.
+LaTeX Font Info:    ... okay on input line 28.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -737,19 +737,19 @@ LaTeX Font Info:    ... okay on input line 32.
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-LaTeX Info: Redefining \microtypecontext on input line 32.
-Package microtype Info: Applying patch `item' on input line 32.
-Package microtype Info: Applying patch `toc' on input line 32.
-Package microtype Info: Applying patch `eqnum' on input line 32.
-Package microtype Info: Applying patch `footnote' on input line 32.
-Package microtype Info: Applying patch `verbatim' on input line 32.
+LaTeX Info: Redefining \microtypecontext on input line 28.
+Package microtype Info: Applying patch `item' on input line 28.
+Package microtype Info: Applying patch `toc' on input line 28.
+Package microtype Info: Applying patch `eqnum' on input line 28.
+Package microtype Info: Applying patch `footnote' on input line 28.
+Package microtype Info: Applying patch `verbatim' on input line 28.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using default protrusion set `alltext'.
 Package microtype Info: Automatic font expansion enabled (level 2),
 (microtype)             stretch: 20, shrink: 20, step: 1, non-selected.
 Package microtype Info: Using default expansion set `alltext-nott'.
-LaTeX Info: Redefining \showhyphens on input line 32.
+LaTeX Info: Redefining \showhyphens on input line 28.
 Package microtype Info: No adjustment of tracking.
 Package microtype Info: No adjustment of interword spacing.
 Package microtype Info: No adjustment of character kerning.
@@ -778,7 +778,7 @@ Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-Package hyperref Info: Link coloring OFF on input line 32.
+Package hyperref Info: Link coloring OFF on input line 28.
 
 (./paper_forecasting_workshop_v2.out) (./paper_forecasting_workshop_v2.out)
 \@outlinefile=\write4
@@ -789,7 +789,7 @@ Package hyperref Info: Link coloring OFF on input line 32.
 File: mt-cmr.cfg 2013/05/19 v2.2 microtype config. file: Computer Modern Roman 
 (RS)
 )
-LaTeX Font Info:    Trying to load font information for U+msa on input line 43.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 39.
 
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
@@ -798,7 +798,7 @@ File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 (/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-msa.cfg
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 43.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 39.
 
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
@@ -806,21 +806,35 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
 (/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-msb.cfg
 File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
-) [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texlive/texm
-f-dist/fonts/enc/dvips/base/8r.enc}
+)
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
-] (./results/table_q2_selection_drift_inventory.tex)
-<assets/figures/fig_q2_results_v2.pdf, id=71, 499.867pt x 196.33302pt>
+Underfull \hbox (badness 1275) in paragraph at lines 83--84
+\T1/ptm/b/n/10 (+20) Q2 (fixed in-ter-face, dif-fer-ent fore-casts). \T1/ptm/m/
+n/10 (+20) Q2 is the
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 89--90
+\T1/ptm/m/n/10 (+20) Our ev-i-dence hi-er-ar-chy sep-a-rates san-ity an-chor-in
+g,
+ []
+
+[1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texlive/texmf-
+dist/fonts/enc/dvips/base/8r.enc}
+
+
+]
+(./results/table_q2_selection_drift_inventory.tex)
+<assets/figures/fig_q2_results_v2.pdf, id=67, 499.867pt x 196.33302pt>
 File: assets/figures/fig_q2_results_v2.pdf Graphic file (type pdf)
 <use assets/figures/fig_q2_results_v2.pdf>
 Package pdftex.def Info: assets/figures/fig_q2_results_v2.pdf  used on input li
-ne 120.
+ne 110.
 (pdftex.def)             Requested size: 242.53899pt x 95.26334pt.
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [2
+(./results/table_q2_selection_drift_event_micro_main.tex) [2
 pdfTeX warning (ext4): destination with the same identifier (name{figure.1}) ha
 s been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
@@ -838,94 +852,111 @@ s been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
 l.128 
+      
+pdfTeX warning (ext4): destination with the same identifier (name{table.2}) has
+ been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.128 
        <./assets/figures/fig_q2_results_v2.pdf>]
-<assets/figures/fig_q1_results_v2.pdf, id=127, 499.867pt x 196.33302pt>
+<assets/figures/fig_q1_results_v2.pdf, id=134, 499.867pt x 196.33302pt>
 File: assets/figures/fig_q1_results_v2.pdf Graphic file (type pdf)
 <use assets/figures/fig_q1_results_v2.pdf>
 Package pdftex.def Info: assets/figures/fig_q1_results_v2.pdf  used on input li
-ne 131.
+ne 135.
 (pdftex.def)             Requested size: 242.53899pt x 95.26334pt.
 
 (./results/table_evidence_map_v2.tex)
-(./results/table_step5_same_interface_summary.tex) [3
+(./results/table_step5_same_interface_summary.tex)
+(./results/table_q2_stronger_baseline_protocol.tex)
+(./results/table_q2_stronger_baseline_selection.tex)
+(./results/table_q2_stronger_baseline_robustness.tex) [3
 pdfTeX warning (ext4): destination with the same identifier (name{figure.3}) ha
 s been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.184 
+l.221 
       
 pdfTeX warning (ext4): destination with the same identifier (name{table.A1}) ha
 s been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.184 
+l.221 
+      
+pdfTeX warning (ext4): destination with the same identifier (name{table.A5}) ha
+s been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.221 
        <./assets/figures/fig_q1_results_v2.pdf>]
-(./results/table_q2_stronger_baseline_protocol.tex)
-(./results/table_q2_stronger_baseline_selection.tex)
-(./results/table_q2_stronger_baseline_robustness.tex)
-(./results/table_q2_stronger_baseline_reactive_mse_robustness.tex)
-Underfull \hbox (badness 1275) in paragraph at lines 221--222
-[]\T1/ptm/m/n/10 (+20) A more re-ac-tive ap-pendix follow-up strength-ens the
- []
-
 (./results/table_q2_selection_drift_event_micro.tex)
-<assets/figures/fig_q2_event_micro_support.pdf, id=182, 246.92203pt x 181.87903
+<assets/figures/fig_q2_event_micro_support.pdf, id=189, 246.92203pt x 181.87903
 pt>
 File: assets/figures/fig_q2_event_micro_support.pdf Graphic file (type pdf)
 <use assets/figures/fig_q2_event_micro_support.pdf>
 Package pdftex.def Info: assets/figures/fig_q2_event_micro_support.pdf  used on
- input line 238.
+ input line 232.
 (pdftex.def)             Requested size: 242.53899pt x 178.65927pt.
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+(./results/table_q2_selection_drift_event_micro_threshold_robustness.tex)
+(./results/table_q2_selection_drift_event_micro_logloss.tex)
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
  [4
 pdfTeX warning (ext4): destination with the same identifier (name{table.A2}) ha
 s been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.245 \section
-              {Load-Following Support Domain}
-pdfTeX warning (ext4): destination with the same identifier (name{table.A5}) ha
-s been already used, duplicate ignored
-<argument> ...shipout:D \box_use:N \l_shipout_box 
-                                                  \__shipout_drop_firstpage_...
-l.245 \section
-              {Load-Following Support Domain}
-pdfTeX warning (ext4): destination with the same identifier (name{table.A6}) ha
-s been already used, duplicate ignored
-<argument> ...shipout:D \box_use:N \l_shipout_box 
-                                                  \__shipout_drop_firstpage_...
-l.245 \section
-              {Load-Following Support Domain}
-pdfTeX warning (ext4): destination with the same identifier (name{table.A7}) ha
-s been already used, duplicate ignored
-<argument> ...shipout:D \box_use:N \l_shipout_box 
-                                                  \__shipout_drop_firstpage_...
-l.245 \section
-              {Load-Following Support Domain}
-pdfTeX warning (ext4): destination with the same identifier (name{figure.A1}) h
-as been already used, duplicate ignored
-<argument> ...shipout:D \box_use:N \l_shipout_box 
-                                                  \__shipout_drop_firstpage_...
-l.245 \section
-              {Load-Following Support Domain} <./assets/figures/fig_q2_event_mi
-cro_support.pdf>] (./results/table_load_following_support_summary.tex) [5
+l.252 
+      
 pdfTeX warning (ext4): destination with the same identifier (name{table.A3}) ha
 s been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.264 \end{document}
-                    
+l.252 
+      
+pdfTeX warning (ext4): destination with the same identifier (name{table.A6}) ha
+s been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.252 
+      
+pdfTeX warning (ext4): destination with the same identifier (name{figure.A1}) h
+as been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.252 
+      
+pdfTeX warning (ext4): destination with the same identifier (name{table.A7}) ha
+s been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.252 
+       <./assets/figures/fig_q2_event_micro_support.pdf>]
+(./results/table_load_following_support_summary.tex) [5
 pdfTeX warning (ext4): destination with the same identifier (name{table.A4}) ha
 s been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.264 \end{document}
+l.272 \end{document}
                     
 pdfTeX warning (ext4): destination with the same identifier (name{table.A8}) ha
 s been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.264 \end{document}
-                    ] (./paper_forecasting_workshop_v2.aux)
+l.272 \end{document}
+                    
+pdfTeX warning (ext4): destination with the same identifier (name{table.A9}) ha
+s been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.272 \end{document}
+                    
+
+] (./paper_forecasting_workshop_v2.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
@@ -935,13 +966,13 @@ hanged.
 (rerunfilecheck)             Checksum: D87069C79017CD44DDBB9145AFACEB81;2303.
  ) 
 Here is how much of TeX's memory you used:
- 24068 strings out of 476182
- 442970 string characters out of 5795595
- 1959975 words of memory out of 5000000
- 45422 multiletter control sequences out of 15000+600000
- 601517 words of font info for 208 fonts, out of 8000000 for 9000
+ 24091 strings out of 476182
+ 443867 string characters out of 5795595
+ 1960975 words of memory out of 5000000
+ 45432 multiletter control sequences out of 15000+600000
+ 604303 words of font info for 211 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 84i,11n,87p,1050b,846s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 84i,11n,87p,1152b,846s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></us
 r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share
 /texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb></usr/share/texliv
@@ -949,10 +980,10 @@ e/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf
 -dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fo
 nts/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/t
 imes/utmr8a.pfb>
-Output written on paper_forecasting_workshop_v2.pdf (5 pages, 143976 bytes).
+Output written on paper_forecasting_workshop_v2.pdf (5 pages, 142767 bytes).
 PDF statistics:
- 269 PDF objects out of 1000 (max. 8388607)
- 135 compressed objects within 2 object streams
- 32 named destinations out of 1000 (max. 500000)
- 42620 words of extra memory for PDF output out of 42996 (max. 10000000)
+ 275 PDF objects out of 1000 (max. 8388607)
+ 140 compressed objects within 2 object streams
+ 34 named destinations out of 1000 (max. 500000)
+ 46716 words of extra memory for PDF output out of 51595 (max. 10000000)
 

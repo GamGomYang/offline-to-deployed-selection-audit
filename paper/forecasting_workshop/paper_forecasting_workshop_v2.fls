@@ -330,6 +330,9 @@ INPUT ./assets/figures/fig_q2_results_v2.pdf
 INPUT ./assets/figures/fig_q2_results_v2.pdf
 INPUT ./assets/figures/fig_q2_results_v2.pdf
 INPUT ./assets/figures/fig_q2_results_v2.pdf
+INPUT ./results/table_q2_selection_drift_event_micro_main.tex
+INPUT ./results/table_q2_selection_drift_event_micro_main.tex
+INPUT results/table_q2_selection_drift_event_micro_main.tex
 INPUT /usr/share/texlive/texmf-dist/fonts/vf/adobe/times/ptmr8t.vf
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/ptmr8r.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/vf/adobe/times/ptmr8t.vf
@@ -343,6 +346,7 @@ INPUT ./assets/figures/fig_q1_results_v2.pdf
 INPUT ./assets/figures/fig_q1_results_v2.pdf
 INPUT ./assets/figures/fig_q1_results_v2.pdf
 INPUT ./assets/figures/fig_q1_results_v2.pdf
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/ptmr8t.tfm
 INPUT ./results/table_evidence_map_v2.tex
 INPUT ./results/table_evidence_map_v2.tex
 INPUT results/table_evidence_map_v2.tex
@@ -364,9 +368,8 @@ INPUT results/table_q2_stronger_baseline_selection.tex
 INPUT ./results/table_q2_stronger_baseline_robustness.tex
 INPUT ./results/table_q2_stronger_baseline_robustness.tex
 INPUT results/table_q2_stronger_baseline_robustness.tex
-INPUT ./results/table_q2_stronger_baseline_reactive_mse_robustness.tex
-INPUT ./results/table_q2_stronger_baseline_reactive_mse_robustness.tex
-INPUT results/table_q2_stronger_baseline_reactive_mse_robustness.tex
+INPUT /usr/share/texlive/texmf-dist/fonts/vf/adobe/times/ptmr8t.vf
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/ptmr8r.tfm
 INPUT ./results/table_q2_selection_drift_event_micro.tex
 INPUT ./results/table_q2_selection_drift_event_micro.tex
 INPUT results/table_q2_selection_drift_event_micro.tex
@@ -375,6 +378,12 @@ INPUT ./assets/figures/fig_q2_event_micro_support.pdf
 INPUT ./assets/figures/fig_q2_event_micro_support.pdf
 INPUT ./assets/figures/fig_q2_event_micro_support.pdf
 INPUT ./assets/figures/fig_q2_event_micro_support.pdf
+INPUT ./results/table_q2_selection_drift_event_micro_threshold_robustness.tex
+INPUT ./results/table_q2_selection_drift_event_micro_threshold_robustness.tex
+INPUT results/table_q2_selection_drift_event_micro_threshold_robustness.tex
+INPUT ./results/table_q2_selection_drift_event_micro_logloss.tex
+INPUT ./results/table_q2_selection_drift_event_micro_logloss.tex
+INPUT results/table_q2_selection_drift_event_micro_logloss.tex
 INPUT ./results/table_load_following_support_summary.tex
 INPUT ./results/table_load_following_support_summary.tex
 INPUT results/table_load_following_support_summary.tex

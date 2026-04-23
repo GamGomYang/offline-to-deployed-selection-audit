@@ -21,13 +21,9 @@
 \setlength{\floatsep}{6pt plus 1pt minus 2pt}
 \setlength{\intextsep}{6pt plus 1pt minus 2pt}
 
-\title{\vspace{-6mm}\textbf{Benchmark Failure Under Deployment Frictions: When Forecast Rankings Misselect Operational Winners}\vspace{-2mm}}
+\title{\vspace{-6mm}\textbf{Benchmarking Forecasting Systems Under Friction: When Forecast Rankings Misselect Deployed Winners}\vspace{-2mm}}
 \author{}
 \date{}
-
-% This is an evaluation paper, not a new forecasting-model paper.
-% Q1 = same proposal, different interface.
-% Q2 = fixed interface, forecast ranking vs deployed ranking.
 
 \begin{document}
 
@@ -35,7 +31,7 @@
 \maketitle
 \vspace{-6mm}
 \begin{abstract}
-Forecasting systems are often selected using forecast-side scores, but under deployment frictions these scores can mis-rank systems relative to realized operational performance. We identify a benchmark failure mode: under a fixed deployed interface, forecast-side ranking need not preserve deployed ranking once proposed actions are not directly realized, creating recurrent model-selection error. We separate two evaluation questions---same proposal under different interfaces (Q1) and different forecasters under a fixed interface (Q2)---and study them in synthetic, inventory, and forecasting-oriented support settings. Across controlled and operational evidence, zero-friction alignment is exact or near-stable, while moderate-to-high friction induces repeated ranking reversals and deployed misselection. These results support a narrow but consequential claim: forecasting systems under frictions should be benchmarked with realized-action-aware evaluation criteria rather than forecast-side quantities alone.
+Forecasting systems are commonly benchmarked by forecast-side scores, yet under deployment frictions these rankings need not preserve deployed operational ranking. We identify a benchmark failure mode: under a fixed deployed interface, the forecast-side winner can recurrently fail to be the deployed winner once friction is moderate or high and proposed actions are not directly realized. We separate two questions: a mechanism question about whether the same proposal yields different realized outcomes under different interfaces (Q1), and a benchmark-selection question about whether forecast ranking still selects the deployed best system under one fixed interface (Q2). Across a controlled synthetic anchor, a deliberately small forecasting-native event-micro benchmark, and operational inventory corroboration, zero-friction alignment is exact or near-stable, while moderate-to-high friction produces repeated ranking drift and deployed misselection. Forecast-side metrics may remain valid for prediction, yet under a fixed frictional deployment interface they need not be the right object for model selection.
 \end{abstract}
 \vspace{1mm}
 \hrule
@@ -44,11 +40,11 @@ Forecasting systems are often selected using forecast-side scores, but under dep
 
 \section{Introduction}
 
-A forecasting benchmark is unreliable for deployment if the model that wins on forecast-side scores is recurrently not the model that wins after actions are realized under friction. Forecasting systems are often evaluated with forecast-side metrics or target-side decision summaries, which can be reasonable when proposed actions are treated as if they were directly realized. Under deployment frictions, however, forecasts pass through interfaces that alter realized behavior, costs, and downstream quality, so forecast-side ranking can cease to be order-preserving for deployed performance.
+A forecasting benchmark is unreliable for deployment if the model that wins on forecast-side scores recurrently fails to be the model that performs best after actions are realized under friction. Forecast-side metrics can be fully appropriate for measuring predictive accuracy, yet they need not be the right object for model selection once forecasts are translated into actions through a frictional interface. This is not a claim that forecast metrics are incorrect; it is a claim that they may be the wrong object for deployment-time model selection under friction. In such settings, forecasts do not directly determine realized outcomes: they first induce proposed actions, which are then transformed by operational rules, adjustment costs, or switching penalties before realized performance is observed.
 
-This paper studies two evaluation questions for forecasting-driven systems under frictions. Q1 isolates the mechanism by which realized outcomes depart from target-side or forecast-side quantities: if the same frozen proposal path is held fixed, can different interfaces produce different realized outcomes? Q2 asks the benchmark-relevant selection question: under one deployed rule, can forecast-side ranking still be trusted to select the operationally best system? These are evaluative rather than predictive questions; the goal is not to propose a stronger forecaster, but to make benchmark interpretation and model selection more reliable once forecasts pass through constrained action layers.
+This paper studies two evaluation questions for forecasting-driven systems under friction. Q1 isolates the mechanism: if the same proposed action path is held fixed, can different interfaces produce different realized outcomes? Q2 asks the benchmark question: under one fixed deployed interface, can forecast-side ranking still be trusted to select the operationally best forecasting system? Forecast-side metrics may remain valid for prediction, yet under a fixed frictional deployment interface they need not be the right object for model selection.
 
-This paper makes three narrow contributions. First, it identifies a benchmark failure mode for forecasting systems under frictions: under a fixed deployed interface, forecast-side ranking can fail to preserve deployed ranking. Second, it separates mechanism (Q1) from selection consequence (Q2), clarifying two evaluation questions that are often conflated in forecasting-driven systems. Third, it shows across controlled and operational evidence that ranking drift is not merely descriptive: at moderate-to-high friction, it produces recurrent deployed misselection. We support this claim with controlled synthetic evidence, one operational inventory domain, and exact-control corroboration from portfolio Q1 support.
+This paper makes three narrow contributions. First, it identifies a benchmark failure mode for forecasting systems under a fixed deployed interface: at moderate-to-high friction, forecast-side ranking can fail to preserve deployed ranking. Second, it shows that this is not merely descriptive ranking drift: in operational settings, moderate-to-high friction can produce recurrent deployed misselection. Third, it separates mechanism (Q1) from benchmark consequence (Q2), clarifying why realized-action evaluation can diverge from forecast-side or target-side quantities and when that divergence matters for model selection. We support this claim with a controlled synthetic anchor, a deliberately small forecasting-native event-micro benchmark, operational corroboration from inventory, and exact-control corroboration from portfolio Q1 support.
 
 \begin{figure*}[t]
 \centering
@@ -74,32 +70,32 @@ This paper makes three narrow contributions. First, it identifies a benchmark fa
 \node[qbox, below=7mm of exec, minimum width=3.1cm] (q2) {Q2: fixed interface,\\different forecasts};
 \end{tikzpicture}
 }
-\caption{Forecasts are converted into proposed target actions and then translated into realized actions through an interface operating under friction, which creates two distinct evaluation questions: whether the same frozen proposal can yield different realized outcomes under different interfaces (Q1), and whether forecast-metric ranking matches deployed operational ranking under a fixed interface (Q2). This separation changes the evaluation object and can therefore alter benchmark interpretation and model-selection stability under frictions.}
+\caption{Forecasts are converted into proposed target actions and then translated into realized actions through an interface operating under friction, which creates two distinct evaluation questions: whether the same frozen proposal can yield different realized outcomes under different interfaces (Q1), and whether forecast-metric ranking matches deployed operational ranking under a fixed interface (Q2). This separation changes the evaluation object and therefore can change both benchmark interpretation and deployed model selection under friction.}
 \label{fig:conceptual}
 \end{figure*}
 
 \section{Two Evaluation Questions}
 
-Let $\hat{y}_t$ denote a forecast, $a_t^{tar}$ a proposed target action derived from that forecast, and $a_t^{exec}$ the realized action after an interface applies under friction. Let $U(a,y)$ denote a realized operational score evaluated against the realized outcome $y_t$. We distinguish three evaluation objects: forecast-side quality, target-side decision quality, and realized-action quality.
+Let $\hat{y}_t$ denote a forecast, $a_t^{tar}$ a proposed action derived from it, and $a_t^{exec}$ the realized action after a frictional interface is applied. Let $U(a,y)$ denote realized operational utility against the realized outcome $y_t$. We distinguish three evaluation objects: forecast-side quality, target-side decision quality, and realized-action quality. The benchmark question is which of these objects is appropriate for model selection under deployment constraints.
 
 \noindent\textbf{Q1 (same proposal, different interface).} Holding the proposal fixed at $a_{1:T}^{tar}$, we ask whether varying only the interface that maps proposals to realized actions changes realized operational outcomes. This is an exact-control question: proposal identity must be locked, so any downstream difference must arise from the interface rather than from a different forecast or proposal source.
 
-\noindent\textbf{Q2 (fixed interface, different forecasts).} Holding the interface fixed, we ask whether varying the forecaster changes the relationship between forecast-metric ranking and deployed operational ranking. This is not an evaluation-object mismatch test in the Q1 sense. Instead, it asks whether forecast-quality ranking and deployed-quality ranking remain aligned once forecasting outputs are judged through one fixed operational rule.
+\noindent\textbf{Q2 (fixed interface, different forecasts).} Q2 is the benchmark-selection question. Holding the interface fixed, we ask whether varying the forecaster changes the relationship between forecast-metric ranking and deployed operational ranking. More directly, does ranking systems by forecast quality still identify the system that is best under deployed realized-action evaluation?
 
-These questions are complementary but not coequal in evidentiary role. Q1 isolates why realized-action evaluation can depart from target-side or forecast-side quantities under a fixed proposal source, while Q2 centers the practical benchmark claim about ranking drift and model selection under a fixed interface. We do not combine them into one omnibus claim because they answer different evaluation questions and play different roles in the evidence hierarchy.
+These questions are complementary but not interchangeable. Q1 explains why divergence can arise once realized actions depart from proposed targets, while Q2 asks whether that divergence becomes a benchmark model-selection failure under a fixed deployed interface. Because the two questions change different parts of the pipeline, evidence for one should not be read as automatic evidence for the other.
 
 \section{Evidence Design}
 
-Our evidence design separates a zero-friction sanity anchor, operational consequence, and support-only case evidence. Synthetic serves as the zero-friction sanity anchor: it establishes clean alignment at zero friction and controlled ranking drift under positive friction. Inventory provides operational near-alignment evidence rather than the exact sanity anchor, and it is where ranking drift becomes a deployed model-selection consequence under holding, stockout, and change-cost tradeoffs. Portfolio provides exact-control corroboration for Q1. The paper's practical benchmark claim is centered on Q2: whether forecast-side ranking can be trusted for deployed model selection under a fixed operational rule. Q1 clarifies the mechanism by which realized-action evaluation departs from target-side or forecast-side quantities. Synthetic and inventory remain the required headline evidence, while the appendix adds fit-oriented event-forecasting and load-following support.
+Our evidence hierarchy separates sanity anchoring, forecasting-native main evidence, operational corroboration, and corroborating support. Synthetic provides the zero-friction sanity anchor and controlled ranking-drift evidence. A deliberately small event-micro benchmark provides the main forecasting-native Q2 evidence: models emit event probabilities, a fixed thresholding rule maps probabilities to actions, and switching friction penalizes action changes. Inventory provides operational corroboration, where the same benchmark consequence appears with stronger recurrence magnitudes. Portfolio is used only for exact-control Q1 corroboration, where proposal identity can be locked directly. Load-following remains appendix-only operational support.
 
-In inventory Q2, the locked main table compares five forecasting families under one responsive replenishment rule: Naive persistence, Moving average (7), Linear AR, Small MLP, and Small GRU. To reduce baseline-specification ambiguity, the appendix additionally reports a broader stronger-baseline block with validation-selected family representatives under the same split, held-out protocol, validation criterion, and standardized two-stage tuning procedure; simple heuristic baselines remain fixed ex ante. The main text retains the locked five-family evidence, while the appendix records the broader family sweep, candidate grids, and selection outcomes for transparency rather than as a replacement leaderboard.
+In inventory Q2, the locked main table compares five forecasting families under one responsive replenishment rule: Naive persistence, Moving average (7), Linear AR, Small MLP, and Small GRU. The appendix widens that comparison with validation-selected family representatives under the same split, held-out protocol, validation criterion, and standardized two-stage tuning procedure; simple heuristic baselines remain fixed ex ante. The main text keeps the locked five-family comparison, while the appendix records the broader family sweep for baseline-specification transparency.
 
 \begin{table}[t]
 \centering
 \scriptsize
 \setlength{\tabcolsep}{2.5pt}
 \resizebox{\columnwidth}{!}{\input{results/table_q2_selection_drift_inventory.tex}}
-\caption{Forecast-side vs.\ deployed-side model selection under a fixed replenishment interface. Winner columns report the most frequent seed-level best model at each friction level. Positive mean deployed gap means the forecast-selected model underperforms the deployed-selected model by that amount. Deployed-suboptimal seeds / total reports the number of seeds in which the forecast-selected model is not a deployed best model. Table~1 shows the operational selection consequence in the required inventory domain; Figure~\ref{fig:q2-required} retains the cross-domain ranking-drift pattern in both synthetic and inventory.}
+\caption{Forecast-side vs.\ deployed-side model selection under a fixed replenishment interface. Winner columns report the most frequent seed-level best model at each friction level. Positive mean deployed gap indicates that the forecast-selected model underperforms the deployed-selected model. Deployed-suboptimal seeds / total counts seeds in which the forecast-selected model is not deployed-best.}
 \label{tab:q2-selection-drift}
 \end{table}
 
@@ -107,24 +103,32 @@ In inventory Q2, the locked main table compares five forecasting families under 
 
 \subsection{Q2: Fixed interface, benchmark failure and selection consequence}
 
-Q2 is the paper's headline question: under one fixed deployed interface, can forecast-side ranking still be trusted for deployed model selection? Synthetic serves as the zero-friction sanity anchor. In the controlled benchmark, zero-friction rankings align exactly, while positive friction produces repeated pairwise flips and lower rank correlation, with mean flip rate rising from $0.000$ to $0.500$.
+Q2 asks the paper's headline benchmark question: under one fixed deployed interface, can forecast-side ranking still be trusted for deployed model selection? Synthetic provides the zero-friction sanity anchor: rankings align exactly at zero friction, and once friction is moderate or high, repeated pairwise flips and lower rank correlation emerge.
 
-Inventory carries the operational consequence. The friction $0.25$ row is best read as a transition regime: the most frequent deployed winner changes to Linear AR, but agreement remains $0.70$, the deployed-suboptimal count remains $3/10$, and the median deployed gap remains $0.0$. By friction $0.5$, however, benchmark failure is already recurrent: the forecast-selected model is deployed-suboptimal in $9/10$ seeds, agreement falls to $0.10$, and the median deployed gap reaches $0.227$. At friction $1.0$, deployed suboptimality rises to $10/10$ seeds, with mean and median deployed gaps of $1.187$ and $1.162$, respectively. Ranking drift is interesting, but recurrent deployed misselection is the benchmark consequence.
-
-Appendix Tables~\ref{tab:q2-stronger-protocol}--\ref{tab:q2-stronger-robustness-followup} widen the inventory comparison set with stronger classical and neural families under a standardized two-stage tuning protocol for baseline-specification transparency. A more reactive appendix follow-up strengthens the moderate-to-high-friction mismatch pattern, but zero-friction agreement remains only partial, so we still treat the broader-family sweep as appendix defense rather than as additional main-text confirmation.
-
-To reconnect this operational result to more canonical forecasting language, we also evaluate a minimal event-forecasting setting in which models emit event probabilities, a fixed thresholding rule maps probabilities to actions, and switching friction penalizes action changes. In that appendix support domain, agreement is $0.75$ at friction $0.00$, falls to $0.30$ by $0.50$, and reaches $0.05$ at $1.00$. Over the same range, the deployed winner shifts from Reactive sharp to Lagged smoother.
-
-\begin{figure}[t]
+\begin{figure}[!t]
 \centering
 \includegraphics[width=\columnwidth]{assets/figures/fig_q2_results_v2.pdf}
-\caption{Q2 --- under a fixed interface, forecast-side ranking can misselect operational winners under friction. Synthetic provides the zero-friction sanity anchor, while inventory shows the operational selection consequence. Ranking drift is interesting, but recurrent deployed misselection is the benchmark consequence: Figure~\ref{fig:q2-required} shows the cross-domain ranking pattern, while Table~\ref{tab:q2-selection-drift} shows the inventory-side selection consequence.}
+\caption{Q2 --- synthetic provides the zero-friction sanity anchor, while event micro provides the main forecasting-native evidence line under a fixed thresholding interface. The left panel shows pairwise ranking disagreement (mean flip rate); the right panel shows the operational benchmark-consequence quantity, the share of seeds in which the forecast-selected model is not deployed-best. Table~\ref{tab:q2-selection-drift} then shows the same consequence in the operational inventory domain, with stronger recurrence magnitudes.}
 \label{fig:q2-required}
 \end{figure}
 
+\begin{table}[!t]
+\centering
+\scriptsize
+\resizebox{\columnwidth}{!}{\input{results/table_q2_selection_drift_event_micro_main.tex}}
+\caption{Forecast-side vs.\ deployed-side model selection in the forecasting-native event-micro benchmark. Under a fixed thresholding interface with switching friction, the forecast-selected model becomes recurrently deployed-suboptimal as friction rises.}
+\label{tab:event-micro-selection-drift-main}
+\end{table}
+
+Figure~\ref{fig:q2-required} and Table~\ref{tab:event-micro-selection-drift-main} provide the paper's main forecasting-native evidence block. In the event-micro benchmark, agreement is $0.75$ at friction $0.00$, falls to $0.30$ by $0.50$, and reaches $0.05$ at $1.00$. Over the same rows, the deployed winner shifts from Reactive sharp to Calibrated baseline and then Lagged smoother, while deployed suboptimality rises from $5/20$ seeds at zero friction to $14/20$ at $0.50$ and $19/20$ at $1.00$. Tables~\ref{tab:event-micro-threshold-robustness} and \ref{tab:event-micro-logloss-robustness} show that the same qualitative winner-drift and recurrent deployed-suboptimality pattern persists under $\tau = 0.50$ and under log loss.
+
+Table~\ref{tab:q2-selection-drift} remains the paper's main operational benchmark table. Inventory provides operational corroboration with stronger recurrence magnitudes. The friction $0.25$ row is best read as a transition regime: the most frequent deployed winner changes to Linear AR, yet agreement remains $0.70$, deployed suboptimality remains $3/10$, and the median deployed gap remains $0.0$. By friction $0.5$, however, benchmark failure is already recurrent: the forecast-selected model is deployed-suboptimal in $9/10$ seeds, agreement falls to $0.10$, and the median deployed gap reaches $0.227$. At friction $1.0$, deployed suboptimality rises to $10/10$ seeds, with mean and median deployed gaps of $1.187$ and $1.162$. Thus the practical issue is not merely that rankings drift, but that model choice under a fixed deployed rule becomes repeatedly wrong at moderate-to-high friction.
+
+Appendix Tables~\ref{tab:q2-stronger-protocol}--\ref{tab:q2-stronger-robustness} widen the inventory comparison set under a standardized tuning protocol. That broader-family sweep strengthens moderate/high-friction mismatch, but the zero- and low-friction rows remain too mixed for headline use.
+
 \subsection{Q1: Same proposal, different interface}
 
-Q1 explains why the benchmark failure in Q2 can arise. In the synthetic benchmark, holding the proposal fixed while varying only the interface yields exact zero-friction coincidence and a proposal-versus-realization gap that rises from $0.000$ at zero friction to $0.223$ at friction $1.0$. This establishes the mechanism cleanly: once frictions intervene, realized-action evaluation can depart from target-side or forecast-side quantities even when the proposal path is unchanged.
+Q1 is the mechanism section: it explains why the Q2 benchmark failure can arise. In the synthetic benchmark, holding the proposal fixed while varying only the interface yields exact zero-friction coincidence and a proposal-versus-realization gap that rises from $0.000$ at zero friction to $0.223$ at friction $1.0$.
 
 \begin{figure}[t]
 \centering
@@ -133,13 +137,13 @@ Q1 explains why the benchmark failure in Q2 can arise. In the synthetic benchmar
 \label{fig:q1-required}
 \end{figure}
 
-Inventory reproduces the same mechanism in an operational setting. The zero-friction row is exact by construction, while positive friction shows a threshold story rather than a monotone one: low friction can still favor responsiveness, but sufficiently high friction makes tempered execution beneficial, with the tempered-minus-responsive delta reaching $0.999$ at friction $1.0$. Portfolio then provides exact-control corroboration: proposal identity is verified directly, zero-cost behavior is near-flat in $7/9$ seed-universe groups, and positive-cost improvements recur in $3/3$ universes. Q1 therefore explains why realized-action evaluation can depart from target-side or forecast-side objects, while Q2 shows the benchmark consequence when model selection relies on forecast-side ranking.
+Inventory reproduces the same mechanism in an operational setting: zero friction is exact by construction, low friction can remain mixed, and sufficiently high friction makes tempered execution beneficial through lower adjustment costs. Portfolio provides exact-control corroboration only: proposal identity is directly verified, zero-cost behavior is near-flat, and positive-cost improvements recur across universes. Q1 therefore explains why forecast-side, target-side, and realized-action evaluation can diverge, while Q2 shows when that divergence becomes a model-selection problem.
 
 \section{Discussion and Limitations}
 
-The paper's practical benchmark claim is centered on Q2: under a fixed deployed interface, forecast-side ranking can fail to preserve deployed ranking once frictions separate proposed actions from realized outcomes. This is a benchmark failure mode, not a claim that forecast metrics are useless or that one interface is uniformly superior. Q1 clarifies the mechanism: once realized actions depart from proposed targets, forecast-side, target-side, and realized-action quality are no longer the same object.
+The paper's practical claim is narrow: forecast-side metrics may remain valid for prediction, yet under a fixed frictional deployment interface they need not be the right object for model selection. In the forecasting-native event-micro benchmark, that mismatch becomes a recurrent benchmark-selection failure at moderate-to-high friction, and inventory shows the same consequence in an operational domain with stronger recurrence magnitudes. Q1 explains why divergence can arise, and Q2 shows when that divergence matters for model selection.
 
-The claim is intentionally narrow. Synthetic provides the zero-friction sanity anchor, inventory provides the main operational evidence, and portfolio contributes exact-control Q1 support rather than balanced Q1/Q2 support. Event micro and load-following remain appendix support only, and the stronger-baseline appendix block remains transparency and baseline-specification defense rather than additional headline confirmation: a more reactive follow-up strengthens the moderate/high-friction mismatch pattern, but its zero-friction agreement remains only partial relative to the paper's sanity-anchor standard. The claim is narrow in scope but direct in consequence: if forecast-side evaluation recurrently selects the wrong deployed winner under friction, then benchmark conclusions and model choice can both be wrong even when forecast quality itself is measured correctly.
+Three limitations bound the claim. Forecasting-native Q2 evidence comes from a deliberately small event-micro benchmark. Operational corroboration remains concentrated in one inventory domain. In the expanded-family inventory sweep, moderate/high-friction mismatch strengthens but zero- and low-friction rows remain mixed, so we do not use that block as main-text confirmation.
 
 The resulting implication is evaluative rather than predictive: forecasting systems under deployment constraints should be judged with realized-action-aware criteria rather than forecast-side quantities alone.
 
@@ -155,27 +159,27 @@ The resulting implication is evaluative rather than predictive: forecasting syst
 
 \begin{table}[H]
 \centering
-\scriptsize
+\tiny
 \setlength{\tabcolsep}{2.5pt}
 \input{results/table_evidence_map_v2.tex}
-\caption{Evidence map for the two evaluation questions. Q1 and Q2 are separated by construction. Synthetic establishes the controlled phenomenon, inventory provides one operational domain, portfolio contributes support-only exact-control evidence for Q1, and the appendix adds a fit-oriented minimal event-forecasting Q2 support row.}
+\caption{Evidence map for the two evaluation questions, covering the synthetic, inventory, portfolio, and event-forecasting evidence blocks used in the paper and appendix.}
 \label{tab:evidence-hierarchy}
 \end{table}
 
 \section{Additional Q2 Package Details}
 
-The additional Q2 package is descriptive rather than headline evidence. It summarizes the same-interface rank-based package after the fifth inventory baseline is added, keeps the synthetic required-domain result visible, and records why portfolio is not part of the headline Q2 claim.
+This appendix records the same-interface rank-based package after the fifth inventory baseline is added and keeps the synthetic result visible.
 
 \begin{table*}[t]
 \centering
 \small
 \setlength{\tabcolsep}{3pt}
 \input{results/table_step5_same_interface_summary.tex}
-\caption{Additional paper-facing Q2 package summary. The appendix records the same-interface rank-based package after the fifth inventory baseline is added, keeps the synthetic required-domain result visible, and keeps portfolio out of the headline Q2 claim.}
+\caption{Additional paper-facing Q2 package summary after the fifth inventory baseline is added.}
 \label{tab:step5-package}
 \end{table*}
 
-Portfolio failed the zero-friction sanity gate and is therefore excluded from headline Q2 evidence. Inventory remains near-aligned at zero friction but no longer passes the older appendix rank gate once the fifth baseline is added, which is why the main text now centers the inventory selection-drift table rather than this appendix summary.
+Portfolio is omitted from Q2 here because it does not satisfy the zero-friction sanity condition after the fifth baseline is added.
 
 \section{Stronger Inventory Q2 Baselines}
 \label{app:stronger-inventory-q2}
@@ -187,7 +191,7 @@ To reduce baseline-specification ambiguity, we widen the inventory Q2 comparison
 \scriptsize
 \setlength{\tabcolsep}{3pt}
 \input{results/table_q2_stronger_baseline_protocol.tex}
-\caption{Standardized tuning protocol for the stronger-baseline transparency block. All tunable families share the same split, validation criterion, and two-stage selection structure; the two simple heuristics remain fixed ex ante.}
+\caption{Standardized tuning protocol for the stronger-baseline comparison. All tunable families share the same split, validation criterion, and two-stage selection structure; the two simple heuristics remain fixed ex ante.}
 \label{tab:q2-stronger-protocol}
 \end{table*}
 
@@ -196,7 +200,7 @@ To reduce baseline-specification ambiguity, we widen the inventory Q2 comparison
 \scriptsize
 \setlength{\tabcolsep}{3pt}
 \input{results/table_q2_stronger_baseline_selection.tex}
-\caption{Validation-selected representatives for the broader inventory Q2 family sweep. Family representatives are chosen by validation negative MAE only; deployed metrics do not enter family selection.}
+\caption{Validation-selected representatives for the broader inventory Q2 family sweep. Family representatives are chosen by validation negative MAE only.}
 \label{tab:q2-stronger-selection}
 \end{table*}
 
@@ -204,32 +208,22 @@ To reduce baseline-specification ambiguity, we widen the inventory Q2 comparison
 \centering
 \scriptsize
 \resizebox{\columnwidth}{!}{\input{results/table_q2_stronger_baseline_robustness.tex}}
-\caption{Expanded-family inventory Q2 robustness summary. This appendix block is reported for transparency and baseline-specification defense rather than as additional headline evidence.}
+\caption{Expanded-family inventory Q2 robustness summary for the broader comparison set.}
 \label{tab:q2-stronger-robustness}
 \end{table}
 
-In this broader appendix block, zero-friction agreement is $0.50$, the $0.25$ and $0.5$ rows remain comparatively aligned, and the strongest mean deployed gap is $0.170$ at friction $1.0$. We therefore keep this first block as transparency and defense evidence against baseline-specification artifacts rather than treat it as an additional headline confirmation of recurrent misselection.
-
-\begin{table}[H]
-\centering
-\scriptsize
-\resizebox{\columnwidth}{!}{\input{results/table_q2_stronger_baseline_reactive_mse_robustness.tex}}
-\caption{Reactive follow-up for the expanded-family inventory Q2 block. This follow-up widens the search toward shorter-lag and higher-capacity representatives while preserving the same split, interface, friction grid, and held-out protocol.}
-\label{tab:q2-stronger-robustness-followup}
-\end{table}
-
-A more reactive appendix follow-up strengthens the moderate-to-high-friction pattern without changing the locked evaluation protocol. Agreement is $0.60$ at friction $0.00$, remains mixed at $0.25$, falls to $0.50$ at $0.50$, and reaches $0.10$ at $1.00$; over the same rows, deployed-suboptimal counts rise from $4/10$ to $9/10$, and the deployed winner shifts to Moving average (7) at the highest friction level. Because the zero-friction row remains only partially aligned and the $0.25$ row is still mixed, we treat this follow-up as appendix robustness rather than headline confirmation.
+In this broader comparison, agreement is mixed at $0.00$ and $0.25$, falls further by $0.50$ and $1.00$, deployed-suboptimal counts rise from $4/10$ to $9/10$, and moderate/high-friction mismatch strengthens.
 
 \section{Minimal Event-Forecasting Micro-Benchmark}
 \label{app:event-micro}
 
-We additionally construct a minimal binary-event setting in which each forecaster emits event probabilities, a fixed thresholding rule maps probabilities to actions, and switching friction penalizes action changes. This appendix artifact is included as appendix-level support rather than headline evidence: its role is a fit-oriented minimal confirmation of ranking drift under switching friction, not a new benchmark centerpiece. Brier remains the canonical forecast-side criterion, while log loss is recorded only as a robustness diagnostic and does not determine winners.
+We additionally construct a deliberately small binary-event setting in which each forecaster emits event probabilities, a fixed thresholding rule maps probabilities to actions, and switching friction penalizes action changes. The main text uses Brier as the canonical forecast-side criterion. This appendix records the full six-row Brier table plus one alternate-threshold and one log-loss robustness check.
 
 \begin{table}[H]
 \centering
 \scriptsize
 \resizebox{\columnwidth}{!}{\input{results/table_q2_selection_drift_event_micro.tex}}
-\caption{Forecast-side vs.\ deployed-side model selection in a minimal event-forecasting micro-benchmark. Under a fixed thresholding interface with switching friction, the forecast-selected model and the deployed-selected model remain broadly aligned at zero and very low friction before diverging recurrently as friction increases.}
+\caption{Forecast-side vs.\ deployed-side model selection in the full six-row event-micro benchmark summary. Under the fixed thresholding interface, deployed-suboptimal counts rise from $5/20$ seeds at zero friction to $19/20$ at friction $1.00$.}
 \label{tab:event-micro-selection-drift}
 \end{table}
 
@@ -240,25 +234,39 @@ We additionally construct a minimal binary-event setting in which each forecaste
 \label{fig:event-micro-q2}
 \end{figure}
 
-At zero and very low switching friction, forecast-side and deployed-side selection remain broadly aligned in this domain. As switching friction rises, disagreement increases, intermediate rows become mixed, and the deployed-side winner shifts from the reactive forecast-side winner toward more stable models, culminating in a lagged-smoother winner at the highest friction row. This is the same qualitative ranking-drift pattern emphasized in the main Q2 discussion, but in a deliberately smaller event-forecasting domain.
+\begin{table}[H]
+\centering
+\scriptsize
+\resizebox{\columnwidth}{!}{\input{results/table_q2_selection_drift_event_micro_threshold_robustness.tex}}
+\caption{Alternate-threshold robustness for the event-micro benchmark. The same qualitative winner drift and recurrent deployed-suboptimality pattern persists when the fixed threshold is changed from $\tau = 0.55$ to $\tau = 0.50$.}
+\label{tab:event-micro-threshold-robustness}
+\end{table}
+
+\begin{table}[H]
+\centering
+\scriptsize
+\resizebox{\columnwidth}{!}{\input{results/table_q2_selection_drift_event_micro_logloss.tex}}
+\caption{Log-loss robustness for the event-micro benchmark at the canonical threshold. The same qualitative winner drift and recurrent deployed-suboptimality pattern persists when forecast-side ranking is recomputed with log loss instead of Brier.}
+\label{tab:event-micro-logloss-robustness}
+\end{table}
+
+Across both appendix robustness checks, the same qualitative winner-drift and recurrent deployed-suboptimality pattern persists in this deliberately small event-micro benchmark.
 
 \section{Load-Following Support Domain}
 \label{app:load-following}
 
 Using UCI ElectricityLoadDiagrams20112014, we build an aggregate multi-client load-following domain by summing disjoint client groups and evaluating at the selected 60-minute operational resolution. Groups 0 and 1 are used only for restricted calibration, while groups 2--9 serve as held-out evaluation units, so this appendix replaces the earlier household proxy with a stronger cross-sectional operational design.
 
-A grouping-only balance-repair rerun substantially reduces group imbalance and Q1 target clipping while preserving the Q2 drift structure. A final restricted cap/margin search, however, yields no jointly feasible configuration that both preserves the Q2 promotion gate and satisfies the Q1 requirement. The domain therefore remains appendix-only support.
+A grouping-only balance-repair rerun substantially reduces group imbalance and Q1 target clipping while preserving the Q2 drift structure. A final restricted cap/margin search, however, finds no jointly feasible configuration that also satisfies the remaining Q1 requirement, so the domain remains appendix support.
 
 \begin{table}[H]
 \centering
 \scriptsize
 \resizebox{\columnwidth}{!}{\input{results/table_load_following_support_summary.tex}}
-\caption{Load-following support-domain summary. This appendix-only domain remains outside the paper's required evidence hierarchy in the current submission round.}
+\caption{Load-following support-domain summary.}
 \label{tab:load-following-support}
 \end{table}
 
-A grouping-only balance repair reduces imbalance and lowers the held-out Q1 target-clip rate below the gate threshold while preserving the Q2 drift structure. A final restricted cap/margin search then finds no jointly feasible configuration that preserves the Q2 gate while satisfying the remaining Q1 requirement.
-
-Under a fixed responsive interface, Q2 provides strong operational support in this domain, but the domain remains appendix-only in the current submission round. A grouping-only balance repair substantially reduces imbalance and lowers the held-out Q1 target-clip rate, showing that clipping was partly imbalance-driven, yet Q1 high-friction win-rate remains mixed. A final restricted cap/margin search then finds no jointly feasible configuration that preserves the Q2 gate while satisfying the remaining Q1 condition. This appendix evidence should therefore be read as additional operational support, not as part of the paper's required evidence hierarchy.
+Under a fixed responsive interface, Q2 remains strong in this domain after balance repair, but Q1 high-friction behavior stays mixed and no jointly feasible configuration satisfies the remaining Q1 requirement.
 
 \end{document}
