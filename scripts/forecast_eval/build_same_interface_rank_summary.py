@@ -11,8 +11,8 @@ import numpy as np
 import pandas as pd
 
 
-TIE_ABS_FLOOR = 1e-10
-TIE_REL_SCALE = 1e-8
+DEFAULT_TIE_ABS_FLOOR = 1e-10
+DEFAULT_TIE_REL_SCALE = 1e-8
 
 
 @dataclass(frozen=True)
@@ -25,6 +25,8 @@ class RankSummaryMeta:
     friction_levels: tuple[float, ...]
     forecaster_ids: tuple[str, ...]
     min_n_forecasters_per_seed_friction: int
+    tie_abs_floor: float
+    tie_rel_scale: float
 
 
 def parse_args() -> argparse.Namespace:
@@ -33,15 +35,44 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--domain", required=True, help="Domain label for the output rows.")
     parser.add_argument("--expected-interface", required=True, help="Expected fixed interface_id for this domain.")
     parser.add_argument("--output-dir", required=True, help="Directory for derived summary CSVs.")
+    parser.add_argument(
+        "--tie-abs-floor",
+        type=float,
+        default=DEFAULT_TIE_ABS_FLOOR,
+        help="Absolute tolerance floor for tie-aware ranking.",
+    )
+    parser.add_argument(
+        "--tie-rel-scale",
+        type=float,
+        default=DEFAULT_TIE_REL_SCALE,
+        help="Relative tolerance scale for tie-aware ranking.",
+    )
     return parser.parse_args()
 
 
-def tie_tolerance(value_a: float, value_b: float) -> float:
-    return max(TIE_ABS_FLOOR, TIE_REL_SCALE * max(abs(float(value_a)), abs(float(value_b)), 1.0))
+def tie_tolerance(
+    value_a: float,
+    value_b: float,
+    *,
+    tie_abs_floor: float = DEFAULT_TIE_ABS_FLOOR,
+    tie_rel_scale: float = DEFAULT_TIE_REL_SCALE,
+) -> float:
+    return max(float(tie_abs_floor), float(tie_rel_scale) * max(abs(float(value_a)), abs(float(value_b)), 1.0))
 
 
-def scores_tied(value_a: float, value_b: float) -> bool:
-    return abs(float(value_a) - float(value_b)) <= tie_tolerance(value_a, value_b)
+def scores_tied(
+    value_a: float,
+    value_b: float,
+    *,
+    tie_abs_floor: float = DEFAULT_TIE_ABS_FLOOR,
+    tie_rel_scale: float = DEFAULT_TIE_REL_SCALE,
+) -> bool:
+    return abs(float(value_a) - float(value_b)) <= tie_tolerance(
+        value_a,
+        value_b,
+        tie_abs_floor=tie_abs_floor,
+        tie_rel_scale=tie_rel_scale,
+    )
 
 
 def _stderr(values: Iterable[float]) -> float:
@@ -55,24 +86,46 @@ def _canonical_model_pair(model_a: str, model_b: str) -> tuple[str, str]:
     return tuple(sorted((str(model_a), str(model_b))))
 
 
-def _cluster_sorted_scores(scores_desc: list[float]) -> list[list[int]]:
+def _cluster_sorted_scores(
+    scores_desc: list[float],
+    *,
+    tie_abs_floor: float = DEFAULT_TIE_ABS_FLOOR,
+    tie_rel_scale: float = DEFAULT_TIE_REL_SCALE,
+) -> list[list[int]]:
     groups: list[list[int]] = []
     for idx, score in enumerate(scores_desc):
         if not groups:
             groups.append([idx])
             continue
         current_group = groups[-1]
-        if all(scores_tied(score, scores_desc[group_idx]) for group_idx in current_group):
+        if all(
+            scores_tied(
+                score,
+                scores_desc[group_idx],
+                tie_abs_floor=tie_abs_floor,
+                tie_rel_scale=tie_rel_scale,
+            )
+            for group_idx in current_group
+        ):
             current_group.append(idx)
         else:
             groups.append([idx])
     return groups
 
 
-def average_ranks_from_scores(scores_by_model: dict[str, float]) -> dict[str, float]:
+def average_ranks_from_scores(
+    scores_by_model: dict[str, float],
+    *,
+    tie_abs_floor: float = DEFAULT_TIE_ABS_FLOOR,
+    tie_rel_scale: float = DEFAULT_TIE_REL_SCALE,
+) -> dict[str, float]:
     ordered = sorted(scores_by_model.items(), key=lambda item: (-float(item[1]), str(item[0])))
     sorted_scores = [float(score) for _model, score in ordered]
-    clusters = _cluster_sorted_scores(sorted_scores)
+    clusters = _cluster_sorted_scores(
+        sorted_scores,
+        tie_abs_floor=tie_abs_floor,
+        tie_rel_scale=tie_rel_scale,
+    )
 
     ranks: dict[str, float] = {}
     for cluster in clusters:
@@ -85,12 +138,26 @@ def average_ranks_from_scores(scores_by_model: dict[str, float]) -> dict[str, fl
     return ranks
 
 
-def tied_top_set(scores_by_model: dict[str, float]) -> tuple[str, ...]:
+def tied_top_set(
+    scores_by_model: dict[str, float],
+    *,
+    tie_abs_floor: float = DEFAULT_TIE_ABS_FLOOR,
+    tie_rel_scale: float = DEFAULT_TIE_REL_SCALE,
+) -> tuple[str, ...]:
     if not scores_by_model:
         return ()
     ordered = sorted(scores_by_model.items(), key=lambda item: (-float(item[1]), str(item[0])))
     best_score = float(ordered[0][1])
-    winners = [str(model_id) for model_id, score in ordered if scores_tied(float(score), best_score)]
+    winners = [
+        str(model_id)
+        for model_id, score in ordered
+        if scores_tied(
+            float(score),
+            best_score,
+            tie_abs_floor=tie_abs_floor,
+            tie_rel_scale=tie_rel_scale,
+        )
+    ]
     return tuple(sorted(winners))
 
 
@@ -139,13 +206,30 @@ def spearman_rho_from_average_ranks(forecast_ranks: dict[str, float], executed_r
     return float(np.corrcoef(forecast_values, executed_values)[0, 1])
 
 
-def _pair_sign(score_left: float, score_right: float) -> int:
-    if scores_tied(score_left, score_right):
+def _pair_sign(
+    score_left: float,
+    score_right: float,
+    *,
+    tie_abs_floor: float = DEFAULT_TIE_ABS_FLOOR,
+    tie_rel_scale: float = DEFAULT_TIE_REL_SCALE,
+) -> int:
+    if scores_tied(
+        score_left,
+        score_right,
+        tie_abs_floor=tie_abs_floor,
+        tie_rel_scale=tie_rel_scale,
+    ):
         return 0
     return 1 if float(score_left) > float(score_right) else -1
 
 
-def kendall_tau_b_from_scores(forecast_scores: dict[str, float], executed_scores: dict[str, float]) -> float:
+def kendall_tau_b_from_scores(
+    forecast_scores: dict[str, float],
+    executed_scores: dict[str, float],
+    *,
+    tie_abs_floor: float = DEFAULT_TIE_ABS_FLOOR,
+    tie_rel_scale: float = DEFAULT_TIE_REL_SCALE,
+) -> float:
     concordant = 0
     discordant = 0
     tied_forecast_only = 0
@@ -156,8 +240,18 @@ def kendall_tau_b_from_scores(forecast_scores: dict[str, float], executed_scores
         for jdx in range(idx + 1, len(models)):
             model_a = models[idx]
             model_b = models[jdx]
-            sign_forecast = _pair_sign(forecast_scores[model_a], forecast_scores[model_b])
-            sign_executed = _pair_sign(executed_scores[model_a], executed_scores[model_b])
+            sign_forecast = _pair_sign(
+                forecast_scores[model_a],
+                forecast_scores[model_b],
+                tie_abs_floor=tie_abs_floor,
+                tie_rel_scale=tie_rel_scale,
+            )
+            sign_executed = _pair_sign(
+                executed_scores[model_a],
+                executed_scores[model_b],
+                tie_abs_floor=tie_abs_floor,
+                tie_rel_scale=tie_rel_scale,
+            )
             if sign_forecast == 0 and sign_executed == 0:
                 continue
             if sign_forecast == 0:
@@ -184,6 +278,8 @@ def build_domain_rank_summary(
     *,
     domain: str,
     expected_interface_id: str,
+    tie_abs_floor: float = DEFAULT_TIE_ABS_FLOOR,
+    tie_rel_scale: float = DEFAULT_TIE_REL_SCALE,
 ) -> tuple[dict[str, pd.DataFrame], RankSummaryMeta]:
     df = q2_df.copy()
     if df.empty:
@@ -205,6 +301,8 @@ def build_domain_rank_summary(
         friction_levels=friction_levels,
         forecaster_ids=forecaster_ids,
         min_n_forecasters_per_seed_friction=min_n_forecasters,
+        tie_abs_floor=float(tie_abs_floor),
+        tie_rel_scale=float(tie_rel_scale),
     )
 
     seed_rows: list[dict[str, object]] = []
@@ -216,10 +314,26 @@ def build_domain_rank_summary(
         ordered = group.sort_values("forecaster_id").reset_index(drop=True)
         forecast_scores = {str(row.forecaster_id): float(row.forecast_metric) for row in ordered.itertuples(index=False)}
         executed_scores = {str(row.forecaster_id): float(row.executed_metric) for row in ordered.itertuples(index=False)}
-        forecast_ranks = average_ranks_from_scores(forecast_scores)
-        executed_ranks = average_ranks_from_scores(executed_scores)
-        forecast_best_set = tied_top_set(forecast_scores)
-        deployed_best_set = tied_top_set(executed_scores)
+        forecast_ranks = average_ranks_from_scores(
+            forecast_scores,
+            tie_abs_floor=tie_abs_floor,
+            tie_rel_scale=tie_rel_scale,
+        )
+        executed_ranks = average_ranks_from_scores(
+            executed_scores,
+            tie_abs_floor=tie_abs_floor,
+            tie_rel_scale=tie_rel_scale,
+        )
+        forecast_best_set = tied_top_set(
+            forecast_scores,
+            tie_abs_floor=tie_abs_floor,
+            tie_rel_scale=tie_rel_scale,
+        )
+        deployed_best_set = tied_top_set(
+            executed_scores,
+            tie_abs_floor=tie_abs_floor,
+            tie_rel_scale=tie_rel_scale,
+        )
         agreement_flag = bool(set(forecast_best_set).intersection(deployed_best_set))
         forecast_selected_representative = _representative_from_best_set(
             forecast_best_set,
@@ -248,8 +362,18 @@ def build_domain_rank_summary(
             for jdx in range(idx + 1, n_forecasters):
                 model_a = models[idx]
                 model_b = models[jdx]
-                forecast_tied = scores_tied(forecast_scores[model_a], forecast_scores[model_b])
-                executed_tied = scores_tied(executed_scores[model_a], executed_scores[model_b])
+                forecast_tied = scores_tied(
+                    forecast_scores[model_a],
+                    forecast_scores[model_b],
+                    tie_abs_floor=tie_abs_floor,
+                    tie_rel_scale=tie_rel_scale,
+                )
+                executed_tied = scores_tied(
+                    executed_scores[model_a],
+                    executed_scores[model_b],
+                    tie_abs_floor=tie_abs_floor,
+                    tie_rel_scale=tie_rel_scale,
+                )
                 if forecast_tied:
                     forecast_tie_pair_count += 1
                     forecast_tied_models.update((model_a, model_b))
@@ -282,7 +406,12 @@ def build_domain_rank_summary(
 
         comparable_pair_fraction = float(n_comparable_pairs / n_possible_pairs) if n_possible_pairs else 0.0
         flip_rate = float(flip_count / n_comparable_pairs) if n_comparable_pairs else 0.0
-        kendall_tau_b = kendall_tau_b_from_scores(forecast_scores, executed_scores)
+        kendall_tau_b = kendall_tau_b_from_scores(
+            forecast_scores,
+            executed_scores,
+            tie_abs_floor=tie_abs_floor,
+            tie_rel_scale=tie_rel_scale,
+        )
         spearman_rho = spearman_rho_from_average_ranks(forecast_ranks, executed_ranks)
 
         seed_rows.append(
@@ -510,6 +639,11 @@ def build_domain_rank_summary(
                 ),
                 "agreement_rate": float(group["agreement_flag"].mean()),
                 "disagreement_rate": float(group["selection_disagreement_flag"].mean()),
+                "deployed_suboptimal_seed_count": int(group["selection_disagreement_flag"].sum()),
+                "deployed_suboptimal_seed_fraction": float(group["selection_disagreement_flag"].mean()),
+                "deployed_suboptimal_seeds_over_total": (
+                    f"{int(group['selection_disagreement_flag'].sum())}/{int(len(group))}"
+                ),
                 "mean_deployed_gap_of_forecast_selected": float(group["deployed_gap_of_forecast_selected"].mean()),
                 "median_deployed_gap_of_forecast_selected": float(group["deployed_gap_of_forecast_selected"].median()),
             }
@@ -584,6 +718,8 @@ def main() -> int:
         q2_df,
         domain=str(args.domain),
         expected_interface_id=str(args.expected_interface),
+        tie_abs_floor=float(args.tie_abs_floor),
+        tie_rel_scale=float(args.tie_rel_scale),
     )
     write_summary_outputs(outputs, output_dir)
     for name in outputs:

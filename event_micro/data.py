@@ -31,6 +31,8 @@ class EventMicroConfig:
     smoother_noise_std: float = 0.03
     noisy_noise_std: float = 0.08
     threshold_tau: float = 0.5
+    policy_id: str = "fixed_threshold"
+    hysteresis_delta: float | None = None
     friction_grid: tuple[float, ...] = field(default_factory=lambda: (0.0, 0.05, 0.1, 0.25, 0.5, 1.0))
     tp_reward: float = 1.0
     fp_penalty: float = 1.0
@@ -38,6 +40,16 @@ class EventMicroConfig:
     initial_action: int = 0
     logloss_eps: float = 1e-6
     scenario_id: str = "event_micro_q2_switching_v1"
+
+    def __post_init__(self) -> None:
+        allowed_policy_ids = {"fixed_threshold", "hysteresis_threshold"}
+        if str(self.policy_id) not in allowed_policy_ids:
+            raise ValueError(f"Unsupported event-micro policy_id: {self.policy_id}")
+        if str(self.policy_id) == "hysteresis_threshold":
+            if self.hysteresis_delta is None:
+                raise ValueError("hysteresis_delta is required when policy_id == 'hysteresis_threshold'.")
+            if float(self.hysteresis_delta) <= 0.0:
+                raise ValueError("hysteresis_delta must be positive when hysteresis is enabled.")
 
     def seed_list(self) -> list[int]:
         return list(range(int(self.seeds)))

@@ -1,0 +1,5 @@
+Interface,Friction,Deployed-suboptimal seeds / total,Share,95% exact CI,One-sided binomial p
+Fixed threshold,0.50,69/100,0.69,"[0.605, 1.000]",<0.001
+Fixed threshold,1.00,99/100,0.99,"[0.953, 1.000]",<0.001
+Hysteresis threshold,0.50,55/100,0.55,"[0.463, 1.000]",0.184
+Hysteresis threshold,1.00,82/100,0.82,"[0.745, 1.000]",<0.001

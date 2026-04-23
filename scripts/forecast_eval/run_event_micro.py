@@ -25,7 +25,7 @@ for candidate in (str(SCRIPT_DIR), str(REPO_ROOT)):
 
 from common import build_result_row, prepare_results_frame, save_results  # noqa: E402
 from event_micro import EventMicroConfig, brier_score, evaluate_actions, generate_event_stream, generate_forecasts, load_config  # noqa: E402
-from event_micro import log_loss_score, threshold_policy  # noqa: E402
+from event_micro import hysteresis_policy, log_loss_score, threshold_policy  # noqa: E402
 
 
 DEFAULT_CONFIG_PATH = REPO_ROOT / "configs" / "event_micro_q2.yaml"
@@ -38,7 +38,23 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--config", default=str(DEFAULT_CONFIG_PATH), help="Path to the locked event-micro YAML.")
     parser.add_argument("--output-dir", default=str(DEFAULT_OUTPUT_DIR), help="Output directory for event-micro artifacts.")
     parser.add_argument("--summary-script", default=str(DEFAULT_SUMMARY_SCRIPT), help="Path to build_summary.py.")
+    parser.add_argument(
+        "--skip-summary-refresh",
+        action="store_true",
+        help="Do not refresh the shared forecast-eval master summary after writing results.",
+    )
     return parser.parse_args()
+
+
+def _actions_from_policy(probabilities: object, config: EventMicroConfig) -> tuple[object, str]:
+    if str(config.policy_id) == "fixed_threshold":
+        return threshold_policy(probabilities, config.threshold_tau), "fixed_threshold"
+    if str(config.policy_id) == "hysteresis_threshold":
+        return (
+            hysteresis_policy(probabilities, config.threshold_tau, float(config.hysteresis_delta)),
+            "hysteresis_threshold",
+        )
+    raise ValueError(f"Unsupported event-micro policy_id: {config.policy_id}")
 
 
 def _build_rows(config: EventMicroConfig) -> tuple[pd.DataFrame, pd.DataFrame]:
@@ -54,7 +70,7 @@ def _build_rows(config: EventMicroConfig) -> tuple[pd.DataFrame, pd.DataFrame]:
         metric_cache: dict[tuple[int, float, str], dict[str, float]] = {}
         for friction in config.friction_grid:
             for model_id, probabilities in forecasts.items():
-                actions = threshold_policy(probabilities, config.threshold_tau)
+                actions, interface_id = _actions_from_policy(probabilities, config)
                 deployed = evaluate_actions(
                     actions,
                     y,
@@ -75,7 +91,7 @@ def _build_rows(config: EventMicroConfig) -> tuple[pd.DataFrame, pd.DataFrame]:
                         domain="event_micro",
                         seed=int(seed),
                         forecaster_id=str(model_id),
-                        interface_id="fixed_threshold",
+                        interface_id=str(interface_id),
                         friction_level=float(friction),
                         forecast_metric=-float(brier),
                         target_metric=deployed_utility,
@@ -85,6 +101,7 @@ def _build_rows(config: EventMicroConfig) -> tuple[pd.DataFrame, pd.DataFrame]:
                     )
                 )
                 metric_cache[(int(seed), float(friction), str(model_id))] = {
+                    "interface_id": str(interface_id),
                     "brier": float(brier),
                     "logloss": float(logloss),
                     "deployed_utility": deployed_utility,
@@ -102,6 +119,7 @@ def _build_rows(config: EventMicroConfig) -> tuple[pd.DataFrame, pd.DataFrame]:
                     "seed": int(row.seed),
                     "friction": float(row.friction_level),
                     "model": str(row.forecaster_id),
+                    "interface_id": str(cached["interface_id"]),
                     "brier": float(cached["brier"]),
                     "logloss": float(cached["logloss"]),
                     "deployed_utility": float(cached["deployed_utility"]),
@@ -135,7 +153,8 @@ def main() -> int:
 
     save_results(raw_df, raw_path)
     seed_metrics_df.to_csv(seed_metrics_path, index=False)
-    _refresh_master_summary(Path(args.summary_script).resolve())
+    if not args.skip_summary_refresh:
+        _refresh_master_summary(Path(args.summary_script).resolve())
 
     print(f"[event-micro] wrote {raw_path}")
     print(f"[event-micro] wrote {seed_metrics_path}")

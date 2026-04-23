@@ -21,9 +21,35 @@ for candidate in (str(SCRIPT_DIR), str(REPO_ROOT)):
 from build_same_interface_rank_summary import build_domain_rank_summary, validate_q2_source, write_summary_outputs  # noqa: E402
 
 
-DEFAULT_INPUT = REPO_ROOT / "outputs" / "forecast_eval" / "event_micro" / "q2_diff_forecasts_same_interface.csv"
-DEFAULT_SEED_METRICS = REPO_ROOT / "outputs" / "forecast_eval" / "event_micro" / "seed_level_metrics.csv"
-DEFAULT_OUTPUT_DIR = REPO_ROOT / "outputs" / "forecast_eval" / "event_micro"
+DEFAULT_INPUT = (
+    REPO_ROOT
+    / "outputs"
+    / "extensions"
+    / "revision_round_20260423"
+    / "new_reruns"
+    / "event_micro_hardening"
+    / "fixed_threshold_tau055_seed100"
+    / "q2_diff_forecasts_same_interface.csv"
+)
+DEFAULT_SEED_METRICS = (
+    REPO_ROOT
+    / "outputs"
+    / "extensions"
+    / "revision_round_20260423"
+    / "new_reruns"
+    / "event_micro_hardening"
+    / "fixed_threshold_tau055_seed100"
+    / "seed_level_metrics.csv"
+)
+DEFAULT_OUTPUT_DIR = (
+    REPO_ROOT
+    / "outputs"
+    / "extensions"
+    / "revision_round_20260423"
+    / "new_reruns"
+    / "event_micro_hardening"
+    / "fixed_threshold_tau055_seed100"
+)
 DEFAULT_PAPER_RESULTS_DIR = REPO_ROOT / "paper" / "forecasting_workshop" / "results"
 DEFAULT_PAPER_FIGURES_DIR = REPO_ROOT / "paper" / "forecasting_workshop" / "assets" / "figures"
 

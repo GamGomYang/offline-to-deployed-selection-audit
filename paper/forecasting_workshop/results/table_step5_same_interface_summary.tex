@@ -2,8 +2,7 @@
 \toprule
 Domain & Role & Status & Seeds & Zero flip & Zero rho & Best +fric. & Best +flip & Strongest pair & Flip share & Note \\
 \midrule
-Synthetic & required & pass & 20 & 0.000 & 1.000 & 0.2500 & 0.500 & Linear AR / Reactive heuristic & 1.000 & passed gate \\
-Inventory & required & fail & 10 & 0.120 & 0.840 & 1.0000 & 0.500 & Small MLP / Moving average (7) & 1.000 & flip $>$ 0.10 \\
-Portfolio & stretch & excluded & 3 & 0.611 & -0.200 & 0.0005 & 0.778 & EWMA (20) / Rolling mean (20) & 1.000 & flip $>$ 0.10; rho $<$ 0.50 \\
+Synthetic & required & clears gate & 20 & 0.000 & 1.000 & 0.2500 & 0.500 & Linear AR / Reactive heuristic & 1.000 & passed stricter gate \\
+Inventory & required & mixed zero row & 10 & 0.120 & 0.840 & 1.0000 & 0.500 & Small MLP / Moving average (7) & 1.000 & does not clear stricter gate \\
 \bottomrule
 \end{tabularx}

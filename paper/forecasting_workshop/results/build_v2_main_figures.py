@@ -49,8 +49,11 @@ def parse_args() -> argparse.Namespace:
         default=str(
             REPO_ROOT
             / "outputs"
-            / "forecast_eval"
-            / "event_micro"
+            / "extensions"
+            / "revision_round_20260423"
+            / "new_reruns"
+            / "event_micro_hardening"
+            / "fixed_threshold_tau055_seed100"
             / "q2_diff_forecasts_same_interface.csv"
         ),
         help="Event-micro raw Q2 CSV.",

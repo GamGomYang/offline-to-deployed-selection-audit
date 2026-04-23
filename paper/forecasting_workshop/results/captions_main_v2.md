@@ -1,17 +1,17 @@
 # Main Text Captions v2
 
-## Figure 1. From Forecasts to Realized Actions Under Frictions
+## Figure 1. Conceptual Pipeline
 
-The schematic shows how forecasts become proposed targets and then realized actions once an interface applies under frictions. Its role is conceptual rather than empirical: forecast-side, target-side, and realized operational quality are related but not identical, so the paper evaluates deployed outcomes rather than forecast-side quantities alone.
+The schematic shows how forecasts become proposed targets and then realized actions under friction. Its role is conceptual rather than empirical: forecast-side, target-side, and realized operational quality are related but not identical, so the paper evaluates deployed outcomes rather than forecast-side quantities alone.
 
-## Table 1. Evidence Hierarchy For The Two Evaluation Questions
+## Figure 2. Q2 Results
 
-The table summarizes the paper's disciplined evidence hierarchy. Synthetic and inventory evidence carry the main Q1/Q2 claims, portfolio contributes Q1 exact-control support only, and Q2 package confirmation is handled in the text and appendix rather than as a separate main-text row.
+Synthetic provides the exact zero-friction sanity anchor, while event micro provides the paper's main forecasting-native evidence under a fixed thresholding interface. The figure reports pairwise ranking disagreement and the deployed-suboptimal share; appendix uncertainty bands and seed-level recurrence checks remain support-only.
 
-## Figure 2. Q1 Evidence Across The Required Domains
+## Table 1. Event-Micro Main Table
 
-Left: in synthetic Q1, the mean absolute target-executed gap is exactly zero at zero friction and then increases as friction rises. Right: in inventory Q1, the tempered-minus-responsive executed delta follows a threshold story, with low-friction mixed behavior and strong high-friction support for tempered execution.
+The event-micro table provides the paper's main forecasting-native evidence. Under a fixed thresholding interface with switching friction, the forecast-selected model becomes recurrently deployed-suboptimal as friction rises.
 
-## Figure 3. Q2 Ranking Mismatch Across The Required Domains
+## Table 2. Inventory Corroboration Table
 
-Left: under one fixed interface, mean flip rate is low or zero at zero friction and rises under positive friction in both required domains. Right: rank correlation declines away from zero friction, showing that forecast-side ranking does not reliably determine deployed operational ranking once friction is positive.
+Operational corroboration under a fixed replenishment interface.

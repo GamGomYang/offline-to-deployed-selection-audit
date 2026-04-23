@@ -1,0 +1,29 @@
+horizon: 800
+seeds: 20
+phi: 0.9
+latent_noise_std: 0.55
+shock_prob: 0.04
+shock_std: 0.9
+logit_bias: 0.0
+state_scale: 1.0
+shock_logit_scale: 0.85
+baseline_noise_std: 0.03
+reactive_coefficient: 0.25
+reactive_noise_std: 0.0
+smoother_lambda: 0.85
+smoother_noise_std: 0.03
+noisy_noise_std: 0.08
+threshold_tau: 0.60
+friction_grid:
+  - 0.0
+  - 0.05
+  - 0.1
+  - 0.25
+  - 0.5
+  - 1.0
+tp_reward: 1.0
+fp_penalty: 1.0
+fn_penalty: 0.0
+initial_action: 0
+logloss_eps: 1.0e-6
+scenario_id: event_micro_q2_revision_round_tau060
