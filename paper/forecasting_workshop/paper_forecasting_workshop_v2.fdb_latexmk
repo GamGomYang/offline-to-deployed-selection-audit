@@ -1,5 +1,5 @@
 # Fdb version 4
-["pdflatex"] 1777364031.50986 "paper_forecasting_workshop_v2.tex" "paper_forecasting_workshop_v2.pdf" "paper_forecasting_workshop_v2" 1777364036.15268 0
+["pdflatex"] 1777364090.42829 "paper_forecasting_workshop_v2.tex" "paper_forecasting_workshop_v2.pdf" "paper_forecasting_workshop_v2" 1777364095.05422 0
   "C:/Users/김금영/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map" 1777363748 82507 a9eef8696c92627b87e9975edea03b2a ""
   "C:/Users/김금영/AppData/Local/MiKTeX/miktex/data/le/pdftex/pdflatex.fmt" 1775291030 13335422 e35e815d885c0a1029bd8ba154087707 ""
   "C:/Users/김금영/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc" 1458473887 4993 80dc9bab7f31fb78a000ccfed0e27cab ""
@@ -185,9 +185,9 @@
   "assets/figures/fig_q2_seed_recurrence_appendix.pdf" 1777015339 17165 dc7a267d09aa19739bb29016412e662b ""
   "assets/figures/fig_q2_uncertainty_appendix.pdf" 1777015339 18769 10ff7b05d8a4ca2347ec875938f584b4 ""
   "assets/figures/fig_q2_winner_inversion_heatmap_v2.pdf" 1777363857 37999 d6dee2edb9d72f2193c8693e380d1511 ""
-  "paper_forecasting_workshop_v2.aux" 1777364035 20101 019431a49496950d6fe92e04f22acdae "pdflatex"
-  "paper_forecasting_workshop_v2.out" 1777364035 3883 52e6e15c4a4c2300c3cbe7aef7c2ccf7 "pdflatex"
-  "paper_forecasting_workshop_v2.tex" 1777364016 31971 5f6c06c82d4bae640fb600f6947b9aa4 ""
+  "paper_forecasting_workshop_v2.aux" 1777364094 20101 019431a49496950d6fe92e04f22acdae "pdflatex"
+  "paper_forecasting_workshop_v2.out" 1777364094 3883 52e6e15c4a4c2300c3cbe7aef7c2ccf7 "pdflatex"
+  "paper_forecasting_workshop_v2.tex" 1777364078 31940 ad113fe55a5a25af8496466be3ecdc52 ""
   "results/table_event_micro_interface_gap_bootstrap_cis.tex" 1777015339 518 00c1f849dc5245beb561e40b696f3780 ""
   "results/table_event_micro_interface_recurrence_tests.tex" 1777015339 466 95c70af63a512cdb486d25a26ad9f8be ""
   "results/table_evidence_map_v3.tex" 1777278626 1176 f3113752c4259a35b3d2c11e3178f68b ""
