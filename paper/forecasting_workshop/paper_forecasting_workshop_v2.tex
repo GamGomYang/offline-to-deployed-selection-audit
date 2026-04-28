@@ -1,42 +1,45 @@
-\documentclass[10pt,twocolumn]{article}
+\documentclass{article}
 
-\usepackage[a4paper,margin=18mm]{geometry}
-\usepackage[T1]{fontenc}
-\usepackage{times}
 \usepackage{microtype}
-\usepackage{amsmath,amssymb}
 \usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{icml2026}
+\usepackage{amsmath,amssymb}
 \usepackage{booktabs}
 \usepackage{array}
 \usepackage{tabularx}
 \usepackage{xcolor}
-\usepackage[hidelinks]{hyperref}
 \usepackage{enumitem}
 \usepackage{float}
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta,positioning}
-
-\setlength{\textfloatsep}{6pt plus 1pt minus 2pt}
-\setlength{\dbltextfloatsep}{6pt plus 1pt minus 2pt}
-\setlength{\floatsep}{6pt plus 1pt minus 2pt}
-\setlength{\intextsep}{6pt plus 1pt minus 2pt}
-
-\title{\vspace{-6mm}\textbf{Benchmarking Forecast Rankings for Deployment-Aware Model Selection}\vspace{-2mm}}
-\author{}
-\date{}
+\icmltitlerunning{Forecast Rankings for Deployment-Aware Model Selection}
 
 \begin{document}
 
-\twocolumn[{%
-\maketitle
-\vspace{-6mm}
+\twocolumn[
+  \icmltitle{Benchmarking Forecast Rankings for Deployment-Aware Model Selection}
+
+  % For an anonymous ICML submission, keep the package line above as
+  % \usepackage{icml2026}. To render author names in a visible draft,
+  % switch it to \usepackage[preprint]{icml2026} or
+  % \usepackage[accepted]{icml2026}.
+  \begin{icmlauthorlist}
+    \icmlauthor{Kim Geum-Young}{cbnu}
+  \end{icmlauthorlist}
+
+  \icmlaffiliation{cbnu}{Department of Software Engineering, Chungbuk National University, Cheongju, Chungcheongbuk-do, South Korea}
+  \icmlcorrespondingauthor{Kim Geum-Young}{anon.email@domain.com}
+  \icmlkeywords{Forecasting benchmarks, model selection, deployment-aware evaluation}
+
+  \vskip 0.3in
+]
+
+\printAffiliationsAndNotice{}
+
 \begin{abstract}
 Forecasting benchmarks typically rank models by forecast-side metrics. In deployment, however, forecasts are often translated into actions through fixed operational interfaces, and the model preferred by forecast-side evaluation need not be the model that performs best after execution. We study this as a forecasting benchmark question: under a fixed frictional interface, does forecast-side ranking remain reliable for deployed model selection? We focus on Q2, the fixed-interface selection problem, and use Q1 only as mechanism support for why divergence can arise. Across a synthetic zero-friction anchor, a forecasting-native event-micro benchmark, a complementary Traffic-Hourly alert family, and inventory corroboration, we find that forecast-side winners can become recurrently deployed-suboptimal as friction increases. These results do not invalidate forecast-side evaluation for prediction; rather, they suggest that forecasting benchmarks aimed at deployment may need to report deployed-selection robustness alongside forecast-side metrics.
 \end{abstract}
-\vspace{1mm}
-\hrule
-\vspace{2mm}
-}]
 
 \section{Introduction}
 
@@ -171,7 +174,7 @@ Load-following & Second operational domain & Directionally consistent secondary 
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=\columnwidth]{assets/figures/fig_q2_event_micro_support.pdf}
+\includegraphics[width=\columnwidth]{assets/figures/fig_q2_event_micro_support.png}
 \caption{Appendix-promoted event-micro robustness view. In the main forecasting-native benchmark, disagreement between forecast-side and deployed-side selection is lowest at zero and very low friction and increases as switching frictions rise.}
 \label{fig:event-micro-main-robustness}
 \end{figure}
@@ -200,7 +203,7 @@ Hysteresis interface ($\delta=0.05$) & 1.00 & Reactive sharp & Lagged smoother &
 
 \begin{figure*}[t]
 \centering
-\includegraphics[width=0.97\textwidth]{assets/figures/fig_event_micro_interface_uncertainty_appendix.pdf}
+\includegraphics[width=0.97\textwidth]{assets/figures/fig_event_micro_interface_uncertainty_appendix.png}
 \caption{Event-micro interface-aware robustness. Rows facet the canonical fixed threshold and the hysteresis threshold; columns show mean flip-rate bands and deployed-suboptimal share bands. The stronger canonical interface and the milder hysteresis interface both preserve the same Q2 direction.}
 \label{fig:event-micro-interface-main}
 \end{figure*}
@@ -218,42 +221,42 @@ Hysteresis interface ($\delta=0.05$) & 1.00 & Reactive sharp & Lagged smoother &
 \begingroup
 \small
 \begin{thebibliography}{9}
-\bibitem{forecastbench}
+\bibitem[Karger et~al.(2025)Karger, Bastani, Yueh-Han, Jacobs, Halawi, Zhang, and Tetlock]{forecastbench}
 E. Karger, H. Bastani, C. Yueh-Han, Z. Jacobs, D. Halawi, F. Zhang, and P. E. Tetlock.
 \newblock ForecastBench: A Dynamic Benchmark of AI Forecasting Capabilities.
 \newblock In \emph{ICLR}, 2025. arXiv:2409.19839.
 
-\bibitem{prophetarena}
+\bibitem[Yang et~al.(2025)Yang, Mahns, Li, Gu, Wu, and Xu]{prophetarena}
 Q. Yang, S. Mahns, S. Li, A. Gu, J. Wu, and H. Xu.
 \newblock LLM-as-a-Prophet: Understanding Predictive Intelligence with Prophet Arena.
 \newblock arXiv:2510.17638, 2025.
 
-\bibitem{gifteval}
+\bibitem[Aksu et~al.(2024)Aksu, Woo, Liu, Liu, Liu, Savarese, Xiong, and Sahoo]{gifteval}
 T. Aksu, G. Woo, J. Liu, X. Liu, C. Liu, S. Savarese, C. Xiong, and D. Sahoo.
 \newblock GIFT-Eval: A Benchmark for General Time Series Forecasting Model Evaluation.
 \newblock NeurIPS Workshop on Time Series in the Age of Large Models, 2024. Extended version: arXiv:2410.10393.
 
-\bibitem{gneiting2007}
+\bibitem[Gneiting and Raftery(2007)]{gneiting2007}
 T. Gneiting and A. E. Raftery.
 \newblock Strictly Proper Scoring Rules, Prediction, and Estimation.
 \newblock \emph{Journal of the American Statistical Association}, 102(477):359--378, 2007.
 
-\bibitem{murphy1993}
+\bibitem[Murphy(1993)]{murphy1993}
 A. H. Murphy.
 \newblock What Is a Good Forecast? An Essay on the Nature of Goodness in Weather Forecasting.
 \newblock \emph{Weather and Forecasting}, 8(2):281--293, 1993.
 
-\bibitem{raeth2025}
+\bibitem[Raeth and Ludwig(2025)]{raeth2025}
 K. Raeth and N. Ludwig.
 \newblock Evaluating Weather Forecasts from a Decision Maker's Perspective.
 \newblock arXiv:2512.14779, 2025.
 
-\bibitem{donti2017task}
+\bibitem[Donti et~al.(2017)Donti, Amos, and Kolter]{donti2017task}
 P. L. Donti, B. Amos, and J. Zico Kolter.
 \newblock Task-based End-to-end Model Learning in Stochastic Optimization.
 \newblock In \emph{NeurIPS}, 2017. arXiv:1703.04529.
 
-\bibitem{elmachtoub2021spo}
+\bibitem[Elmachtoub and Grigas(2022)]{elmachtoub2021spo}
 A. N. Elmachtoub and P. Grigas.
 \newblock Smart ``Predict, then Optimize''.
 \newblock \emph{Management Science}, 68(1):9--26, 2022.
@@ -284,7 +287,7 @@ Because event-micro provides the paper's main forecasting-native Q2 evidence, th
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\columnwidth]{assets/figures/fig_q2_event_micro_support.pdf}
+\includegraphics[width=\columnwidth]{assets/figures/fig_q2_event_micro_support.png}
 \caption{Ranking mismatch in a minimal event-forecasting micro-benchmark. Disagreement between forecast-side and deployed-side model selection is lowest at zero and very low friction and increases as switching frictions rise.}
 \label{fig:event-micro-q2}
 \end{figure}
@@ -338,14 +341,14 @@ Because the hysteresis-threshold check is retained paper-facing as a second-inte
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\columnwidth]{assets/figures/fig_event_micro_interface_uncertainty_appendix.pdf}
+\includegraphics[width=\columnwidth]{assets/figures/fig_event_micro_interface_uncertainty_appendix.png}
 \caption{Interface-aware event-micro uncertainty addendum. Rows facet the canonical fixed threshold and the hysteresis threshold; columns show mean flip rate bands and deployed-suboptimal share bands.}
 \label{fig:event-micro-interface-uncertainty}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\columnwidth]{assets/figures/fig_event_micro_interface_seed_recurrence_appendix.pdf}
+\includegraphics[width=\columnwidth]{assets/figures/fig_event_micro_interface_seed_recurrence_appendix.png}
 \caption{Interface-aware seed-level disagreement strips for the event-micro benchmark. Each panel shows the same seed set under one fixed interface.}
 \label{fig:event-micro-interface-seed-recurrence}
 \end{figure}
@@ -457,7 +460,7 @@ Q1 is retained only as mechanism support for why Q2 divergence can arise. Holdin
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\columnwidth]{assets/figures/fig_q1_results_v2.pdf}
+\includegraphics[width=\columnwidth]{assets/figures/fig_q1_results_v2.png}
 \caption{Appendix Q1 mechanism support. Synthetic yields exact zero-friction coincidence and a rising positive-friction proposal-versus-realization gap, while inventory shows a threshold pattern in which sufficiently high friction favors tempered execution. The figure explains why Q2 divergence can arise but is not itself the paper's main evidence.}
 \label{fig:q1-required}
 \end{figure}
@@ -484,14 +487,14 @@ This appendix collects cross-domain seed-level reliability checks for the main Q
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\columnwidth]{assets/figures/fig_q2_uncertainty_appendix.pdf}
+\includegraphics[width=\columnwidth]{assets/figures/fig_q2_uncertainty_appendix.png}
 \caption{Appendix uncertainty bands for the synthetic and event-micro Q2 curves. Left: mean flip rate with 95\% bands from seed-level standard errors. Right: deployed-suboptimal share with exact 95\% binomial intervals.}
 \label{fig:q2-uncertainty}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\columnwidth]{assets/figures/fig_q2_seed_recurrence_appendix.pdf}
+\includegraphics[width=\columnwidth]{assets/figures/fig_q2_seed_recurrence_appendix.png}
 \caption{Seed-level disagreement strips for the main Q2 domains. Filled markers indicate seeds where the forecast-selected model is not deployed-best under the fixed interface.}
 \label{fig:q2-seed-recurrence}
 \end{figure}

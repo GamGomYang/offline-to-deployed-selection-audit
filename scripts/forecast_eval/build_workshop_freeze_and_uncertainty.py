@@ -14,6 +14,10 @@ import numpy as np
 import pandas as pd
 from scipy.stats import binomtest
 
+matplotlib.rcParams["pdf.use14corefonts"] = True
+matplotlib.rcParams["ps.useafm"] = True
+matplotlib.rcParams["font.family"] = "serif"
+
 from build_same_interface_rank_summary import build_domain_rank_summary
 from revision_round_20260423 import (
     BASELINE_LOCK_DIR,
