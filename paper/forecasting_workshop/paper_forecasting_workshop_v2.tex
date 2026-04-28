@@ -57,56 +57,6 @@ This paper makes three narrow contributions.
 
 We distinguish three evaluation objects: forecast-side quality, target-side decision quality, and realized-action quality. Forecast-side quality measures predictive performance, target-side decision quality scores the proposed action path before frictional execution, and realized-action quality scores the executed path after the fixed interface is applied. Q1 holds the proposed action path fixed and varies only the interface, so it is an exact-control mechanism check. Q2 holds the interface fixed and varies the forecaster, so it is the benchmark-selection question. Because Q2 asks whether the forecast-side winner remains the deployed winner, Q2 is the paper's main empirical claim.
 
-\section{Evidence Design}
-
-Our evidence hierarchy is Q2-first. Synthetic provides the exact zero-friction sanity anchor. A minimal event-micro benchmark evaluated over 100 seeds provides the main forecasting-native Q2 evidence: models emit event probabilities, a fixed thresholding rule maps probabilities to actions, and switching friction penalizes action changes. A complementary Traffic-Hourly redesign family provides a second forecasting-native Q2 setting under the same fixed-interface question. In its main fixed-budget alert variant, the forecast-side winner and deployed winner coincide at zero friction but separate once switching costs are introduced, allowing the paper to test deployed-selection robustness beyond the minimal event-micro family. A relative-rank Traffic variant is retained in the appendix as forecasting-native support under the same source and pooled-model protocol. Inventory provides operational corroboration, while load-following is retained only as appendix-only secondary corroboration because its zero row remains mixed. Q1 appears only as mechanism support from synthetic and inventory and is summarized briefly in the main text.
-
-In inventory Q2, the main text retains only the moderate-to-high friction rows from a fixed five-family comparison under one responsive replenishment rule, while the appendix records the mixed zero/low-friction rows and the broader family sweep under the same held-out protocol.
-
-\section{Results}
-
-\subsection{Q2: Fixed interface, benchmark failure and selection consequence}
-
-Q2 asks the paper's headline benchmark question: under one fixed forecast-to-decision interface, can forecast-side ranking still be trusted for deployed model selection? Synthetic provides the exact zero-friction sanity anchor; Figure~\ref{fig:q2-required} focuses on the fixed-interface winner-inversion evidence in the forecasting-native and corroborative domains.
-
-\setcounter{figure}{1}
-\begin{figure}[H]
-\centering
-\includegraphics[width=\columnwidth]{assets/figures/fig_q2_results_v2.png}
-\caption{Forecast-side winners need not remain deployed winners. Across fixed-interface forecasting tasks, forecast-side and deployed model selection agree at zero friction in the forecasting-native evidence, but separate as switching friction increases. The benchmark consequence is deployed-suboptimal selection: the forecast-selected model is recurrently not the deployed-best model.}
-\label{fig:q2-required}
-\end{figure}
-
-The event-micro table provides the main forecasting-native evidence. In a minimal event-micro benchmark evaluated over 100 seeds, agreement is highest at zero friction ($0.62$), falls to $0.31$ by $0.50$, and reaches $0.01$ at $1.00$. Over the same rows, the deployed winner shifts from Reactive sharp to Calibrated baseline and then Lagged smoother, while deployed-suboptimality reaches $69/100$ seeds at $0.50$ and $99/100$ at $1.00$. The event-micro pattern persists under an alternate threshold, under a hysteresis-threshold interface, and when forecast-side ranking is recomputed with log loss.
-
-\begin{table}[H]
-\centering
-\scriptsize
-\resizebox{\columnwidth}{!}{\input{results/table_q2_selection_drift_event_micro_main.tex}}
-\caption{Forecast-side vs.\ deployed-side model selection in the forecasting-native event-micro benchmark. Under a fixed thresholding interface with switching friction, the forecast-selected model becomes recurrently deployed-suboptimal as friction rises.}
-\label{tab:event-micro-selection-drift-main}
-\end{table}
-
-A complementary Traffic-Hourly fixed-budget alert family shows the same benchmark consequence under a different forecasting-native task structure. In the selected Top-k setting ($k=249$), Reactive short is both the forecast-side winner and the deployed winner at zero friction, with exact agreement $1.0$. Once switching costs are introduced, however, the forecast-side winner remains Reactive short while the deployed winner shifts to Lagged smoother, and deployed-suboptimality reaches $100/100$ seeds at both friction $0.5$ and friction $1.0$. A relative-rank Traffic variant shows the same qualitative pattern in the appendix.
-
-Inventory provides operational corroboration with stronger recurrence magnitudes. Inventory has a mixed zero/low-friction regime, so we use it only as operational corroboration for the moderate-to-high friction rows. By friction $0.5$, the forecast-selected model is deployed-suboptimal in $9/10$ seeds and agreement falls to $0.10$; at friction $1.0$, deployed suboptimality rises to $10/10$ seeds with mean and median deployed gaps of $1.187$ and $1.162$. Thus the practical issue is not merely that rankings drift, but that model choice under a fixed deployed rule becomes repeatedly wrong at moderate-to-high friction.
-
-\begin{table}[H]
-\centering
-\scriptsize
-\setlength{\tabcolsep}{2.5pt}
-\resizebox{\columnwidth}{!}{\input{results/table_q2_corroboration_compact.tex}}
-\caption{Compact corroboration across a complementary Traffic-Hourly alert family and the moderate-to-high friction inventory rows.}
-\label{tab:q2-corroboration-compact}
-\end{table}
-
-An appendix-only load-following check remains directionally consistent but retains a mixed zero row, so we do not use it as headline corroboration in the main text (Appendix~\ref{app:load-following}).
-
-Appendix Tables~\ref{tab:q2-recurrence-tests}--\ref{tab:q2-gap-bootstrap-cis} and Figures~\ref{fig:q2-uncertainty}--\ref{fig:q2-seed-recurrence} support the interpretation that the main moderate/high-friction patterns, especially in event-micro and inventory, are not driven solely by isolated seed noise.
-
-Appendix Tables~\ref{tab:q2-stronger-protocol}--\ref{tab:q2-stronger-robustness} widen the inventory comparison set under a standardized expanded comparison. That broader-family sweep strengthens moderate/high-friction mismatch, but the zero- and low-friction rows remain too mixed for main-text use and therefore do not overturn the narrower five-family claim.
-
-\setcounter{figure}{0}
 \begin{figure}[H]
 \centering
 \resizebox{0.9\columnwidth}{!}{%
@@ -135,7 +85,52 @@ Appendix Tables~\ref{tab:q2-stronger-protocol}--\ref{tab:q2-stronger-robustness}
 \label{fig:conceptual}
 \end{figure}
 
-\paragraph{Q1 mechanism support.} Q1 is mechanism support rather than the paper's claim. Holding the proposed action path fixed, synthetic and inventory show that frictional interfaces can separate proposed and realized actions: synthetic yields an increasing proposal-versus-realization gap away from zero friction, while inventory shows a threshold pattern in which sufficiently high friction favors tempered execution. This explains why forecast-side, target-side, and realized-action evaluation can diverge; Q2 shows when that divergence becomes deployed misselection.
+\section{Evidence Design}
+
+Our evidence hierarchy is Q2-first. Synthetic provides an exact zero-friction sanity anchor. Event-micro provides the main forecasting-native Q2 evidence: forecasters emit event probabilities, a fixed threshold maps probabilities to actions, and switching friction penalizes action changes. Traffic-Hourly Top-k provides a second forecasting-native task family under the same fixed-interface selection question. Inventory provides operational corroboration, while load-following and broader inventory sweeps are retained as appendix-only transparency checks. Across domains, the central quantity is whether the forecast-side winner remains the deployed winner under the fixed interface.
+
+In inventory Q2, the main text retains only the 0.50 and 1.00 rows from the fixed five-family comparison; the mixed 0.00/0.25 regime and broader family sweep remain appendix-only transparency checks.
+
+\section{Results}
+
+\subsection{Q2: Fixed interface, benchmark failure and selection consequence}
+
+Q2 asks the paper's headline benchmark question: under one fixed forecast-to-decision interface, can forecast-side ranking still be trusted for deployed model selection? Synthetic provides the exact zero-friction sanity anchor; Figure~\ref{fig:q2-required} focuses on the fixed-interface winner-inversion evidence in the forecasting-native and corroborative domains.
+
+\begin{figure}[H]
+\centering
+\makebox[\columnwidth][c]{\includegraphics[width=1.32\columnwidth]{assets/figures/fig_q2_winner_inversion_heatmap_v2.pdf}}
+\caption{Forecast-side winners need not remain deployed winners. Each cell reports the forecast-side winner and deployed winner under one fixed interface, together with the number of seeds in which the forecast-selected model is deployed-suboptimal. Event-micro and Traffic-Hourly provide forecasting-native evidence; inventory provides operational corroboration at moderate-to-high friction. The inventory zero-friction cell is marked as mixed and is not used as headline corroboration.}
+\label{fig:q2-required}
+\end{figure}
+
+In event-micro, the forecast-side winner remains Reactive sharp across frictions, but the deployed winner shifts to Calibrated baseline at friction 0.50 and Lagged smoother at friction 1.00. The benchmark consequence is recurrent: the forecast-selected model is deployed-suboptimal in 69/100 and 99/100 seeds at these two friction levels. The same qualitative inversion persists under an alternate threshold, under a hysteresis-threshold interface, and when forecast-side ranking is recomputed with log loss.
+
+\begin{table}[H]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\input{results/table_q2_selection_drift_event_micro_main.tex}
+\caption{Event-micro Q2 evidence. Under a fixed thresholding interface, the forecast-side winner remains Reactive sharp, but the deployed winner shifts as switching friction increases. The forecast-selected model becomes recurrently deployed-suboptimal at moderate and high friction.}
+\label{tab:event-micro-selection-drift-main}
+\end{table}
+
+A complementary Traffic-Hourly fixed-budget alert family shows the same benchmark consequence under a different forecasting-native task structure. In the selected Top-k setting ($k=249$), Reactive short is both the forecast-side winner and the deployed winner at zero friction, with exact agreement $1.0$. Once switching costs are introduced, however, the forecast-side winner remains Reactive short while the deployed winner shifts to Lagged smoother, and deployed-suboptimality reaches $100/100$ seeds at both friction $0.5$ and friction $1.0$. A relative-rank Traffic variant shows the same qualitative pattern in the appendix.
+
+Inventory provides operational corroboration rather than the main forecasting-native evidence. At friction 0.50 and 1.00, the forecast-selected Small MLP is deployed-suboptimal in 9/10 and 10/10 seeds, respectively, under the fixed replenishment interface.
+
+\begin{table}[H]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{2.5pt}
+\input{results/table_q2_corroboration_compact.tex}
+\caption{Forecasting-native and operational corroboration. Traffic-Hourly provides a second forecasting-native task family, while inventory provides operational corroboration. Both show that forecast-side winners can become deployed-suboptimal under fixed interfaces at moderate-to-high friction.}
+\label{tab:q2-corroboration-compact}
+\end{table}
+
+Appendix-only robustness checks preserve the same qualitative reading and do not overturn the narrower main-text claim.
+
+\paragraph{Q1 mechanism support.} Q1 explains why divergence can arise; Q2 is the actual benchmark-selection claim. Holding the proposed action path fixed, synthetic and inventory show that frictional interfaces can separate proposed and realized actions. Synthetic yields an increasing proposal-versus-realization gap away from zero friction, while inventory shows a threshold pattern in which sufficiently high friction favors tempered execution. Q2 then shows when that mechanism produces deployed misselection under one fixed interface.
 
 \section{Discussion, Related Work, and Limitations}
 
