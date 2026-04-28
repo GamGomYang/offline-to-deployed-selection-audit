@@ -141,75 +141,9 @@ Inventory provides operational corroboration rather than the main forecasting-na
 \label{tab:q2-corroboration-compact}
 \end{table}
 
-Appendix-only robustness checks preserve the same qualitative reading and do not overturn the narrower main-text claim.
-
 \paragraph{Q1 mechanism support.} Q1 explains why divergence can arise; Q2 is the actual benchmark-selection claim. Holding the proposed action path fixed, synthetic and inventory show that frictional interfaces can separate proposed and realized actions. Synthetic yields an increasing proposal-versus-realization gap away from zero friction, while inventory shows a threshold pattern in which sufficiently high friction favors tempered execution. Q2 then shows when that mechanism produces deployed misselection under one fixed interface.
 
-\section{Robustness Checks}
-
-The main claim is not carried by one fragile choice of threshold, score, or auxiliary domain. Event-micro remains the paper's main forecasting-native evidence, so the appendix stress-tests it in three directions: an alternate threshold, a forecast-side reranking with log loss, and a second fixed hysteresis interface. Across all three, the same winner-drift reading persists: a more reactive forecast-side winner can remain prediction-best while becoming recurrently deployed-suboptimal once switching is penalized.
-
-The same narrow benchmark consequence also appears outside event-micro. A relative-rank Traffic redesign preserves the qualitative shift from a reactive forecast-side winner to a smoother deployed winner. The broader inventory family sweep strengthens the moderate-to-high friction mismatch while leaving the zero/low-friction regime mixed, which is why inventory remains corroborative rather than headline evidence. Load-following remains appendix-only secondary corroboration for the same reason: it points in the same direction but does not carry a clean zero-friction anchor.
-
-\begin{table}[t]
-\centering
-\scriptsize
-\setlength{\tabcolsep}{3pt}
-\begin{tabularx}{\columnwidth}{@{}l l >{\raggedright\arraybackslash}X@{}}
-\toprule
-Check & Perturbation & Main reading \\
-\midrule
-Event-micro threshold & $\tau=0.50$ instead of $\tau=0.55$ & Winner drift and recurrent deployed-suboptimality persist. \\
-Event-micro reranking & Log loss instead of Brier & Forecast-side reranking changes do not remove the deployed inversion. \\
-Event-micro interface & Hysteresis threshold with $\delta=0.05$ & Same Q2 direction remains, with smaller magnitudes. \\
-Traffic redesign & Relative-rank label construction & Same qualitative shift under a second forecasting-native task construction. \\
-Inventory sweep & Broader family comparison & Mixed zero/low-friction rows remain, but moderate/high-friction mismatch strengthens. \\
-Load-following & Second operational domain & Directionally consistent secondary corroboration only. \\
-\bottomrule
-\end{tabularx}
-\caption{Compact robustness and transparency summary. These checks preserve the main Q2 reading without changing the paper's narrow claim.}
-\label{tab:robustness-summary}
-\end{table}
-
-\paragraph{Event-micro robustness.} In the main forecasting-native benchmark, the alternate-threshold and log-loss checks matter because they perturb the object used to rank forecasters without changing the downstream interface. The hysteresis check matters because it perturbs the fixed interface while preserving the same forecasting-native task. None of these checks removes the central result: the forecast-side winner can remain the same while the deployed winner shifts toward a smoother family as switching friction rises. This is why the paper frames Q1 as mechanism support and Q2 as the actual benchmark-selection claim.
-
-\begin{figure}[t]
-\centering
-\includegraphics[width=\columnwidth]{assets/figures/fig_q2_event_micro_support.png}
-\caption{Appendix-promoted event-micro robustness view. In the main forecasting-native benchmark, disagreement between forecast-side and deployed-side selection is lowest at zero and very low friction and increases as switching frictions rise.}
-\label{fig:event-micro-main-robustness}
-\end{figure}
-
-\begin{table*}[t]
-\centering
-\scriptsize
-\setlength{\tabcolsep}{4pt}
-\begin{tabular}{@{}lllp{3.1cm}c@{}}
-\toprule
-Check & Friction & Forecast winner & Deployed winner & Subopt. seeds \\
-\midrule
-Canonical threshold & 0.50 & Reactive sharp & Calibrated baseline & 69/100 \\
-Canonical threshold & 1.00 & Reactive sharp & Lagged smoother & 99/100 \\
-Threshold robustness ($\tau=0.50$) & 0.50 & Reactive sharp & Calibrated baseline & 77/100 \\
-Threshold robustness ($\tau=0.50$) & 1.00 & Reactive sharp & Lagged smoother & 98/100 \\
-Log-loss reranking & 0.50 & Reactive sharp & Calibrated baseline & 74/100 \\
-Log-loss reranking & 1.00 & Reactive sharp & Lagged smoother & 99/100 \\
-Hysteresis interface ($\delta=0.05$) & 0.50 & Reactive sharp & Calibrated baseline & 55/100 \\
-Hysteresis interface ($\delta=0.05$) & 1.00 & Reactive sharp & Lagged smoother & 82/100 \\
-\bottomrule
-\end{tabular}
-\caption{Event-micro robustness rows promoted to the main text. Across threshold, reranking, and interface perturbations, the forecast-side winner remains Reactive sharp while the deployed winner shifts under moderate-to-high friction.}
-\label{tab:event-micro-robustness-main}
-\end{table*}
-
-\begin{figure*}[t]
-\centering
-\includegraphics[width=0.97\textwidth]{assets/figures/fig_event_micro_interface_uncertainty_appendix.png}
-\caption{Event-micro interface-aware robustness. Rows facet the canonical fixed threshold and the hysteresis threshold; columns show mean flip-rate bands and deployed-suboptimal share bands. The stronger canonical interface and the milder hysteresis interface both preserve the same Q2 direction.}
-\label{fig:event-micro-interface-main}
-\end{figure*}
-
-\paragraph{Cross-domain transparency.} The Traffic-Hourly redesign family matters because it shows that event-micro is not the only forecasting-native task where winner inversion appears. The broader inventory sweep matters for the opposite reason: it clarifies where the paper does \emph{not} overclaim, since the zero/low-friction inventory rows remain mixed even when the family set is widened. Load-following remains useful only as appendix-only secondary corroboration, not as a second main benchmark. Together these checks narrow the claim while making it harder to dismiss as an event-micro artifact.
+\paragraph{Appendix robustness.} Detailed threshold, reranking, and second-interface checks for event-micro are retained in the appendix together with the Traffic relative-rank redesign, the broader inventory sweep, and the load-following transparency domain. Those appendix-only checks preserve the same narrow reading without changing the paper's main claim: under a fixed interface, a forecast-side winner can remain prediction-best while becoming recurrently deployed-suboptimal once switching friction is introduced.
 
 \paragraph{Why forecast ordering need not be preserved.} Proper forecast-side scores evaluate predictive quality, not the composed object obtained after forecasts are mapped to actions and executed through a frictional interface. If a forecaster's forecast-side advantage is smaller than the extra friction-induced loss created by its implied action path, the deployed ordering can reverse even under a fixed interface. This is why Q1 is useful as mechanism support and why Q2 is the actual benchmark-selection question.
 
@@ -288,7 +222,7 @@ Because event-micro provides the paper's main forecasting-native Q2 evidence, th
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\columnwidth]{assets/figures/fig_q2_event_micro_support.png}
+\includegraphics[width=0.82\columnwidth]{assets/figures/fig_q2_event_micro_support.png}
 \caption{Ranking mismatch in a minimal event-forecasting micro-benchmark. Disagreement between forecast-side and deployed-side model selection is lowest at zero and very low friction and increases as switching frictions rise.}
 \label{fig:event-micro-q2}
 \end{figure}
@@ -342,7 +276,7 @@ Because the hysteresis-threshold check is retained paper-facing as a second-inte
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\columnwidth]{assets/figures/fig_event_micro_interface_uncertainty_appendix.png}
+\includegraphics[width=0.88\columnwidth]{assets/figures/fig_event_micro_interface_uncertainty_appendix.png}
 \caption{Interface-aware event-micro uncertainty addendum. Rows facet the canonical fixed threshold and the hysteresis threshold; columns show mean flip rate bands and deployed-suboptimal share bands.}
 \label{fig:event-micro-interface-uncertainty}
 \end{figure}
