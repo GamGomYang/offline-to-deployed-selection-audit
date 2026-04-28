@@ -49,37 +49,9 @@ Forecasting benchmark work often evaluates forecast quality, calibration, and li
 This paper makes three narrow contributions.
 \begin{itemize}[leftmargin=*,noitemsep,topsep=2pt]
 \item First, we introduce deployed-selection robustness as a forecasting benchmark question: whether forecast-side model ranking remains reliable after forecasts are executed through a fixed interface.
-\item Second, we document a Q2 failure mode in which the forecast-side winner becomes recurrently deployed-suboptimal as friction increases under the studied fixed interfaces.
-\item Third, we provide a Q2-first evidence hierarchy with a synthetic zero-friction anchor, forecasting-native event and traffic evidence, and operational corroboration, while using Q1 only to explain why the divergence can arise.
+\item Second, we document a Q2 failure mode: the forecast-side winner becomes recurrently deployed-suboptimal as friction increases under the studied fixed interfaces.
+\item Third, we provide a Q2-first evidence hierarchy spanning synthetic, forecasting-native event and traffic evidence, and operational corroboration; Q1 is retained only as mechanism support.
 \end{itemize}
-
-\begin{figure*}[t]
-\centering
-\resizebox{0.97\textwidth}{!}{%
-\begin{tikzpicture}[
-  node distance=8mm,
-  box/.style={draw, rounded corners, minimum width=2.35cm, minimum height=1.35cm, align=center, font=\small, fill=gray!7},
-  qbox/.style={draw, rounded corners, align=center, font=\footnotesize, fill=orange!10},
-  arr/.style={-{Latex[length=2.5mm]}, thick}
-]
-\node[box] (forecast) {Forecast};
-\node[box, right=8mm of forecast] (target) {Proposed target};
-\node[box, right=8mm of target] (iface) {Interface under friction};
-\node[box, right=8mm of iface] (exec) {Realized action};
-\node[box, right=8mm of exec] (metrics) {Realized score};
-
-\draw[arr] (forecast) -- (target);
-\draw[arr] (target) -- (iface);
-\draw[arr] (iface) -- (exec);
-\draw[arr] (exec) -- (metrics);
-
-\node[qbox, below=7mm of target, minimum width=3.1cm] (q1) {Q1: same proposal,\\different interface};
-\node[qbox, below=7mm of exec, minimum width=3.1cm] (q2) {Q2: fixed interface,\\different forecasts};
-\end{tikzpicture}
-}
-\caption{Forecasts are converted into proposed target actions and then translated into realized actions through an interface operating under friction, which creates two distinct evaluation questions: whether the same frozen proposal can yield different realized outcomes under different interfaces (Q1), and whether forecast-metric ranking matches deployed operational ranking under a fixed interface (Q2). This separation changes the evaluation object and therefore can change both benchmark interpretation and deployed model selection under friction.}
-\label{fig:conceptual}
-\end{figure*}
 
 \section{Two Evaluation Questions}
 
@@ -87,24 +59,27 @@ We distinguish three evaluation objects: forecast-side quality, target-side deci
 
 \section{Evidence Design}
 
-Our evidence hierarchy is Q2-first. Synthetic provides the exact zero-friction sanity anchor. A minimal event-micro benchmark evaluated over 100 seeds provides the main forecasting-native Q2 evidence: models emit event probabilities, a fixed thresholding rule maps probabilities to actions, and switching friction penalizes action changes. A complementary Traffic-Hourly redesign family provides a second forecasting-native Q2 setting under the same fixed-interface question. In its main fixed-budget alert variant, the forecast-side winner and deployed winner coincide at zero friction but separate once switching costs are introduced, allowing the paper to test deployed-selection robustness beyond the minimal event-micro family. A relative-rank Traffic variant is retained in the appendix as forecasting-native support under the same source and pooled-model protocol. Inventory provides the main operational corroboration, while load-following is retained only as appendix-only secondary corroboration because its zero row remains mixed. Q1 appears only as mechanism support from synthetic and inventory and is summarized briefly in the main text.
+Our evidence hierarchy is Q2-first. Synthetic provides the exact zero-friction sanity anchor. A minimal event-micro benchmark evaluated over 100 seeds provides the main forecasting-native Q2 evidence: models emit event probabilities, a fixed thresholding rule maps probabilities to actions, and switching friction penalizes action changes. A complementary Traffic-Hourly redesign family provides a second forecasting-native Q2 setting under the same fixed-interface question. In its main fixed-budget alert variant, the forecast-side winner and deployed winner coincide at zero friction but separate once switching costs are introduced, allowing the paper to test deployed-selection robustness beyond the minimal event-micro family. A relative-rank Traffic variant is retained in the appendix as forecasting-native support under the same source and pooled-model protocol. Inventory provides operational corroboration, while load-following is retained only as appendix-only secondary corroboration because its zero row remains mixed. Q1 appears only as mechanism support from synthetic and inventory and is summarized briefly in the main text.
 
-In inventory Q2, the locked main table compares five forecasting families under one responsive replenishment rule: Naive persistence, Moving average (7), Linear AR, Small MLP, and Small GRU. The appendix widens that comparison with validation-selected family representatives under the same split, held-out protocol, validation criterion, and standardized two-stage tuning procedure; simple heuristic baselines remain fixed ex ante. The main text keeps the locked five-family comparison, while the appendix records the broader family sweep as a stricter-gate transparency layer rather than as additional headline evidence.
+In inventory Q2, the main text retains only the moderate-to-high friction rows from a fixed five-family comparison under one responsive replenishment rule, while the appendix records the mixed zero/low-friction rows and the broader family sweep under the same held-out protocol.
 
 \section{Results}
 
 \subsection{Q2: Fixed interface, benchmark failure and selection consequence}
 
-Q2 asks the paper's headline benchmark-design question: under one fixed deployed interface, can forecast-side ranking still be trusted for deployed model selection? Synthetic provides the exact zero-friction sanity anchor: rankings align exactly at zero friction, and once friction is moderate or high, repeated pairwise flips and lower rank correlation emerge.
+Q2 asks the paper's headline benchmark question: under one fixed forecast-to-decision interface, can forecast-side ranking still be trusted for deployed model selection? Synthetic provides the exact zero-friction sanity anchor; Figure~\ref{fig:q2-required} focuses on the fixed-interface winner-inversion evidence in the forecasting-native and corroborative domains.
 
-\begin{figure}[!t]
+\setcounter{figure}{1}
+\begin{figure}[H]
 \centering
-\includegraphics[width=\columnwidth]{assets/figures/fig_q2_results_v2.pdf}
-\caption{Q2 --- synthetic provides the exact zero-friction sanity anchor, while event micro provides the paper's main forecasting-native evidence under a fixed thresholding interface. The left panel shows pairwise ranking disagreement (mean flip rate); the right panel shows the operational benchmark-consequence quantity, the share of seeds in which the forecast-selected model is not deployed-best. Appendix uncertainty bands and seed-level recurrence checks are reported separately.}
+\includegraphics[width=\columnwidth]{assets/figures/fig_q2_results_v2.png}
+\caption{Forecast-side winners need not remain deployed winners. Across fixed-interface forecasting tasks, forecast-side and deployed model selection agree at zero friction in the forecasting-native evidence, but separate as switching friction increases. The benchmark consequence is deployed-suboptimal selection: the forecast-selected model is recurrently not the deployed-best model.}
 \label{fig:q2-required}
 \end{figure}
 
-\begin{table}[!t]
+The event-micro table provides the main forecasting-native evidence. In a minimal event-micro benchmark evaluated over 100 seeds, agreement is highest at zero friction ($0.62$), falls to $0.31$ by $0.50$, and reaches $0.01$ at $1.00$. Over the same rows, the deployed winner shifts from Reactive sharp to Calibrated baseline and then Lagged smoother, while deployed-suboptimality reaches $69/100$ seeds at $0.50$ and $99/100$ at $1.00$. The event-micro pattern persists under an alternate threshold, under a hysteresis-threshold interface, and when forecast-side ranking is recomputed with log loss.
+
+\begin{table}[H]
 \centering
 \scriptsize
 \resizebox{\columnwidth}{!}{\input{results/table_q2_selection_drift_event_micro_main.tex}}
@@ -112,36 +87,95 @@ Q2 asks the paper's headline benchmark-design question: under one fixed deployed
 \label{tab:event-micro-selection-drift-main}
 \end{table}
 
-\begin{table}[!b]
+A complementary Traffic-Hourly fixed-budget alert family shows the same benchmark consequence under a different forecasting-native task structure. In the selected Top-k setting ($k=249$), Reactive short is both the forecast-side winner and the deployed winner at zero friction, with exact agreement $1.0$. Once switching costs are introduced, however, the forecast-side winner remains Reactive short while the deployed winner shifts to Lagged smoother, and deployed-suboptimality reaches $100/100$ seeds at both friction $0.5$ and friction $1.0$. A relative-rank Traffic variant shows the same qualitative pattern in the appendix.
+
+Inventory provides operational corroboration with stronger recurrence magnitudes. Inventory has a mixed zero/low-friction regime, so we use it only as operational corroboration for the moderate-to-high friction rows. By friction $0.5$, the forecast-selected model is deployed-suboptimal in $9/10$ seeds and agreement falls to $0.10$; at friction $1.0$, deployed suboptimality rises to $10/10$ seeds with mean and median deployed gaps of $1.187$ and $1.162$. Thus the practical issue is not merely that rankings drift, but that model choice under a fixed deployed rule becomes repeatedly wrong at moderate-to-high friction.
+
+\begin{table}[H]
 \centering
 \scriptsize
 \setlength{\tabcolsep}{2.5pt}
-\resizebox{\columnwidth}{!}{\input{results/table_q2_selection_drift_inventory.tex}}
-\caption{Operational corroboration under a fixed replenishment interface.}
-\label{tab:q2-selection-drift}
+\resizebox{\columnwidth}{!}{\input{results/table_q2_corroboration_compact.tex}}
+\caption{Compact corroboration across a complementary Traffic-Hourly alert family and the moderate-to-high friction inventory rows.}
+\label{tab:q2-corroboration-compact}
 \end{table}
-
-The event-micro table provides the main forecasting-native evidence. In a minimal event-micro benchmark evaluated over 100 seeds, agreement is highest at zero friction ($0.62$), falls to $0.31$ by $0.50$, and reaches $0.01$ at $1.00$. Over the same rows, the deployed winner shifts from Reactive sharp to Calibrated baseline and then Lagged smoother, while deployed-suboptimality reaches $69/100$ seeds at $0.50$ and $99/100$ at $1.00$. The event-micro pattern persists under an alternate threshold, under a hysteresis-threshold interface, and when forecast-side ranking is recomputed with log loss.
-
-A complementary Traffic-Hourly fixed-budget alert family shows the same benchmark consequence under a different forecasting-native task structure. In the selected Top-k setting ($k=249$), Reactive short is both the forecast-side winner and the deployed winner at zero friction, with exact agreement $1.0$. Once switching costs are introduced, however, the forecast-side winner remains Reactive short while the deployed winner shifts to Lagged smoother, and mean deployed gaps rise to about $7.0$ at friction $0.5$ and $24.7$ at friction $1.0$. A relative-rank Traffic variant shows the same qualitative pattern in the appendix.
-
-The inventory table provides operational corroboration with stronger recurrence magnitudes. The friction $0.25$ row is best read as a transition regime: the most frequent deployed winner changes to Linear AR, yet agreement remains $0.70$, deployed suboptimality remains $3/10$, and the median deployed gap remains $0.0$. By friction $0.5$, however, benchmark failure is already recurrent: the forecast-selected model is deployed-suboptimal in $9/10$ seeds, agreement falls to $0.10$, and the median deployed gap reaches $0.227$. At friction $1.0$, deployed suboptimality rises to $10/10$ seeds, with mean and median deployed gaps of $1.187$ and $1.162$. Thus the practical issue is not merely that rankings drift, but that model choice under a fixed deployed rule becomes repeatedly wrong at moderate-to-high friction.
 
 An appendix-only load-following check remains directionally consistent but retains a mixed zero row, so we do not use it as headline corroboration in the main text (Appendix~\ref{app:load-following}).
 
 Appendix Tables~\ref{tab:q2-recurrence-tests}--\ref{tab:q2-gap-bootstrap-cis} and Figures~\ref{fig:q2-uncertainty}--\ref{fig:q2-seed-recurrence} support the interpretation that the main moderate/high-friction patterns, especially in event-micro and inventory, are not driven solely by isolated seed noise.
 
-Appendix Tables~\ref{tab:q2-stronger-protocol}--\ref{tab:q2-stronger-robustness} widen the inventory comparison set under a stricter standardized package gate. That broader-family sweep strengthens moderate/high-friction mismatch, but the zero- and low-friction rows remain too mixed for headline use and therefore do not overturn the narrower main claim from the locked five-family table.
+Appendix Tables~\ref{tab:q2-stronger-protocol}--\ref{tab:q2-stronger-robustness} widen the inventory comparison set under a standardized expanded comparison. That broader-family sweep strengthens moderate/high-friction mismatch, but the zero- and low-friction rows remain too mixed for main-text use and therefore do not overturn the narrower five-family claim.
+
+\setcounter{figure}{0}
+\begin{figure}[H]
+\centering
+\resizebox{0.9\columnwidth}{!}{%
+\begin{tikzpicture}[
+  node distance=4.5mm,
+  box/.style={draw, rounded corners, minimum width=1.65cm, minimum height=0.95cm, align=center, font=\footnotesize, fill=gray!7},
+  qbox/.style={draw, rounded corners, align=center, font=\scriptsize, fill=orange!10},
+  arr/.style={-{Latex[length=2.5mm]}, thick}
+]
+\node[box] (forecast) {Forecast};
+\node[box, right=4.5mm of forecast] (target) {Proposed action};
+\node[box, right=4.5mm of target] (iface) {Fixed interface};
+\node[box, right=4.5mm of iface] (exec) {Executed action};
+\node[box, right=4.5mm of exec] (metrics) {Realized score};
+
+\draw[arr] (forecast) -- (target);
+\draw[arr] (target) -- (iface);
+\draw[arr] (iface) -- (exec);
+\draw[arr] (exec) -- (metrics);
+
+\node[qbox, below=4.5mm of target, minimum width=2.35cm] (q1) {Q1: same proposal,\\different interface};
+\node[qbox, below=4.5mm of exec, minimum width=2.35cm] (q2) {Q2: fixed interface,\\different forecasts};
+\end{tikzpicture}
+}
+\caption{Forecast-to-decision evaluation setup. Forecasts are converted into proposed actions and then executed through a fixed frictional interface. Q2, the paper's main question, asks whether forecast-side model ranking matches deployed model ranking under one fixed interface. Q1 is used only as mechanism support.}
+\label{fig:conceptual}
+\end{figure}
 
 \paragraph{Q1 mechanism support.} Q1 is mechanism support rather than the paper's claim. Holding the proposed action path fixed, synthetic and inventory show that frictional interfaces can separate proposed and realized actions: synthetic yields an increasing proposal-versus-realization gap away from zero friction, while inventory shows a threshold pattern in which sufficiently high friction favors tempered execution. This explains why forecast-side, target-side, and realized-action evaluation can diverge; Q2 shows when that divergence becomes deployed misselection.
 
-\section{Discussion and Limitations}
+\section{Discussion, Related Work, and Limitations}
 
-The paper's practical claim is narrow: forecast-side metrics may remain valid for prediction, yet under a fixed deployed interface they need not be sufficient for deployed model selection. Event-micro provides the main forecasting-native Q2 evidence, inventory provides the main operational corroboration, and Q1 explains why the evaluation object can change under friction. Beyond the minimal event-micro setting, a complementary Traffic-Hourly fixed-budget alert family shows the same qualitative separation between forecast-optimal and deployment-optimal model selection once switching costs are introduced.
+The paper's practical claim is narrow: forecast-side metrics may remain valid for prediction, yet under a fixed deployed interface they may be insufficient for deployed model selection. Event-micro provides the main forecasting-native Q2 evidence, Traffic-Hourly provides a complementary forecasting-native family under the same fixed-interface question, inventory provides operational corroboration, and Q1 explains why the evaluation object can change under friction.
 
-Three limitations bound the claim. Forecasting-native Q2 evidence now spans more than one task family, though it is still not a broad benchmark suite. Inventory anchors the paper's operational corroboration, while load-following remains appendix-only secondary corroboration because its zero row stays mixed even after grouping repair. In the expanded-family inventory sweep, moderate/high-friction mismatch strengthens but zero- and low-friction rows remain mixed, so we do not use that stricter-gate transparency block as main-text confirmation.
+Forecasting benchmarks and leaderboards typically emphasize forecast-side accuracy, calibration, or live question resolution rather than fixed-interface deployed model selection \cite{forecastbench,prophetarena,gifteval}. Recent efforts such as ForecastBench, Prophet Arena, and GIFT-Eval broaden forecasting evaluation through dynamic, live, or zero-shot benchmark design \cite{forecastbench,prophetarena,gifteval}. Our question is complementary: under one fixed operational interface, does the forecast-side winner remain the deployed-best model? Our contribution is evaluative rather than algorithmic: we do not learn a policy or modify the training objective. We contrast with decision-focused learning and control-oriented formulations only to clarify scope: we do not optimize a policy or modify training objectives. Unlike task-based and smart predict-then-optimize methods that change training to improve downstream decisions \cite{donti2017task,elmachtoub2021spo}, we keep training fixed and study the evaluation object used for model selection.
 
-The resulting implication is evaluative rather than predictive: forecasting systems under deployment constraints should be judged with realized-action-aware criteria rather than forecast-side quantities alone.
+Three limitations bound the claim. Forecasting-native Q2 evidence now spans more than one task family, though it is still not a broad benchmark suite. Inventory remains corroborative because its zero/low-friction regime is mixed, while load-following remains appendix-only secondary corroboration for the same reason. In the expanded-family inventory sweep, moderate/high-friction mismatch strengthens but zero- and low-friction rows remain mixed, so we do not use that broader comparison as main-text confirmation.
+
+The resulting implication is evaluative rather than predictive: forecasting benchmarks aimed at deployment may benefit from reporting deployed-selection robustness alongside forecast-side metrics.
+
+\begingroup
+\small
+\begin{thebibliography}{9}
+\bibitem{forecastbench}
+E. Karger, H. Bastani, C. Yueh-Han, Z. Jacobs, D. Halawi, F. Zhang, and P. E. Tetlock.
+\newblock ForecastBench: A Dynamic Benchmark of AI Forecasting Capabilities.
+\newblock In \emph{ICLR}, 2025. arXiv:2409.19839.
+
+\bibitem{prophetarena}
+Q. Yang, S. Mahns, S. Li, A. Gu, J. Wu, and H. Xu.
+\newblock LLM-as-a-Prophet: Understanding Predictive Intelligence with Prophet Arena.
+\newblock arXiv:2510.17638, 2025.
+
+\bibitem{gifteval}
+T. Aksu, G. Woo, J. Liu, X. Liu, C. Liu, S. Savarese, C. Xiong, and D. Sahoo.
+\newblock GIFT-Eval: A Benchmark for General Time Series Forecasting Model Evaluation.
+\newblock NeurIPS Workshop on Time Series in the Age of Large Models, 2024. Extended version: arXiv:2410.10393.
+
+\bibitem{donti2017task}
+P. L. Donti, B. Amos, and J. Zico Kolter.
+\newblock Task-based End-to-end Model Learning in Stochastic Optimization.
+\newblock In \emph{NeurIPS}, 2017. arXiv:1703.04529.
+
+\bibitem{elmachtoub2021spo}
+A. N. Elmachtoub and P. Grigas.
+\newblock Smart ``Predict, then Optimize''.
+\newblock \emph{Management Science}, 68(1):9--26, 2022.
+\end{thebibliography}
+\endgroup
 
 \appendix
 \setcounter{figure}{0}
@@ -167,24 +201,24 @@ The resulting implication is evaluative rather than predictive: forecasting syst
 \begin{figure}[H]
 \centering
 \includegraphics[width=\columnwidth]{assets/figures/fig_q1_results_v2.pdf}
-\caption{Appendix Q1 mechanism support. Synthetic yields exact zero-friction coincidence and a rising positive-friction proposal-versus-realization gap, while inventory shows a threshold pattern in which sufficiently high friction favors tempered execution. The figure explains why Q2 divergence can arise but is not itself the paper's headline evidence.}
+\caption{Appendix Q1 mechanism support. Synthetic yields exact zero-friction coincidence and a rising positive-friction proposal-versus-realization gap, while inventory shows a threshold pattern in which sufficiently high friction favors tempered execution. The figure explains why Q2 divergence can arise but is not itself the paper's main evidence.}
 \label{fig:q1-required}
 \end{figure}
 
-\section{Additional Q2 Package Details}
+\section{Additional Q2 Reliability Checks}
 
-This appendix collects the cross-domain seed-level reliability checks and a stricter same-interface package-gate transparency layer after the fifth inventory baseline is added. These appendix-only additions do not overturn the narrower main claim from the locked five-family inventory table.
+This appendix collects the cross-domain seed-level reliability checks and the expanded same-interface inventory comparison. These appendix-only additions do not overturn the narrower main claim from the five-family inventory comparison summarized in the main text.
 
 \begin{table*}[t]
 \centering
 \small
 \setlength{\tabcolsep}{3pt}
 \input{results/table_step5_same_interface_summary.tex}
-\caption{Stricter same-interface package-gate summary for the appendix transparency layer. These statuses do not overturn the narrower main-text claim from the locked five-family inventory table.}
+\caption{Expanded same-interface inventory comparison summary retained for appendix transparency. These statuses do not overturn the narrower main-text claim from the five-family inventory comparison.}
 \label{tab:step5-package}
 \end{table*}
 
-The same locked Q2 package also admits simple seed-level reliability checks. Table~\ref{tab:q2-recurrence-tests} reports one-sided exact binomial tests for whether the forecast-selected model is deployed-suboptimal in a majority of seeds in the main recurrence rows. Table~\ref{tab:q2-gap-bootstrap-cis} reports 95\% bootstrap intervals for the deployed-gap rows. Figure~\ref{fig:q2-uncertainty} adds uncertainty bands for the synthetic and event-micro Q2 curves, while Figure~\ref{fig:q2-seed-recurrence} shows seed-level disagreement strips for the main Q2 domains.
+The same Q2 package also admits simple seed-level reliability checks. Table~\ref{tab:q2-recurrence-tests} reports one-sided exact binomial tests for whether the forecast-selected model is deployed-suboptimal in a majority of seeds in the main recurrence rows. Table~\ref{tab:q2-gap-bootstrap-cis} reports 95\% bootstrap intervals for the deployed-gap rows. Figure~\ref{fig:q2-uncertainty} adds uncertainty bands for the synthetic and event-micro Q2 curves, while Figure~\ref{fig:q2-seed-recurrence} shows seed-level disagreement strips for the main Q2 domains.
 
 \begin{table}[H]
 \centering
@@ -324,10 +358,23 @@ In the selected Top-k setting, Reactive short is the forecast-side winner and th
 
 The relative-rank target shows the same qualitative separation under a different forecasting-native label construction. Reactive short remains the forecast-side winner, while Calibrated baseline becomes the deployed winner once switching costs are introduced, so we retain this variant as appendix-only forecasting-native support. The alternate $m=0.15$ variant is also strong in the full report but is omitted from the compact table to keep the appendix narrow.
 
+\section{Inventory Operational Corroboration}
+\label{app:inventory-corroboration}
+
+This appendix records the full five-family inventory summary that underlies the compact corroboration rows in the main text. The mixed zero and low-friction rows are retained here for completeness, while the main text uses only the moderate-to-high friction rows to avoid overstating the zero-friction story.
+
+\begin{table}[H]
+\centering
+\scriptsize
+\resizebox{\columnwidth}{!}{\input{results/table_q2_selection_drift_inventory.tex}}
+\caption{Full inventory Q2 summary retained as appendix corroboration under a fixed replenishment interface.}
+\label{tab:inventory-selection-drift-appendix}
+\end{table}
+
 \section{Load-Following as a Second Operational Corroboration Domain}
 \label{app:load-following}
 
-We retain a second operational forecasting domain based on aggregated electricity load-following only as appendix-only secondary corroboration. Forecasts are translated into operational actions under a fixed responsive interface, so this section follows the event-micro robustness package as a diagnostic appendix support block rather than as additional headline evidence. Using UCI ElectricityLoadDiagrams20112014, we build an aggregate multi-client load-following domain by summing disjoint client groups and evaluating at the selected 60-minute operational resolution. Groups 0 and 1 are used only for restricted calibration, while groups 2--9 serve as held-out evaluation units, so this appendix replaces the earlier household proxy with a stronger cross-sectional operational design.
+We retain a second operational forecasting domain based on aggregated electricity load-following only as appendix-only secondary corroboration. Forecasts are translated into operational actions under a fixed responsive interface, so this section follows the event-micro robustness package as a diagnostic appendix support block rather than as additional main evidence. Using UCI ElectricityLoadDiagrams20112014, we build an aggregate multi-client load-following domain by summing disjoint client groups and evaluating at the selected 60-minute operational resolution. Groups 0 and 1 are used only for restricted calibration, while groups 2--9 serve as held-out evaluation units, so this appendix replaces the earlier household proxy with a stronger cross-sectional operational design.
 
 A grouping-only balance-repair rerun substantially reduces group imbalance and Q1 target clipping while preserving the Q2 drift structure. A final restricted cap/margin search, however, finds no jointly feasible configuration that also satisfies the remaining Q1 requirement, so the domain remains appendix-only secondary corroboration rather than additional Q1 promotion evidence.
 
@@ -339,14 +386,14 @@ A grouping-only balance-repair rerun substantially reduces group imbalance and Q
 \label{tab:load-following-support}
 \end{table}
 
-This mixed zero row is not a tie-policy artifact: the zero-row winning sets are singletons in all seeds, yet the locked candidate still shows $3/10$ zero-friction mismatches with mean deployed gap $0.0002$ and median gap $0.0$. The grouping-only balance repair lowers the zero-row mean gap to about $0.0001$ but does not remove the mismatch, so the most plausible reading is near-zero seed instability or grouping granularity rather than a clean zero-friction story.
+This mixed zero row is not a tie-policy artifact: the zero-row winning sets are singletons in all seeds, yet the selected candidate still shows $3/10$ zero-friction mismatches with mean deployed gap $0.0002$ and median gap $0.0$. The grouping-only balance repair lowers the zero-row mean gap to about $0.0001$ but does not remove the mismatch, so the most plausible reading is near-zero seed instability or grouping granularity rather than a clean zero-friction story.
 
-From friction $0.25$ onward, the forecast-side winner remains Linear AR while the deployed winner is Small MLP, agreement stays at $0.30$, $0.30$, and $0.20$, and deployed-suboptimal counts rise to $7/10$, $7/10$, and $8/10$. The domain therefore contributes directionally consistent secondary corroboration only; it does not serve as headline evidence or as additional Q1 promotion evidence in the current round.
+From friction $0.25$ onward, the forecast-side winner remains Linear AR while the deployed winner is Small MLP, agreement stays at $0.30$, $0.30$, and $0.20$, and deployed-suboptimal counts rise to $7/10$, $7/10$, and $8/10$. The domain therefore contributes directionally consistent secondary corroboration only; it does not serve as main evidence or as additional Q1 promotion evidence in the current round.
 
 \section{Stronger Inventory Q2 Baselines}
 \label{app:stronger-inventory-q2}
 
-To reduce baseline-specification ambiguity, we widen the inventory Q2 comparison set with stronger classical and neural families while leaving the environment, split, friction grid, fixed responsive interface, deployed metric, and tie policy unchanged. This later appendix section is included as a stricter-gate transparency layer rather than as earlier or stronger headline evidence than the locked five-family inventory table. All tunable families share the same held-out protocol, validation criterion, and standardized two-stage tuning structure, while the two simple heuristics remain fixed ex ante. Family representatives are selected by validation negative MAE only, and the held-out forecast-side winners in the robustness table are then computed from the same held-out forecast metric used in the locked inventory Q2 pipeline.
+To reduce baseline-specification ambiguity, we widen the inventory Q2 comparison set with stronger classical and neural families while leaving the environment, split, friction grid, fixed responsive interface, deployed metric, and tie policy unchanged. This appendix section is included as a broader transparency layer rather than as earlier or stronger main evidence than the five-family inventory comparison. All tunable families share the same held-out protocol, validation criterion, and standardized two-stage tuning structure, while the two simple heuristics remain fixed ex ante. Family representatives are selected by validation negative MAE only, and the held-out forecast-side winners in the robustness table are then computed from the same held-out forecast metric used in the main inventory Q2 pipeline.
 
 \begin{table*}[t]
 \centering
@@ -374,7 +421,7 @@ To reduce baseline-specification ambiguity, we widen the inventory Q2 comparison
 \label{tab:q2-stronger-robustness}
 \end{table}
 
-In this broader comparison, agreement is mixed at $0.00$ and $0.25$, falls further by $0.50$ and $1.00$, deployed-suboptimal counts rise from $4/10$ to $9/10$, and moderate/high-friction mismatch strengthens. Because this block uses the stricter package gate, the mixed zero/low-friction rows do not overturn the narrower main claim from the locked five-family table.
+In this broader comparison, agreement is mixed at $0.00$ and $0.25$, falls further by $0.50$ and $1.00$, deployed-suboptimal counts rise from $4/10$ to $9/10$, and moderate/high-friction mismatch strengthens. The mixed zero/low-friction rows do not overturn the narrower main claim from the five-family inventory comparison.
 
 \section{Why Forecast Ordering Need Not Be Preserved}
 

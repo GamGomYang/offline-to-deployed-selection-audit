@@ -117,58 +117,85 @@ def build_q1_figure(step2_q1: pd.DataFrame, step4_q1: pd.DataFrame, output_path:
 
 
 def build_q2_figure(
-    step2_rank_corr: pd.DataFrame,
-    event_rank_corr: pd.DataFrame,
-    step2_selection: pd.DataFrame,
-    event_selection: pd.DataFrame,
     output_path: Path,
 ) -> None:
-    fig, axes = plt.subplots(1, 2, figsize=(6.8, 2.6), constrained_layout=True)
+    domains = [
+        "Event-micro",
+        "Traffic-Hourly\nTop-k",
+        "Inventory",
+    ]
+    frictions = ["0.00", "0.50", "1.00"]
+    winners = [
+        [
+            ("Reactive sharp", "Reactive sharp"),
+            ("Reactive sharp", "Calibrated baseline"),
+            ("Reactive sharp", "Lagged smoother"),
+        ],
+        [
+            ("Reactive short", "Reactive short"),
+            ("Reactive short", "Lagged smoother"),
+            ("Reactive short", "Lagged smoother"),
+        ],
+        [
+            ("Small MLP", "Small MLP"),
+            ("Small MLP", "Moving average (7)"),
+            ("Small MLP", "Moving average (7)"),
+        ],
+    ]
 
-    axes[0].plot(
-        step2_rank_corr["friction_level"],
-        step2_rank_corr["mean_flip_rate"],
-        color="#1f77b4",
-        marker="o",
-        linewidth=2.0,
-        label="Synthetic",
-    )
-    axes[0].plot(
-        event_rank_corr["friction_level"],
-        event_rank_corr["mean_flip_rate"],
-        color="#d62728",
-        marker="s",
-        linewidth=2.0,
-        label="Event micro",
-    )
-    axes[0].set_title("Ranking disagreement")
-    axes[0].set_xlabel("Friction")
-    axes[0].set_ylabel("Mean flip rate")
-    axes[0].grid(alpha=0.25, linewidth=0.6)
-    axes[0].legend(frameon=False, fontsize=8, loc="upper left")
+    same_color = "#d7f0d0"
+    mismatch_color = "#f7d8bf"
+    edge_color = "#4c4c4c"
+    fig, ax = plt.subplots(figsize=(6.8, 3.4), constrained_layout=True)
 
-    axes[1].plot(
-        step2_selection["friction_level"],
-        step2_selection["disagreement_rate"],
-        color="#1f77b4",
-        marker="o",
-        linewidth=2.0,
-        label="Synthetic",
+    for row_idx, row in enumerate(winners):
+        for col_idx, (forecast_winner, deployed_winner) in enumerate(row):
+            same = forecast_winner == deployed_winner
+            rect = plt.Rectangle(
+                (col_idx, row_idx),
+                1.0,
+                1.0,
+                facecolor=same_color if same else mismatch_color,
+                edgecolor=edge_color,
+                linewidth=1.2,
+            )
+            ax.add_patch(rect)
+            ax.text(
+                col_idx + 0.5,
+                row_idx + 0.5,
+                f"F: {forecast_winner}\nD: {deployed_winner}",
+                ha="center",
+                va="center",
+                fontsize=8,
+                color="#1f1f1f",
+            )
+
+    ax.set_xlim(0, len(frictions))
+    ax.set_ylim(0, len(domains))
+    ax.invert_yaxis()
+    ax.set_xticks([idx + 0.5 for idx in range(len(frictions))], frictions)
+    ax.set_yticks([idx + 0.5 for idx in range(len(domains))], domains)
+    ax.tick_params(length=0)
+    ax.xaxis.tick_top()
+    ax.set_title("Fixed-interface winner inversion", fontsize=11, pad=18)
+    ax.set_xlabel("Friction", fontsize=9)
+    ax.xaxis.set_label_position("top")
+
+    for spine in ax.spines.values():
+        spine.set_visible(False)
+
+    legend_handles = [
+        plt.Rectangle((0, 0), 1, 1, facecolor=same_color, edgecolor=edge_color, linewidth=1.0, label="Forecast winner = deployed winner"),
+        plt.Rectangle((0, 0), 1, 1, facecolor=mismatch_color, edgecolor=edge_color, linewidth=1.0, label="Forecast winner != deployed winner"),
+    ]
+    ax.legend(
+        handles=legend_handles,
+        frameon=False,
+        fontsize=8,
+        loc="lower center",
+        bbox_to_anchor=(0.5, -0.18),
+        ncol=2,
     )
-    axes[1].plot(
-        event_selection["friction_level"],
-        event_selection["disagreement_rate"],
-        color="#d62728",
-        marker="s",
-        linewidth=2.0,
-        label="Event micro",
-    )
-    axes[1].set_title("Deployed-suboptimal share")
-    axes[1].set_xlabel("Friction")
-    axes[1].set_ylabel("Forecast-selected not deployed-best")
-    axes[1].set_ylim(-0.02, 1.02)
-    axes[1].grid(alpha=0.25, linewidth=0.6)
-    axes[1].legend(frameon=False, fontsize=8, loc="upper left")
 
     fig.savefig(output_path, bbox_inches="tight")
     plt.close(fig)
@@ -179,15 +206,16 @@ def main() -> int:
     output_dir = Path(args.output_dir).resolve()
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    step2_q1 = pd.read_csv(Path(args.step2_q1))
-    step4_q1 = pd.read_csv(Path(args.step4_q1))
-    step2_rank_corr = _load_rank_corr(Path(args.step2_q2_raw), domain="synthetic", expected_interface_id="tempered")
-    event_rank_corr = _load_rank_corr(Path(args.event_micro_q2_raw), domain="event_micro", expected_interface_id="fixed_threshold")
-    step2_selection = _load_selection_summary(Path(args.step2_q2_raw), domain="synthetic", expected_interface_id="tempered")
-    event_selection = _load_selection_summary(Path(args.event_micro_q2_raw), domain="event_micro", expected_interface_id="fixed_threshold")
+    step2_q1_path = Path(args.step2_q1)
+    step4_q1_path = Path(args.step4_q1)
+    if step2_q1_path.exists() and step4_q1_path.exists():
+        step2_q1 = pd.read_csv(step2_q1_path)
+        step4_q1 = pd.read_csv(step4_q1_path)
+        build_q1_figure(step2_q1, step4_q1, output_dir / "fig_q1_results_v2.pdf")
+    else:
+        print("Skipping Q1 figure rebuild because the default Q1 CSV inputs are not available.")
 
-    build_q1_figure(step2_q1, step4_q1, output_dir / "fig_q1_results_v2.pdf")
-    build_q2_figure(step2_rank_corr, event_rank_corr, step2_selection, event_selection, output_dir / "fig_q2_results_v2.pdf")
+    build_q2_figure(output_dir / "fig_q2_results_v2.png")
     return 0
 
 
