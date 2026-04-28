@@ -2,7 +2,11 @@
 from __future__ import annotations
 
 import argparse
+import shutil
+import subprocess
 import sys
+import tempfile
+import textwrap
 from pathlib import Path
 
 import matplotlib
@@ -38,25 +42,6 @@ def parse_args() -> argparse.Namespace:
             / "inventory_v2_seed_stability_q1_friction_threshold_summary.csv"
         ),
         help="Step 4 inventory Q1 threshold summary CSV.",
-    )
-    parser.add_argument(
-        "--step2-q2-raw",
-        default=str(REPO_ROOT / "outputs" / "forecast_eval" / "synthetic_step2_candidate_lock" / "q2_diff_forecasts_same_interface.csv"),
-        help="Step 2 synthetic raw Q2 CSV.",
-    )
-    parser.add_argument(
-        "--event-micro-q2-raw",
-        default=str(
-            REPO_ROOT
-            / "outputs"
-            / "extensions"
-            / "revision_round_20260423"
-            / "new_reruns"
-            / "event_micro_hardening"
-            / "fixed_threshold_tau055_seed100"
-            / "q2_diff_forecasts_same_interface.csv"
-        ),
-        help="Event-micro raw Q2 CSV.",
     )
     parser.add_argument(
         "--output-dir",
@@ -116,62 +101,80 @@ def build_q1_figure(step2_q1: pd.DataFrame, step4_q1: pd.DataFrame, output_path:
     plt.close(fig)
 
 
-def build_q2_figure(
-    step2_rank_corr: pd.DataFrame,
-    event_rank_corr: pd.DataFrame,
-    step2_selection: pd.DataFrame,
-    event_selection: pd.DataFrame,
-    output_path: Path,
-) -> None:
-    fig, axes = plt.subplots(1, 2, figsize=(6.8, 2.6), constrained_layout=True)
+def build_q2_figure(output_path: Path) -> None:
+    latex_source = textwrap.dedent(
+        r"""
+        \documentclass[varwidth,border=3pt]{standalone}
+        \usepackage[T1]{fontenc}
+        \usepackage{times}
+        \usepackage[table]{xcolor}
+        \usepackage{array}
+        \renewcommand{\arraystretch}{1.28}
+        \setlength{\tabcolsep}{3.5pt}
+        \definecolor{agreebg}{HTML}{EDF7E8}
+        \definecolor{shiftbg}{HTML}{FBE9DC}
+        \definecolor{mixedbg}{HTML}{ECECEC}
+        \newcommand{\winnercell}[3]{\cellcolor{#1}{\scriptsize\shortstack[c]{\textbf{#2}\\#3}}}
+        \newcommand{\winnerlabel}[2]{\shortstack[l]{\small\textbf{#1}\\{\scriptsize #2}}}
+        \begin{document}
+        \sffamily
+        \begin{tabular}{@{}>{\raggedright\arraybackslash}m{2.45cm}>{\centering\arraybackslash}m{2.05cm}>{\centering\arraybackslash}m{2.05cm}>{\centering\arraybackslash}m{2.05cm}@{}}
+        & \multicolumn{3}{c}{\textbf{Friction}} \\
+        \cline{2-4}
+        & \textbf{0.00} & \textbf{0.50} & \textbf{1.00} \\
+        \winnerlabel{Event-micro}{R-sharp}
+          & \winnercell{agreebg}{= R-sharp}{38/100}
+          & \winnercell{shiftbg}{$\neq$ Calib.}{69/100}
+          & \winnercell{shiftbg}{$\neq$ Smooth}{99/100} \\
+        [2pt]
+        \shortstack[l]{\small\textbf{Traffic-Hourly}\\\small\textbf{Top-k}\\{\scriptsize R-short}}
+          & \winnercell{agreebg}{= R-short}{0/100}
+          & \winnercell{shiftbg}{$\neq$ Smooth}{100/100}
+          & \winnercell{shiftbg}{$\neq$ Smooth}{100/100} \\
+        [2pt]
+        \winnerlabel{Inventory}{S-MLP}
+          & \winnercell{mixedbg}{mixed}{appx.}
+          & \winnercell{shiftbg}{$\neq$ MA(7)}{9/10}
+          & \winnercell{shiftbg}{$\neq$ MA(7)}{10/10} \\
+        \end{tabular}
 
-    axes[0].plot(
-        step2_rank_corr["friction_level"],
-        step2_rank_corr["mean_flip_rate"],
-        color="#1f77b4",
-        marker="o",
-        linewidth=2.0,
-        label="Synthetic",
-    )
-    axes[0].plot(
-        event_rank_corr["friction_level"],
-        event_rank_corr["mean_flip_rate"],
-        color="#d62728",
-        marker="s",
-        linewidth=2.0,
-        label="Event micro",
-    )
-    axes[0].set_title("Ranking disagreement")
-    axes[0].set_xlabel("Friction")
-    axes[0].set_ylabel("Mean flip rate")
-    axes[0].grid(alpha=0.25, linewidth=0.6)
-    axes[0].legend(frameon=False, fontsize=8, loc="upper left")
+        \vspace{3pt}
 
-    axes[1].plot(
-        step2_selection["friction_level"],
-        step2_selection["disagreement_rate"],
-        color="#1f77b4",
-        marker="o",
-        linewidth=2.0,
-        label="Synthetic",
-    )
-    axes[1].plot(
-        event_selection["friction_level"],
-        event_selection["disagreement_rate"],
-        color="#d62728",
-        marker="s",
-        linewidth=2.0,
-        label="Event micro",
-    )
-    axes[1].set_title("Deployed-suboptimal share")
-    axes[1].set_xlabel("Friction")
-    axes[1].set_ylabel("Forecast-selected not deployed-best")
-    axes[1].set_ylim(-0.02, 1.02)
-    axes[1].grid(alpha=0.25, linewidth=0.6)
-    axes[1].legend(frameon=False, fontsize=8, loc="upper left")
+        {\scriptsize $\mathbf{=}$ agree \hspace{1.2em} $\mathbf{\neq}$ mismatch \hspace{1.2em} grey = mixed}
+        \end{document}
+        """
+    ).strip()
 
-    fig.savefig(output_path, bbox_inches="tight")
-    plt.close(fig)
+    with tempfile.TemporaryDirectory(prefix="q2_winner_matrix_") as tmp_dir_str:
+        tmp_dir = Path(tmp_dir_str)
+        tex_path = tmp_dir / "fig_q2_winner_inversion_heatmap_v2.tex"
+        pdf_path = tmp_dir / "fig_q2_winner_inversion_heatmap_v2.pdf"
+        tex_path.write_text(latex_source, encoding="utf-8")
+
+        cmd = [
+            "pdflatex",
+            "-interaction=nonstopmode",
+            "-halt-on-error",
+            "-output-directory",
+            str(tmp_dir),
+            str(tex_path),
+        ]
+        result = subprocess.run(
+            cmd,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            check=False,
+        )
+        if result.returncode != 0 or not pdf_path.exists():
+            raise RuntimeError(
+                "Failed to build fig_q2_winner_inversion_heatmap_v2.pdf via pdflatex.\n"
+                f"STDOUT:\n{result.stdout}\nSTDERR:\n{result.stderr}"
+            )
+
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(pdf_path, output_path)
 
 
 def main() -> int:
@@ -179,15 +182,19 @@ def main() -> int:
     output_dir = Path(args.output_dir).resolve()
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    step2_q1 = pd.read_csv(Path(args.step2_q1))
-    step4_q1 = pd.read_csv(Path(args.step4_q1))
-    step2_rank_corr = _load_rank_corr(Path(args.step2_q2_raw), domain="synthetic", expected_interface_id="tempered")
-    event_rank_corr = _load_rank_corr(Path(args.event_micro_q2_raw), domain="event_micro", expected_interface_id="fixed_threshold")
-    step2_selection = _load_selection_summary(Path(args.step2_q2_raw), domain="synthetic", expected_interface_id="tempered")
-    event_selection = _load_selection_summary(Path(args.event_micro_q2_raw), domain="event_micro", expected_interface_id="fixed_threshold")
+    step2_q1_path = Path(args.step2_q1)
+    step4_q1_path = Path(args.step4_q1)
+    q1_output_path = output_dir / "fig_q1_results_v2.pdf"
+    if q1_output_path.exists():
+        print("Retaining existing Q1 figure asset.")
+    elif step2_q1_path.exists() and step4_q1_path.exists():
+        step2_q1 = pd.read_csv(step2_q1_path)
+        step4_q1 = pd.read_csv(step4_q1_path)
+        build_q1_figure(step2_q1, step4_q1, q1_output_path)
+    else:
+        print("Skipping Q1 figure rebuild because the default Q1 CSV inputs are not available.")
 
-    build_q1_figure(step2_q1, step4_q1, output_dir / "fig_q1_results_v2.pdf")
-    build_q2_figure(step2_rank_corr, event_rank_corr, step2_selection, event_selection, output_dir / "fig_q2_results_v2.pdf")
+    build_q2_figure(output_dir / "fig_q2_winner_inversion_heatmap_v2.pdf")
     return 0
 
 

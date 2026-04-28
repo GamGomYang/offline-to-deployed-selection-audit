@@ -17,6 +17,10 @@ import numpy as np
 import pandas as pd
 from scipy.stats import binomtest
 
+matplotlib.rcParams["pdf.use14corefonts"] = True
+matplotlib.rcParams["ps.useafm"] = True
+matplotlib.rcParams["font.family"] = "serif"
+
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 ROOT = SCRIPT_DIR.parents[1]

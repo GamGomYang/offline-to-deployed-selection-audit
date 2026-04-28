@@ -11,6 +11,10 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import pandas as pd
 
+matplotlib.rcParams["pdf.use14corefonts"] = True
+matplotlib.rcParams["ps.useafm"] = True
+matplotlib.rcParams["font.family"] = "serif"
+
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 REPO_ROOT = SCRIPT_DIR.parents[1]
