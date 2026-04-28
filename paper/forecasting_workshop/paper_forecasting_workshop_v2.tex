@@ -21,7 +21,7 @@
 \setlength{\floatsep}{6pt plus 1pt minus 2pt}
 \setlength{\intextsep}{6pt plus 1pt minus 2pt}
 
-\title{\vspace{-6mm}\textbf{Benchmarking Forecast-Ranking Robustness Under Frictional Deployment}\vspace{-2mm}}
+\title{\vspace{-6mm}\textbf{Benchmarking Forecast Rankings for Deployment-Aware Model Selection}\vspace{-2mm}}
 \author{}
 \date{}
 
@@ -31,7 +31,7 @@
 \maketitle
 \vspace{-6mm}
 \begin{abstract}
-Forecasting benchmarks often rank systems by forecast-side quality. Under frictional deployment, however, forecasts pass through a fixed interface before actions and utility are realized, so the ranking appropriate for prediction need not be the ranking appropriate for deployed model selection. We therefore study Q2 as the main benchmark question---whether forecast-side rankings remain deployed-selection robust under a fixed frictional interface---while using Q1 only as mechanism support for why divergence can arise. Synthetic provides the exact zero-friction sanity anchor; event-micro provides the main forecasting-native evidence, a complementary fixed-budget Traffic-Hourly alert family provides a second forecasting-native task family under the same fixed-interface selection question, and inventory provides the main operational corroboration. Forecast-side metrics may remain valid for prediction, but forecasting systems under frictional deployment interfaces should report deployed-selection robustness, not forecast-side ranking alone.
+Forecasting benchmarks typically rank models by forecast-side metrics. In deployment, however, forecasts are often translated into actions through fixed operational interfaces, and the model preferred by forecast-side evaluation need not be the model that performs best after execution. We study this as a forecasting benchmark question: under a fixed frictional interface, does forecast-side ranking remain reliable for deployed model selection? We focus on Q2, the fixed-interface selection problem, and use Q1 only as mechanism support for why divergence can arise. Across a synthetic zero-friction anchor, a forecasting-native event-micro benchmark, a complementary Traffic-Hourly alert family, and inventory corroboration, we find that forecast-side winners can become recurrently deployed-suboptimal as friction increases. These results do not invalidate forecast-side evaluation for prediction; rather, they suggest that forecasting benchmarks aimed at deployment may need to report deployed-selection robustness alongside forecast-side metrics.
 \end{abstract}
 \vspace{1mm}
 \hrule
@@ -40,13 +40,18 @@ Forecasting benchmarks often rank systems by forecast-side quality. Under fricti
 
 \section{Introduction}
 
-Forecasting benchmarks often evaluate systems by forecast-side quality alone. Under deployment, however, forecasts are translated through fixed interfaces into realized actions and utility. The benchmark-design question is therefore not only whether predictions are accurate, but whether forecast-side ranking remains selection-robust once deployment friction intervenes. A benchmark is unreliable for deployment if the forecast-side winner recurrently fails to be the deployed-best system under the fixed interface that is actually used.
+Forecasting benchmarks typically compare models using forecast-side metrics. This is appropriate when the goal is to measure predictive quality. But many forecasting systems are not used directly: they are deployed through fixed interfaces that translate forecasts into actions under operational frictions such as switching costs, inertia, or execution constraints. In such settings, the model selected by forecast-side evaluation need not be the model that performs best after execution.
 
-We study this issue through two evaluation questions. Q2 is the main benchmark question: under one fixed deployed interface, does ranking systems by forecast quality still identify the system that is best under realized-action evaluation? Q1 is mechanism support only: if a proposed action path is held fixed, can different interfaces produce different realized outcomes? This separation keeps forecast metrics in their proper role as prediction measures while isolating when the deployment-time selection object changes under friction.
+This paper studies that mismatch as a forecasting evaluation problem. Our main question is not how to learn a better policy, but whether forecast-side model ranking remains reliable for deployment-aware model selection under one fixed forecast-to-decision interface. We call this Q2. We separate Q2 from a mechanism question, Q1, which asks whether the same proposed action path can produce different realized outcomes under different interfaces. This separation keeps forecast-side metrics in their role as prediction measures while isolating when the object of model selection changes under deployment friction.
 
 Forecasting benchmark work often evaluates forecast quality, calibration, and live predictive performance. Our question is complementary: whether forecast-side ranking remains trustworthy for deployed model selection under a fixed frictional interface. Unlike decision-aware forecasting or control work, we do not propose new training objectives or policies; we study the evaluation object used for model selection after forecasts are mediated by actions and friction.
 
-This paper makes three narrow contributions. First, it frames deployed-selection robustness as a benchmark-design object for forecasting systems under fixed frictional interfaces. Second, it documents the Q2 failure mode: forecast-side winners can become recurrently deployed-suboptimal at moderate-to-high friction under one fixed interface. Third, it uses Q1 only to explain why forecast-side, target-side, and realized-action evaluation can diverge while keeping forecast-side metrics in their role as valid prediction measures. Evidence comes from a synthetic exact zero-friction sanity anchor, a minimal forecasting-native event-micro benchmark evaluated over 100 seeds, a complementary fixed-budget Traffic-Hourly redesign family, inventory as the main operational corroboration, and load-following retained only as appendix-only secondary corroboration.
+This paper makes three narrow contributions.
+\begin{itemize}[leftmargin=*,noitemsep,topsep=2pt]
+\item First, we introduce deployed-selection robustness as a forecasting benchmark question: whether forecast-side model ranking remains reliable after forecasts are executed through a fixed interface.
+\item Second, we document a Q2 failure mode in which the forecast-side winner becomes recurrently deployed-suboptimal as friction increases under the studied fixed interfaces.
+\item Third, we provide a Q2-first evidence hierarchy with a synthetic zero-friction anchor, forecasting-native event and traffic evidence, and operational corroboration, while using Q1 only to explain why the divergence can arise.
+\end{itemize}
 
 \begin{figure*}[t]
 \centering
@@ -78,13 +83,7 @@ This paper makes three narrow contributions. First, it frames deployed-selection
 
 \section{Two Evaluation Questions}
 
-Let $\hat{y}_t$ denote a forecast, $a_t^{tar}$ a proposed action derived from it, and $a_t^{exec}$ the realized action after a frictional interface is applied. Let $U(a,y)$ denote realized operational utility against the realized outcome $y_t$. We distinguish three evaluation objects: forecast-side quality, target-side decision quality, and realized-action quality. The benchmark question is which of these objects is appropriate for model selection under deployment constraints.
-
-\noindent\textbf{Q1 (same proposal, different interface).} Holding the proposal fixed at $a_{1:T}^{tar}$, we ask whether varying only the interface that maps proposals to realized actions changes realized operational outcomes. This is an exact-control question: proposal identity must be locked, so any downstream difference must arise from the interface rather than from a different forecast or proposal source.
-
-\noindent\textbf{Q2 (fixed interface, different forecasts).} Q2 is the benchmark-selection question. Holding the interface fixed, we ask whether varying the forecaster changes the relationship between forecast-metric ranking and deployed operational ranking. More directly, does ranking systems by forecast quality still identify the system that is best under deployed realized-action evaluation?
-
-These questions are complementary but not interchangeable. Q1 explains why divergence can arise once realized actions depart from proposed targets, while Q2 shows when that divergence becomes a benchmark model-selection failure under a fixed deployed interface. Because the two questions change different parts of the pipeline, evidence for one should not be read as automatic evidence for the other. A short appendix proposition formalizes why forecast-side ordering need not be preserved after frictional execution, even when forecast-side metrics may remain valid for prediction.
+We distinguish three evaluation objects: forecast-side quality, target-side decision quality, and realized-action quality. Forecast-side quality measures predictive performance, target-side decision quality scores the proposed action path before frictional execution, and realized-action quality scores the executed path after the fixed interface is applied. Q1 holds the proposed action path fixed and varies only the interface, so it is an exact-control mechanism check. Q2 holds the interface fixed and varies the forecaster, so it is the benchmark-selection question. Because Q2 asks whether the forecast-side winner remains the deployed winner, Q2 is the paper's main empirical claim.
 
 \section{Evidence Design}
 
