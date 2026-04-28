@@ -115,23 +115,24 @@ def build_q2_figure(output_path: Path) -> None:
         \definecolor{shiftbg}{HTML}{FBE9DC}
         \definecolor{mixedbg}{HTML}{ECECEC}
         \newcommand{\winnercell}[3]{\cellcolor{#1}{\scriptsize\shortstack[c]{\textbf{#2}\\#3}}}
+        \newcommand{\winnerlabel}[2]{\shortstack[l]{\small\textbf{#1}\\{\scriptsize #2}}}
         \begin{document}
         \sffamily
-        \begin{tabular}{@{}>{\raggedright\arraybackslash}m{2.05cm}>{\centering\arraybackslash}m{2.20cm}>{\centering\arraybackslash}m{2.20cm}>{\centering\arraybackslash}m{2.20cm}@{}}
+        \begin{tabular}{@{}>{\raggedright\arraybackslash}m{2.45cm}>{\centering\arraybackslash}m{2.05cm}>{\centering\arraybackslash}m{2.05cm}>{\centering\arraybackslash}m{2.05cm}@{}}
         & \multicolumn{3}{c}{\textbf{Friction}} \\
         \cline{2-4}
         & \textbf{0.00} & \textbf{0.50} & \textbf{1.00} \\
-        \shortstack[l]{\textbf{Event-micro}\\{\scriptsize R-sharp}}
+        \winnerlabel{Event-micro}{R-sharp}
           & \winnercell{agreebg}{= R-sharp}{38/100}
           & \winnercell{shiftbg}{$\neq$ Calib.}{69/100}
           & \winnercell{shiftbg}{$\neq$ Smooth}{99/100} \\
         [2pt]
-        \shortstack[l]{\textbf{Traffic-Hourly}\\\textbf{Top-k}\\{\scriptsize R-short}}
+        \shortstack[l]{\small\textbf{Traffic-Hourly}\\\small\textbf{Top-k}\\{\scriptsize R-short}}
           & \winnercell{agreebg}{= R-short}{0/100}
           & \winnercell{shiftbg}{$\neq$ Smooth}{100/100}
           & \winnercell{shiftbg}{$\neq$ Smooth}{100/100} \\
         [2pt]
-        \shortstack[l]{\textbf{Inventory}\\{\scriptsize S-MLP}}
+        \winnerlabel{Inventory}{S-MLP}
           & \winnercell{mixedbg}{mixed}{appx.}
           & \winnercell{shiftbg}{$\neq$ MA(7)}{9/10}
           & \winnercell{shiftbg}{$\neq$ MA(7)}{10/10} \\
