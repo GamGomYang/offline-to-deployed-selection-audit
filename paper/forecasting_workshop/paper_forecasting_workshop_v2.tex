@@ -39,55 +39,34 @@
 \printAffiliationsAndNotice{}
 
 \begin{abstract}
-Forecasting benchmarks typically rank models by forecast-side metrics. In deployment, however, forecasts are often translated into actions through fixed operational interfaces, and the model preferred by forecast-side evaluation need not be the model that performs best after execution. We study this as a forecasting benchmark question: under a fixed frictional interface, does forecast-side ranking remain reliable for deployed model selection? We focus on Q2, the fixed-interface selection problem, and use Q1 only as mechanism support for why divergence can arise. Across a synthetic zero-friction anchor, a forecasting-native event-micro benchmark, a complementary Traffic-Hourly alert family, and inventory corroboration, we find that forecast-side winners can become recurrently deployed-suboptimal as friction increases. These results do not invalidate forecast-side evaluation for prediction; rather, they suggest that forecasting benchmarks aimed at deployment may need to report deployed-selection robustness alongside forecast-side metrics.
+Forecasting benchmarks commonly rank models by forecast-side metrics, which is appropriate when the benchmark target is predictive quality. In deployed forecasting systems, forecasts are often consumed through a fixed forecast-to-decision interface: a deterministic evaluation rule that maps forecasts into benchmarked deployed outputs before deployed-side scoring. Under switching or deployment friction, the forecast-metric winner may not be the deployed-side winner even when the interface is fixed. We study this as fixed-interface deployed-selection robustness, a deployment-facing evaluation and benchmark/reporting protocol question for forecasting benchmarks. The paper's main question is Q2: whether forecast-side ranking preserves deployed-side model selection under one fixed interface; Q1 is retained only as mechanism support for why divergence can arise. Across a synthetic zero-friction anchor, a forecasting-native event-micro benchmark, a complementary Traffic-Hourly alert family, and inventory corroboration, we find that forecast-side winners can become recurrently deployed-suboptimal as friction increases. These results do not invalidate forecast-side evaluation for prediction; rather, they suggest that forecasting benchmarks aimed at deployment may need to report deployed-selection robustness alongside forecast-side metrics.
 \end{abstract}
 
 \section{Introduction}
 
-Forecasting benchmarks typically compare models using forecast-side metrics. This is appropriate when the goal is to measure predictive quality. But many forecasting systems are not used directly: they are deployed through fixed interfaces that translate forecasts into actions under operational frictions such as switching costs, inertia, or execution constraints. In such settings, the model selected by forecast-side evaluation need not be the model that performs best after execution.
+Forecasting benchmarks typically compare models using forecast-side metrics, and those metrics are the right object when the benchmark asks about predictive quality. Some deployment-facing forecasting evaluations, however, consume forecasts through a fixed forecast-to-decision interface such as a thresholding rule or budgeted alert rule. When that interface includes switching or deployment friction, forecast-side ranking can diverge from deployed-side model selection: the model that wins on the forecast metric need not be the model that performs best after the fixed interface is applied.
 
-This paper studies that mismatch as a forecasting evaluation problem. Our main question is not how to learn a better policy, but whether forecast-side model ranking remains reliable for deployment-aware model selection under one fixed forecast-to-decision interface. We call this Q2. We separate Q2 from a mechanism question, Q1, which asks whether the same proposed action path can produce different realized outcomes under different interfaces. This separation keeps forecast-side metrics in their role as prediction measures while isolating when the object of model selection changes under deployment friction.
+This paper frames the mismatch as a forecasting benchmark/reporting protocol question. Our main empirical question, Q2, asks whether forecast-side ranking remains reliable for deployed-side model selection under one fixed forecast-to-decision interface. We call the corresponding quantity deployed-selection robustness: the extent to which a benchmark's forecast-side winner also remains the deployed-side winner after the fixed interface and friction are applied. Q1 is only mechanism support: it asks how a frictional interface can separate proposed and realized actions when the proposal path is held fixed. This Q2-first framing keeps forecast-side metrics as prediction measures and asks what deployment-facing evaluation should report alongside them.
 
-Forecasting benchmark work often evaluates forecast quality, calibration, and live predictive performance. Our question is complementary: whether forecast-side ranking remains trustworthy for deployed model selection under a fixed frictional interface. Unlike decision-aware forecasting or control work, we do not propose new training objectives or policies; we study the evaluation object used for model selection after forecasts are mediated by actions and friction.
+Forecasting benchmark work often evaluates forecast quality, calibration, and live predictive performance. Our question is complementary: whether forecast-side ranking remains trustworthy for deployed-side model selection under a fixed forecast-to-decision interface. We do not introduce a forecaster or training objective; the contribution is a benchmark/reporting protocol for deployment-facing evaluation after forecasts are passed through the same fixed interface.
 
 This paper makes three narrow contributions.
 \begin{itemize}[leftmargin=*,noitemsep,topsep=2pt]
 \item First, we introduce deployed-selection robustness as a forecasting benchmark question: whether forecast-side model ranking remains reliable after forecasts are executed through a fixed interface.
-\item Second, we document a Q2 failure mode: the forecast-side winner becomes recurrently deployed-suboptimal as friction increases under the studied fixed interfaces.
+\item Second, we document a Q2 divergence pattern: the forecast-side winner becomes recurrently deployed-suboptimal as friction increases under the studied fixed interfaces.
 \item Third, we provide a Q2-first evidence hierarchy spanning synthetic, forecasting-native event and traffic evidence, and operational corroboration; Q1 is retained only as mechanism support.
 \end{itemize}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.98\textwidth]{assets/figures/fig1_fixed_interface_inversion.pdf}
+\caption{Fixed-interface evaluation maps forecasts through a shared interface before deployed scoring. Zero/low friction is mixed, while moderate-to-high friction shows recurrent mismatch between forecast-side and deployed-side winners.}
+\label{fig:fixed-interface-inversion}
+\end{figure*}
 
 \section{Two Evaluation Questions}
 
 We distinguish three evaluation objects: forecast-side quality, target-side decision quality, and realized-action quality. Forecast-side quality measures predictive performance, target-side decision quality scores the proposed action path before frictional execution, and realized-action quality scores the executed path after the fixed interface is applied. Q1 holds the proposed action path fixed and varies only the interface, so it is an exact-control mechanism check. Q2 holds the interface fixed and varies the forecaster, so it is the benchmark-selection question. Because Q2 asks whether the forecast-side winner remains the deployed winner, Q2 is the paper's main empirical claim.
-
-\begin{figure}[H]
-\centering
-\resizebox{0.9\columnwidth}{!}{%
-\begin{tikzpicture}[
-  node distance=4.5mm,
-  box/.style={draw, rounded corners, minimum width=1.65cm, minimum height=0.95cm, align=center, font=\footnotesize, fill=gray!7},
-  qbox/.style={draw, rounded corners, align=center, font=\scriptsize, fill=orange!10},
-  arr/.style={-{Latex[length=2.5mm]}, thick}
-]
-\node[box] (forecast) {Forecast};
-\node[box, right=4.5mm of forecast] (target) {Proposed action};
-\node[box, right=4.5mm of target] (iface) {Fixed interface};
-\node[box, right=4.5mm of iface] (exec) {Executed action};
-\node[box, right=4.5mm of exec] (metrics) {Realized score};
-
-\draw[arr] (forecast) -- (target);
-\draw[arr] (target) -- (iface);
-\draw[arr] (iface) -- (exec);
-\draw[arr] (exec) -- (metrics);
-
-\node[qbox, below=4.5mm of target, minimum width=2.35cm] (q1) {Q1: same proposal,\\different interface};
-\node[qbox, below=4.5mm of exec, minimum width=2.35cm] (q2) {Q2: fixed interface,\\different forecasts};
-\end{tikzpicture}
-}
-\caption{Forecast-to-decision evaluation setup. Forecasts are converted into proposed actions and then executed through a fixed frictional interface. Q2, the paper's main question, asks whether forecast-side model ranking matches deployed model ranking under one fixed interface. Q1 is used only as mechanism support.}
-\label{fig:conceptual}
-\end{figure}
 
 \section{Evidence Design}
 
@@ -106,16 +85,9 @@ In inventory Q2, the main text retains only the 0.50 and 1.00 rows from the fixe
 
 \section{Results}
 
-\subsection{Q2: Fixed interface, benchmark failure and selection consequence}
+\subsection{Q2: Fixed interface and deployed-selection robustness}
 
-Q2 asks the paper's headline benchmark question: under one fixed forecast-to-decision interface, can forecast-side ranking still be trusted for deployed model selection? Synthetic provides the exact zero-friction sanity anchor; Figure~\ref{fig:q2-required} focuses on the fixed-interface winner-inversion evidence in the forecasting-native and corroborative domains.
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=\columnwidth]{assets/figures/fig_q2_winner_inversion_heatmap_v2.pdf}
-\caption{Forecast-side winners need not remain deployed winners. Across fixed-interface forecasting tasks, forecast-side ranking and deployed selection agree at or near zero friction but separate as switching friction increases. The main benchmark consequence is deployed-suboptimal selection: the model selected by forecast-side metrics is recurrently not the deployed-best model. Inventory's zero-friction cell is marked as mixed and is not used as headline corroboration.}
-\label{fig:q2-required}
-\end{figure}
+Q2 asks the paper's headline benchmark question: under one fixed forecast-to-decision interface, does the forecast-side winner remain the deployed-side winner? Synthetic provides the exact zero-friction sanity anchor; Figure~\ref{fig:fixed-interface-inversion} combines the fixed-interface mechanism with winner-inversion evidence in the forecasting-native and corroborative domains.
 
 In event-micro, the forecast-side winner remains Reactive sharp across frictions, but the deployed winner shifts to Calibrated baseline at friction 0.50 and Lagged smoother at friction 1.00. The benchmark consequence is recurrent: the forecast-selected model is deployed-suboptimal in 69/100 and 99/100 seeds at these two friction levels. The same qualitative inversion persists under an alternate threshold, under a hysteresis-threshold interface, and when forecast-side ranking is recomputed with log loss.
 
