@@ -11,6 +11,8 @@
 \usepackage{xcolor}
 \usepackage{enumitem}
 \usepackage{float}
+\usepackage{adjustbox}
+\usepackage[section]{placeins}
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta,positioning}
 \icmltitlerunning{Forecast Rankings for Deployment-Aware Model Selection}
@@ -60,7 +62,7 @@ This paper makes three narrow contributions.
 \begin{figure*}[t]
 \centering
 \includegraphics[width=0.98\textwidth]{assets/figures/fig1_fixed_interface_inversion.pdf}
-\caption{Fixed-interface evaluation maps forecasts through a shared interface before deployed scoring. Zero/low friction is mixed, while moderate-to-high friction shows recurrent mismatch between forecast-side and deployed-side winners.}
+\caption{Fixed-interface evaluation can change model selection. Panel A shows the Q2 interface, and Panel B reports aggregate forecast-side and deployed-side winners across domains and friction levels. Cell counts denote seed-level deployed-suboptimal cases for the forecast-selected model; darker orange marks recurrent mismatch.}
 \label{fig:fixed-interface-inversion}
 \end{figure*}
 
@@ -70,10 +72,12 @@ We distinguish three evaluation objects: forecast-side quality, target-side deci
 
 \section{Evidence Design}
 
-Our evidence hierarchy is Q2-first. Synthetic provides an exact zero-friction sanity anchor. Event-micro provides the main forecasting-native Q2 evidence: forecasters emit event probabilities, a fixed threshold maps probabilities to actions, and switching friction penalizes action changes. Traffic-Hourly Top-k provides a second forecasting-native task family under the same fixed-interface selection question. Inventory provides operational corroboration, while load-following and broader inventory sweeps are retained as appendix-only transparency checks. Across domains, the central quantity is whether the forecast-side winner remains the deployed winner under the fixed interface.
+We lead with Q2: whether forecast-side winners remain deployed winners under a fixed interface. Event-micro and Traffic-Hourly are the forecasting-native evidence; inventory is operational corroboration.
 
 In inventory Q2, the main text retains only the 0.50 and 1.00 rows from the fixed five-family comparison; the mixed 0.00/0.25 regime and broader family sweep remain appendix-only transparency checks.
 
+\iffalse
+Step 5 main visual cleanup: evidence hierarchy table commented out from the main text because it is unreferenced and redundant with the Evidence Design prose.
 \begin{table}[t]
 \centering
 \tiny
@@ -82,14 +86,15 @@ In inventory Q2, the main text retains only the 0.50 and 1.00 rows from the fixe
 \caption{Q2-first evidence hierarchy. Synthetic provides the zero-friction anchor, event-micro and Traffic-Hourly provide forecasting-native Q2 evidence, inventory provides operational corroboration, and Q1 remains mechanism support.}
 \label{tab:evidence-hierarchy-main}
 \end{table}
+\fi
 
 \section{Results}
 
 \subsection{Q2: Fixed interface and deployed-selection robustness}
 
-Q2 asks the paper's headline benchmark question: under one fixed forecast-to-decision interface, does the forecast-side winner remain the deployed-side winner? Synthetic provides the exact zero-friction sanity anchor; Figure~\ref{fig:fixed-interface-inversion} combines the fixed-interface mechanism with winner-inversion evidence in the forecasting-native and corroborative domains.
+Q2 asks the paper's headline benchmark question: under one fixed forecast-to-decision interface, does the forecast-side winner remain the deployed-side winner? Synthetic provides the exact zero-friction sanity anchor. Figure~\ref{fig:fixed-interface-inversion} summarizes the main Q2 evidence: event-micro is the primary forecasting-native test, Traffic-Hourly is a second forecasting-native corroboration, and inventory is included only as operational corroboration.
 
-In event-micro, the forecast-side winner remains Reactive sharp across frictions, but the deployed winner shifts to Calibrated baseline at friction 0.50 and Lagged smoother at friction 1.00. The benchmark consequence is recurrent: the forecast-selected model is deployed-suboptimal in 69/100 and 99/100 seeds at these two friction levels. The same qualitative inversion persists under an alternate threshold, under a hysteresis-threshold interface, and when forecast-side ranking is recomputed with log loss.
+In event-micro, the forecast-side winner remains Reactive sharp across frictions, but the deployed winner shifts to Calibrated baseline at friction 0.50 and Lagged smoother at friction 1.00. Table~\ref{tab:event-micro-selection-drift-main} reports the canonical fixed-threshold interface. The benchmark consequence is recurrent: the forecast-selected model is deployed-suboptimal in 69/100 and 99/100 seeds at these two friction levels. The same qualitative inversion persists under an alternate threshold, under a hysteresis-threshold interface, and when forecast-side ranking is recomputed with log loss.
 
 \begin{table}[H]
 \centering
@@ -102,7 +107,7 @@ In event-micro, the forecast-side winner remains Reactive sharp across frictions
 
 A complementary Traffic-Hourly fixed-budget alert family shows the same benchmark consequence under a different forecasting-native task structure. In the selected Top-k setting ($k=249$), Reactive short is both the forecast-side winner and the deployed winner at zero friction, with exact agreement $1.0$. Once switching costs are introduced, however, the forecast-side winner remains Reactive short while the deployed winner shifts to Lagged smoother, and deployed-suboptimality reaches $100/100$ seeds at both friction $0.5$ and friction $1.0$. A relative-rank Traffic variant shows the same qualitative pattern in the appendix.
 
-Inventory provides operational corroboration rather than the main forecasting-native evidence. At friction 0.50 and 1.00, the forecast-selected Small MLP is deployed-suboptimal in 9/10 and 10/10 seeds, respectively, under the fixed replenishment interface.
+Inventory provides operational corroboration rather than the main forecasting-native evidence. At friction 0.50 and 1.00, the forecast-selected Small MLP is deployed-suboptimal in 9/10 and 10/10 seeds, respectively, under the fixed replenishment interface. Table~\ref{tab:q2-corroboration-compact} collects the Traffic-Hourly and inventory corroboration rows.
 
 \begin{table}[H]
 \centering
@@ -172,12 +177,24 @@ A. N. Elmachtoub and P. Grigas.
 
 \clearpage
 \appendix
+\onecolumn
+
 \setcounter{figure}{0}
 \setcounter{table}{0}
 \renewcommand{\thefigure}{A\arabic{figure}}
 \renewcommand{\thetable}{A\arabic{table}}
 \renewcommand{\theHfigure}{A\arabic{figure}}
 \renewcommand{\theHtable}{A\arabic{table}}
+
+\captionsetup{font=small}
+
+\providecommand{\appfigwidth}{0.92\linewidth}
+\providecommand{\appwidefigwidth}{0.98\linewidth}
+\providecommand{\apptablesize}{\small}
+\providecommand{\apptighttablesize}{\footnotesize}
+
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.08}
 
 \section{Event-Micro Robustness Package}
 \label{app:event-micro}
@@ -186,39 +203,47 @@ Because event-micro provides the paper's main forecasting-native Q2 evidence, th
 
 \begin{table}[H]
 \centering
-\scriptsize
-\resizebox{\columnwidth}{!}{\input{results/table_q2_selection_drift_event_micro.tex}}
+\apptighttablesize
+\begin{adjustbox}{max width=\linewidth}
+\input{results/table_q2_selection_drift_event_micro.tex}
+\end{adjustbox}
 \caption{Forecast-side vs.\ deployed-side model selection in the full six-row event-micro benchmark summary. Under the canonical fixed-threshold interface, deployed-suboptimal counts rise from $38/100$ seeds at zero friction to $99/100$ at friction $1.00$.}
 \label{tab:event-micro-selection-drift}
 \end{table}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.82\columnwidth]{assets/figures/fig_q2_event_micro_support.png}
+\includegraphics[width=\appfigwidth]{assets/figures/fig_q2_event_micro_support.png}
 \caption{Ranking mismatch in a minimal event-forecasting micro-benchmark. Disagreement between forecast-side and deployed-side model selection is lowest at zero and very low friction and increases as switching frictions rise.}
 \label{fig:event-micro-q2}
 \end{figure}
 
 \begin{table}[H]
 \centering
-\scriptsize
-\resizebox{\columnwidth}{!}{\input{results/table_q2_selection_drift_event_micro_threshold_robustness.tex}}
+\apptighttablesize
+\begin{adjustbox}{max width=\linewidth}
+\input{results/table_q2_selection_drift_event_micro_threshold_robustness.tex}
+\end{adjustbox}
 \caption{Alternate-threshold robustness for the event-micro benchmark. The same qualitative winner drift and recurrent deployed-suboptimality pattern persists when the fixed threshold is changed from $\tau = 0.55$ to $\tau = 0.50$.}
 \label{tab:event-micro-threshold-robustness}
 \end{table}
 
 \begin{table}[H]
 \centering
-\scriptsize
-\resizebox{\columnwidth}{!}{\input{results/table_q2_selection_drift_event_micro_logloss.tex}}
+\apptighttablesize
+\begin{adjustbox}{max width=\linewidth}
+\input{results/table_q2_selection_drift_event_micro_logloss.tex}
+\end{adjustbox}
 \caption{Log-loss robustness for the event-micro benchmark at the canonical threshold. The same qualitative winner drift and recurrent deployed-suboptimality pattern persists when forecast-side ranking is recomputed with log loss instead of Brier.}
 \label{tab:event-micro-logloss-robustness}
 \end{table}
 
 \begin{table}[H]
 \centering
-\scriptsize
-\resizebox{\columnwidth}{!}{\input{results/table_q2_selection_drift_event_micro_hysteresis_robustness.tex}}
+\apptighttablesize
+\begin{adjustbox}{max width=\linewidth}
+\input{results/table_q2_selection_drift_event_micro_hysteresis_robustness.tex}
+\end{adjustbox}
 \caption{Second-interface robustness for the event-micro benchmark. Under a fixed hysteresis-threshold interface with $\delta = 0.05$, the same qualitative winner drift and deployed-suboptimality pattern remains visible, though the magnitudes are smaller than under the canonical fixed threshold.}
 \label{tab:event-micro-hysteresis-robustness}
 \end{table}
@@ -232,33 +257,39 @@ Because the hysteresis-threshold check is retained paper-facing as a second-inte
 
 \begin{table}[H]
 \centering
-\scriptsize
-\resizebox{\columnwidth}{!}{\input{results/table_event_micro_interface_recurrence_tests.tex}}
+\apptighttablesize
+\begin{adjustbox}{max width=\linewidth}
+\input{results/table_event_micro_interface_recurrence_tests.tex}
+\end{adjustbox}
 \caption{Interface-aware recurrence tests for event-micro deployed-suboptimality. The canonical fixed threshold shows stronger recurrence, while hysteresis preserves the same direction with smaller magnitudes.}
 \label{tab:event-micro-interface-recurrence-tests}
 \end{table}
 
 \begin{table}[H]
 \centering
-\scriptsize
-\resizebox{\columnwidth}{!}{\input{results/table_event_micro_interface_gap_bootstrap_cis.tex}}
+\apptighttablesize
+\begin{adjustbox}{max width=\linewidth}
+\input{results/table_event_micro_interface_gap_bootstrap_cis.tex}
+\end{adjustbox}
 \caption{Interface-aware bootstrap intervals for the event-micro deployed gap. Positive intervals remain visible under both interfaces, with smaller gaps under hysteresis.}
 \label{tab:event-micro-interface-gap-bootstrap-cis}
 \end{table}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.88\columnwidth]{assets/figures/fig_event_micro_interface_uncertainty_appendix.png}
+\includegraphics[width=\appwidefigwidth]{assets/figures/fig_event_micro_interface_uncertainty_appendix.png}
 \caption{Interface-aware event-micro uncertainty addendum. Rows facet the canonical fixed threshold and the hysteresis threshold; columns show mean flip rate bands and deployed-suboptimal share bands.}
 \label{fig:event-micro-interface-uncertainty}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\columnwidth]{assets/figures/fig_event_micro_interface_seed_recurrence_appendix.png}
+\includegraphics[width=\appwidefigwidth]{assets/figures/fig_event_micro_interface_seed_recurrence_appendix.png}
 \caption{Interface-aware seed-level disagreement strips for the event-micro benchmark. Each panel shows the same seed set under one fixed interface.}
 \label{fig:event-micro-interface-seed-recurrence}
 \end{figure}
+
+\FloatBarrier
 
 \section{Traffic-Hourly Forecasting-Native Redesign Families}
 \label{app:traffic-redesign}

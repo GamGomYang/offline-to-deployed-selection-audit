@@ -150,12 +150,8 @@ def _short_name(value: str) -> str:
 
 
 def _make_cell_node(cell: FigureCell, x: float, y: float) -> str:
-    if cell.forecast_winner == cell.deployed_winner:
-        body = r"{\bfseries same winner}\\[-1pt]{\scriptsize " + _latex_escape(_short_name(cell.forecast_winner)) + "}"
-    else:
-        status = "recurrent shift" if cell.color == "strongbg" else "winner shift"
-        transition = _short_name(cell.forecast_winner) + r" $\rightarrow$ " + _short_name(cell.deployed_winner)
-        body = r"{\bfseries " + status + r"}\\[-1pt]{\scriptsize " + _latex_escape(transition) + "}"
+    transition = _short_name(cell.forecast_winner) + r" $\rightarrow$ " + _short_name(cell.deployed_winner)
+    body = r"{\bfseries " + _latex_escape(transition) + r"}\\[-1pt]{\scriptsize " + _latex_escape(cell.suboptimal_seeds) + "}"
     return rf"\node[cell,fill={cell.color}] at ({x:.2f},{y:.2f}) {{{body}}};"
 
 
@@ -169,7 +165,7 @@ def build_latex(cells: list[FigureCell]) -> str:
     }
 
     x_positions = {"0.00": 5.10, "0.50": 8.55, "1.00": 12.00}
-    y_positions = {"Event-micro": -4.26, "Traffic-Hourly Top-k": -5.36, "Inventory": -6.46}
+    y_positions = {"Event-micro": -4.34, "Traffic-Hourly Top-k": -5.44, "Inventory": -6.54}
     cell_map = {(cell.domain, cell.friction): cell for cell in cells}
 
     cell_nodes = []
@@ -182,7 +178,7 @@ def build_latex(cells: list[FigureCell]) -> str:
         for domain in domains
     ]
     column_labels = [
-        rf"\node[colheader] at ({x_positions[friction]:.2f},-3.70) {{friction {friction}}};"
+        rf"\node[colheader] at ({x_positions[friction]:.2f},-3.66) {{$\kappa = {friction}$}};"
         for friction in frictions
     ]
 
@@ -235,7 +231,7 @@ def build_latex(cells: list[FigureCell]) -> str:
 
 \filldraw[fill=panelbg,draw=panelrule,rounded corners=4pt] (0.00,-2.95) rectangle (13.80,-7.55);
 \node[anchor=west,font=\bfseries\footnotesize,text=titlegray] at (0.25,-3.25) {B. Winner-inversion matrix};
-\node[anchor=east,font=\scriptsize,text=muted] at (13.55,-3.25) {color encodes whether the deployed-side winner changes};
+\node[anchor=east,font=\scriptsize,text=muted] at (13.55,-3.25) {arrows: aggregate winners; counts: seed-level deployed-suboptimal cases};
 """
         + "\n".join(column_labels)
         + "\n"
@@ -243,8 +239,8 @@ def build_latex(cells: list[FigureCell]) -> str:
         + "\n"
         + "\n".join(cell_nodes)
         + r"""
-\node[legend] at (3.20,-7.27) {\tikz{\fill[neutralbg,draw=framegray] (0,0) rectangle (0.18,0.12);} same / low-friction \quad
-\tikz{\fill[shiftbg,draw=framegray] (0,0) rectangle (0.18,0.12);} winner changes \quad
+\node[legend] at (3.20,-7.27) {\tikz{\fill[neutralbg,draw=framegray] (0,0) rectangle (0.18,0.12);} same or mixed \quad
+\tikz{\fill[shiftbg,draw=framegray] (0,0) rectangle (0.18,0.12);} winner shift \quad
 \tikz{\fill[strongbg,draw=framegray] (0,0) rectangle (0.18,0.12);} recurrent mismatch};
 \end{tikzpicture}
 \end{document}
