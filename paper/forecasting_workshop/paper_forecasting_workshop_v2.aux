@@ -1,0 +1,50 @@
+\relax 
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
+\providecommand \oddpage@label [2]{}
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{fig:fixed-interface-inversion}{{1}{2}{Fixed-interface evaluation can change model selection. Panel A shows the Q2 forecast-to-decision interface, and Panel B reports aggregate forecast-side and deployed-side winners across domains and friction levels. Cell counts denote seed-level deployed-suboptimal cases for the forecast-selected model; darker orange marks recurrent mismatch}{figure.caption.1}{}}
+\citation{forecastbench,prophetarena,gifteval,godahewa2021monash,das2024timesfm,williams2025contextkey}
+\citation{bouthillier2021variance}
+\citation{gneiting2007,murphy1993,raeth2025,donti2017task,elmachtoub2021spo,mandi2024decisionfocused}
+\newlabel{tab:event-micro-selection-drift-main}{{1}{3}{Event-micro main evidence under the canonical fixed-threshold interface. The forecast-side winner remains Reactive sharp, while moderate-to-high friction changes the deployed winner and makes the forecast-selected model deployed-suboptimal in 69/100 and 99/100 seeds}{table.caption.2}{}}
+\newlabel{tab:q2-corroboration-compact}{{2}{3}{Cross-domain corroboration under fixed interfaces. Traffic-Hourly provides a second forecasting-native task family, and inventory provides operational corroboration; both show recurrent deployed-side misselection at moderate-to-high friction}{table.caption.3}{}}
+\bibcite{forecastbench}{{1}{2025}{{Karger et~al.}}{{Karger, Bastani, Yueh-Han, Jacobs, Halawi, Zhang, and Tetlock}}}
+\bibcite{prophetarena}{{2}{2025}{{Yang et~al.}}{{Yang, Mahns, Li, Gu, Wu, and Xu}}}
+\bibcite{gifteval}{{3}{2024}{{Aksu et~al.}}{{Aksu, Woo, Liu, Liu, Liu, Savarese, Xiong, and Sahoo}}}
+\bibcite{godahewa2021monash}{{4}{2021}{{Godahewa et~al.}}{{Godahewa, Bergmeir, Webb, Hyndman, and Montero-Manso}}}
+\bibcite{das2024timesfm}{{5}{2024}{{Das et~al.}}{{Das, Kong, Sen, and Zhou}}}
+\bibcite{williams2025contextkey}{{6}{2025}{{Williams et~al.}}{{Williams, Ashok, Marcotte, Zantedeschi, Subramanian, Riachi, Requeima, Lacoste, Rish, Chapados, and Drouin}}}
+\bibcite{bouthillier2021variance}{{7}{2021}{{Bouthillier et~al.}}{{Bouthillier, Delaunay, Bronzi, Trofimov, Nichyporuk, Szeto, Sepah, Raff, Madan, Voleti, Kahou, Michalski, Arbel, Pal, Varoquaux, and Vincent}}}
+\bibcite{gneiting2007}{{8}{2007}{{Gneiting and Raftery}}{{}}}
+\bibcite{murphy1993}{{9}{1993}{{Murphy}}{{}}}
+\bibcite{raeth2025}{{10}{2025}{{Raeth and Ludwig}}{{}}}
+\bibcite{donti2017task}{{11}{2017}{{Donti et~al.}}{{Donti, Amos, and Kolter}}}
+\bibcite{elmachtoub2021spo}{{12}{2022}{{Elmachtoub and Grigas}}{{}}}
+\bibcite{mandi2024decisionfocused}{{13}{2024}{{Mandi et~al.}}{{Mandi, Kotary, Berden, Mulamba, Bucarey, Guns, and Fioretto}}}
+\newlabel{app:event-micro}{{A}{5}{}{appendix.A}{}}
+\newlabel{tab:event-micro-selection-drift}{{A1}{5}{Forecast-side vs.\ deployed-side model selection in the full six-row event-micro benchmark summary. Under the canonical fixed-threshold interface, deployed-suboptimal counts rise from $38/100$ seeds at zero friction to $99/100$ at friction $1.00$}{table.caption.5}{}}
+\newlabel{fig:event-micro-q2}{{A1}{5}{Ranking mismatch in a minimal event-forecasting micro-benchmark. Disagreement between forecast-side and deployed-side model selection is lowest at zero and very low friction and increases as switching frictions rise}{figure.caption.6}{}}
+\newlabel{tab:event-micro-threshold-robustness}{{A2}{6}{Alternate-threshold robustness for the event-micro benchmark. The same qualitative winner drift and recurrent deployed-suboptimality pattern persists when the fixed threshold is changed from $\tau = 0.55$ to $\tau = 0.50$}{table.caption.7}{}}
+\newlabel{tab:event-micro-logloss-robustness}{{A3}{6}{Log-loss robustness for the event-micro benchmark at the canonical threshold. The same qualitative winner drift and recurrent deployed-suboptimality pattern persists when forecast-side ranking is recomputed with log loss instead of Brier}{table.caption.8}{}}
+\newlabel{tab:event-micro-hysteresis-robustness}{{A4}{6}{Second-interface robustness for the event-micro benchmark. Under a fixed hysteresis-threshold interface with $\delta = 0.05$, the same qualitative winner drift and deployed-suboptimality pattern remains visible, though the magnitudes are smaller than under the canonical fixed threshold}{table.caption.9}{}}
+\newlabel{app:event-micro-interface-stats}{{A.1}{6}{}{subsection.A.1}{}}
+\newlabel{tab:event-micro-interface-recurrence-tests}{{A5}{6}{Interface-aware recurrence tests for event-micro deployed-suboptimality. The canonical fixed threshold shows stronger recurrence, while hysteresis preserves the same direction with smaller magnitudes}{table.caption.10}{}}
+\newlabel{tab:event-micro-interface-gap-bootstrap-cis}{{A6}{6}{Interface-aware bootstrap intervals for the event-micro deployed gap. Positive intervals remain visible under both interfaces, with smaller gaps under hysteresis}{table.caption.11}{}}
+\newlabel{fig:event-micro-interface-uncertainty}{{A2}{7}{Event-micro robustness across interfaces. Fixed-threshold and hysteresis interfaces show the same direction: disagreement and deployed-suboptimal share rise with friction, while hysteresis attenuates the effect}{figure.caption.12}{}}
+\newlabel{app:traffic-redesign}{{B}{7}{}{appendix.B}{}}
+\newlabel{tab:traffic-topk-alert-support}{{A7}{7}{Traffic-Hourly Top-k corroboration under a fixed interface. Agreement is strongest at zero friction and weakens at higher friction, where the deployed winner shifts away from the forecast-side winner}{table.caption.13}{}}
+\newlabel{tab:traffic-relative-rank-support}{{A8}{7}{Traffic-Hourly relative-rank corroboration. The same qualitative separation between forecast-side and deployed-side selection appears under fixed-budget set action}{table.caption.14}{}}
+\newlabel{app:inventory-corroboration}{{C}{8}{}{appendix.C}{}}
+\newlabel{tab:inventory-selection-drift-appendix}{{A9}{8}{Inventory corroboration under a fixed replenishment interface. The zero/low-friction regime is mixed, while moderate-to-high friction shows recurrent deployed-side misselection}{table.caption.15}{}}
+\newlabel{app:stronger-inventory-q2}{{D}{8}{}{appendix.D}{}}
+\newlabel{tab:step5-package}{{A10}{8}{Expanded same-interface inventory sweep. The table records broader-family status checks for inventory robustness}{table.caption.16}{}}
+\newlabel{tab:q2-stronger-robustness}{{A11}{8}{Expanded-family inventory Q2 robustness summary for the broader comparison set}{table.caption.17}{}}
+\newlabel{app:load-following}{{E}{8}{}{appendix.E}{}}
+\newlabel{tab:load-following-support}{{A12}{9}{Load-following secondary check. Near-zero friction remains mixed, while positive-friction regimes can favor a different deployed winner}{table.caption.18}{}}
+\newlabel{fig:q1-required}{{A3}{9}{Q1 mechanism support. Even with the same proposed actions, a fixed frictional interface can alter realized actions and realized score; this explains how Q2 ranking divergence can arise}{figure.caption.19}{}}
+\newlabel{tab:q2-recurrence-tests}{{A13}{9}{Seed-level recurrence tests for deployed-suboptimality. Event-micro and inventory show the strongest majority recurrence; load-following remains directional}{table.caption.20}{}}
+\newlabel{tab:q2-gap-bootstrap-cis}{{A14}{10}{Bootstrap intervals for deployed-gap rows. Event-micro and inventory provide the strongest positive-gap support; load-following remains directional}{table.caption.21}{}}
+\newlabel{fig:q2-uncertainty}{{A4}{10}{Q2 uncertainty bands for synthetic and event-micro. Panels show mean flip-rate bands and exact 95\% binomial intervals for deployed-suboptimal share}{figure.caption.22}{}}
+\gdef \@abspage@last{10}
