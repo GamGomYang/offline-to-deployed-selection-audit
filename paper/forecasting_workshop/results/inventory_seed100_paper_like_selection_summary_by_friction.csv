@@ -1,0 +1,5 @@
+domain,friction_level,n_seeds,most_frequent_forecast_best,most_frequent_deployed_best,agreement_rate,disagreement_rate,deployed_suboptimal_seed_count,deployed_suboptimal_seed_fraction,deployed_suboptimal_seeds_over_total,mean_deployed_gap_of_forecast_selected,median_deployed_gap_of_forecast_selected
+inventory,0.0,100,mlp_small,mlp_small,0.77,0.23,23,0.23,23/100,0.02519554738617415,0.0
+inventory,0.25,100,mlp_small,mlp_small,0.76,0.24,24,0.24,24/100,0.03936174765051545,0.0
+inventory,0.5,100,mlp_small,moving_average_7,0.26,0.74,74,0.74,74/100,0.2402650844104821,0.20162196258271292
+inventory,1.0,100,mlp_small,moving_average_7,0.01,0.99,99,0.99,99/100,1.0286442336571693,1.0451084204742842

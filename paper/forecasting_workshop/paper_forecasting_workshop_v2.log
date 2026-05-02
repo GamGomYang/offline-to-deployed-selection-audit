@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.4.4)  1 MAY 2026 18:08
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.4.4)  2 MAY 2026 18:06
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1014,107 +1014,80 @@ s/김금영/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc}
 
 
 ]
-Underfull \hbox (badness 10000) in paragraph at lines 86--87
-[]|\OT1/ptm/m/n/9 (+20) main forecasting-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 87--88
-[]|\OT1/ptm/m/n/9 (+20) second forecasting-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 89--90
-[]|\OT1/ptm/m/n/9 (+20) secondary/fairness
- []
-
-(results/table_q2_selection_drift_event_micro_main.tex)
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [2 <./assets/figures/fig1_fixed_interface_inversion.pdf>]
-(results/table_q2_corroboration_compact.tex
-Underfull \hbox (badness 10000) in paragraph at lines 12--12
-[]|\OT1/ptm/m/n/7 (+20) Traffic-Hourly
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 12--12
-[]|\OT1/ptm/m/n/7 (+20) Traffic-Hourly
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 12--12
-[]|\OT1/ptm/m/n/7 (+20) Traffic-Hourly
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 12--12
-[]|\OT1/ptm/m/n/7 (+20) Moving av-er-age
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 12--12
-[]|\OT1/ptm/m/n/7 (+20) Moving av-er-age
- []
-
-)
-Underfull \vbox (badness 1142) has occurred while \output is active []
+Underfull \vbox (badness 2111) has occurred while \output is active []
 
  [3]
-[4] (results/table_q2_selection_drift_event_micro.tex)
-<assets/figures/fig_q2_event_micro_support.png, id=116, 247.0028pt x 181.9598pt
+[4
+
+] (results/table_q2_selection_drift_event_micro.tex)
+<assets/figures/fig_q2_event_micro_support.png, id=115, 247.0028pt x 181.9598pt
 >
 File: assets/figures/fig_q2_event_micro_support.png Graphic file (type png)
 <use assets/figures/fig_q2_event_micro_support.png>
 Package pdftex.def Info: assets/figures/fig_q2_event_micro_support.png  used on
- input line 242.
+ input line 244.
 (pdftex.def)             Requested size: 448.79579pt x 330.61757pt.
 
-(results/table_q2_selection_drift_event_micro_threshold_robustness.tex)
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [5
 
 
- <./assets/figures/fig_q2_event_micro_support.png (PNG copy)>]
+]
+(results/table_q2_selection_drift_event_micro_threshold_robustness.tex)
 (results/table_q2_selection_drift_event_micro_logloss.tex)
 (results/table_q2_selection_drift_event_micro_hysteresis_robustness.tex)
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [6 <./assets/figures/fig_q2_event_micro_support.png (PNG copy)>]
 (results/table_event_micro_interface_recurrence_tests.tex)
 (results/table_event_micro_interface_gap_bootstrap_cis.tex)
-<assets/figures/fig_event_micro_interface_uncertainty_appendix.png, id=125, 556
+<assets/figures/fig_event_micro_interface_uncertainty_appendix.png, id=131, 556
 .9608pt x 355.4078pt>
 File: assets/figures/fig_event_micro_interface_uncertainty_appendix.png Graphic
  file (type png)
 <use assets/figures/fig_event_micro_interface_uncertainty_appendix.png>
 Package pdftex.def Info: assets/figures/fig_event_micro_interface_uncertainty_a
-ppendix.png  used on input line 308.
+ppendix.png  used on input line 310.
 (pdftex.def)             Requested size: 458.55432pt x 292.62393pt.
- [6]
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [7]
 (results/table_q2_selection_drift_traffic_topk_main.tex)
-(results/table_q2_selection_drift_traffic_relative_rank_support.tex) [7 <./asse
+(results/table_q2_selection_drift_traffic_relative_rank_support.tex) [8 <./asse
 ts/figures/fig_event_micro_interface_uncertainty_appendix.png (PNG copy)>]
 (results/table_q2_selection_drift_inventory.tex)
 (results/table_step5_same_interface_summary.tex)
 (results/table_q2_stronger_baseline_robustness.tex)
-(results/table_load_following_support_summary.tex) [8]
-<assets/figures/fig_q1_results_v2.png, id=158, 499.9478pt x 196.4138pt>
+(results/table_load_following_support_summary.tex)
+Underfull \vbox (badness 4242) has occurred while \output is active []
+
+ [9]
+<assets/figures/fig_q1_results_v2.png, id=161, 499.9478pt x 196.4138pt>
 File: assets/figures/fig_q1_results_v2.png Graphic file (type png)
 <use assets/figures/fig_q1_results_v2.png>
 Package pdftex.def Info: assets/figures/fig_q1_results_v2.png  used on input li
-ne 449.
+ne 451.
 (pdftex.def)             Requested size: 439.03726pt x 172.48503pt.
 
-(results/table_q2_recurrence_tests.tex) (results/table_q2_gap_bootstrap_cis.tex
-) [9 <./assets/figures/fig_q1_results_v2.png (PNG copy)>]
-<assets/figures/fig_q2_uncertainty_appendix.png, id=168, 531.586pt x 203.6408pt
+(results/table_q2_recurrence_tests.tex)
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [10 <./assets/figures/fig_q1_results_v2.png (PNG copy)>]
+(results/table_q2_gap_bootstrap_cis.tex)
+<assets/figures/fig_q2_uncertainty_appendix.png, id=171, 531.586pt x 203.6408pt
 >
 File: assets/figures/fig_q2_uncertainty_appendix.png Graphic file (type png)
 <use assets/figures/fig_q2_uncertainty_appendix.png>
 Package pdftex.def Info: assets/figures/fig_q2_uncertainty_appendix.png  used o
-n input line 484.
+n input line 486.
 (pdftex.def)             Requested size: 458.55432pt x 175.66833pt.
- [10 <./assets/figures/fig_q2_uncertainty_appendix.png (PNG copy)>]
-(paper_forecasting_workshop_v2.aux)
+ [11 <./assets/figures/fig_q2_uncertainty_appendix.png (PNG copy)>] (paper_fore
+casting_workshop_v2.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2025-12-24>
@@ -1124,13 +1097,13 @@ hanged.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 27283 strings out of 467871
- 511411 string characters out of 5416441
- 940515 words of memory out of 5000000
- 55312 multiletter control sequences out of 15000+600000
- 661581 words of font info for 262 fonts, out of 8000000 for 9000
+ 27267 strings out of 467871
+ 510667 string characters out of 5416441
+ 941342 words of memory out of 5000000
+ 55307 multiletter control sequences out of 15000+600000
+ 659974 words of font info for 259 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 84i,11n,94p,1323b,623s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 84i,12n,94p,1323b,623s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Users/김금영/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts
 /cm/cmmi10.pfb><C:/Users/김금영/AppData/Local/Programs/MiKTeX/fonts/type1/pu
 blic/amsfonts/cm/cmmi7.pfb><C:/Users/김금영/AppData/Local/Programs/MiKTeX/fo
@@ -1139,15 +1112,17 @@ ms/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/김금영/AppData/
 Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:/Users/김금�
 ��/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr9.pfb><C:/Us
 ers/김금영/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy
-7.pfb><C:/Users/김금영/AppData/Local/Programs/MiKTeX/fonts/type1/urw/helveti
-c/uhvb8a.pfb><C:/Users/김금영/AppData/Local/Programs/MiKTeX/fonts/type1/urw/
-helvetic/uhvr8a.pfb><C:/Users/김금영/AppData/Local/Programs/MiKTeX/fonts/typ
-e1/urw/times/utmb8a.pfb><C:/Users/김금영/AppData/Local/Programs/MiKTeX/fonts
-/type1/urw/times/utmr8a.pfb><C:/Users/김금영/AppData/Local/Programs/MiKTeX/f
-onts/type1/urw/times/utmri8a.pfb>
-Output written on paper_forecasting_workshop_v2.pdf (10 pages, 1200352 bytes).
+10.pfb><C:/Users/김금영/AppData/Local/Programs/MiKTeX/fonts/type1/public/ams
+fonts/cm/cmsy7.pfb><C:/Users/김금영/AppData/Local/Programs/MiKTeX/fonts/type
+1/public/amsfonts/cm/cmsy9.pfb><C:/Users/김금영/AppData/Local/Programs/MiKTe
+X/fonts/type1/urw/helvetic/uhvb8a.pfb><C:/Users/김금영/AppData/Local/Program
+s/MiKTeX/fonts/type1/urw/helvetic/uhvr8a.pfb><C:/Users/김금영/AppData/Local/
+Programs/MiKTeX/fonts/type1/urw/times/utmb8a.pfb><C:/Users/김금영/AppData/Lo
+cal/Programs/MiKTeX/fonts/type1/urw/times/utmr8a.pfb><C:/Users/김금영/AppDat
+a/Local/Programs/MiKTeX/fonts/type1/urw/times/utmri8a.pfb>
+Output written on paper_forecasting_workshop_v2.pdf (11 pages, 1220333 bytes).
 PDF statistics:
- 228 PDF objects out of 1000 (max. 8388607)
- 62 named destinations out of 1000 (max. 500000)
- 49702 words of extra memory for PDF output out of 51595 (max. 10000000)
+ 242 PDF objects out of 1000 (max. 8388607)
+ 61 named destinations out of 1000 (max. 500000)
+ 45606 words of extra memory for PDF output out of 51595 (max. 10000000)
 

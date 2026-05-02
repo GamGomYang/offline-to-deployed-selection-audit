@@ -134,8 +134,8 @@ def build_q2_figure(output_path: Path) -> None:
         [2pt]
         \winnerlabel{Inventory}{S-MLP}
           & \winnercell{mixedbg}{mixed}{appx.}
-          & \winnercell{shiftbg}{$\neq$ MA(7)}{9/10}
-          & \winnercell{shiftbg}{$\neq$ MA(7)}{10/10} \\
+          & \winnercell{shiftbg}{$\neq$ MA(7)}{74/100}
+          & \winnercell{shiftbg}{$\neq$ MA(7)}{99/100} \\
         \end{tabular}
 
         \vspace{3pt}

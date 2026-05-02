@@ -31,7 +31,7 @@
     \icmlauthor{Kim Geum-Young}{cbnu}
   \end{icmlauthorlist}
 
-  \icmlaffiliation{cbnu}{Department of Software Engineering, Chungbuk National University, Cheongju, Chungcheongbuk-do, South Korea}
+  \icmlaffiliation{cbnu}{School of Computer Sience, Chungbuk National University, Cheongju, Chungcheongbuk-do, South Korea}
   \icmlcorrespondingauthor{Kim Geum-Young}{anon.email@domain.com}
   \icmlkeywords{Forecasting benchmarks, model selection, deployment-aware evaluation}
 
@@ -70,51 +70,33 @@ We use Q1/Q2 only to separate mechanism from model-selection evidence. Q1 fixes 
 
 \subsection{Q2: Fixed interface and deployed-selection robustness}
 
-Q2 asks the paper's headline reporting question: under one fixed forecast-to-decision interface, does the forecast-side winner remain the deployed-side winner? We organize the evidence as a report card. Synthetic is a zero-friction sanity anchor. Event-micro is the primary forecasting-native evidence under the canonical threshold interface. Traffic-Hourly Top-\(k\) is the second forecasting-native evidence under a fixed-budget alert interface. Inventory is operational corroboration only. Figure~\ref{fig:fixed-interface-inversion} visualizes the main winner-inversion evidence across the forecasting-native and corroboration rows.
+Q2 asks the paper's headline reporting question: under one fixed forecast-to-decision interface, does the forecast-side winner remain the deployed-side winner? Table~\ref{tab:deployed-selection-report-card} reports the resulting deployed-selection robustness report card. The zero-friction synthetic row is a sanity anchor. Event-micro and Traffic-Hourly provide forecasting-native Q2 evidence under two different fixed-interface structures, while inventory is included only as operational corroboration. Figure~\ref{fig:fixed-interface-inversion} visualizes the main winner-inversion evidence across the forecasting-native and corroboration rows.
 
-\begin{table}[!t]
-\caption{Evidence hierarchy.}
-\label{tab:report-card}
+\begin{table*}[t]
+\caption{Deployed-selection robustness report card. Each row reports one domain $\times$ fixed interface $\times$ friction cell and records whether the forecast-side winner remains the deployed-side winner after the same fixed interface is applied. Subopt. reports the seed-level deployed-suboptimal share/count. The 95\% CI column reports the bootstrap CI for the mean deployed gap, not the binomial CI for the suboptimal share.}
+\label{tab:deployed-selection-report-card}
 \centering
-\footnotesize
-\setlength{\tabcolsep}{2pt}
-\begin{tabular}{@{}p{0.25\linewidth}p{0.31\linewidth}p{0.34\linewidth}@{}}
+\scriptsize
+\setlength{\tabcolsep}{2.4pt}
+\begin{tabular}{@{}p{0.105\textwidth}p{0.130\textwidth}cp{0.105\textwidth}p{0.105\textwidth}ccccp{0.060\textwidth}@{}}
 \toprule
-Role & Evidence & Status \\
+Domain & Interface & $\kappa$ & Forecast winner & Deployed winner & Agree. & Subopt. & Mean gap & 95\% CI & Role \\
 \midrule
-Sanity & Synthetic & zero-friction anchor \\
-Primary & Event-micro & main forecasting-native Q2 \\
-Second & Traffic Top-\(k\) & second forecasting-native Q2 \\
-Corroboration & Inventory & operational only \\
-Appendix-only & Load-following / expanded inventory & secondary/fairness context \\
+Synthetic & zero-friction anchor & 0.00 & Naive last & Naive last & 1.00 & 0.00 (0/20) & 0.000 & [0.000, 0.000] & Sanity \\
+Event-micro & threshold $\tau{=}0.55$ & 0.50 & Reactive sharp & Calibrated & 0.31 & 0.69 (69/100) & 0.011 & [0.009, 0.014] & Primary \\
+Event-micro & threshold $\tau{=}0.55$ & 1.00 & Reactive sharp & Smoother & 0.01 & 0.99 (99/100) & 0.057 & [0.052, 0.063] & Primary \\
+Traffic Top-\(k\) & budget $k{=}249$ & 0.50 & Reactive short & Smoother & 0.00 & 1.00 (100/100) & 7.016 & [6.756, 7.283] & Second \\
+Traffic Top-\(k\) & budget $k{=}249$ & 1.00 & Reactive short & Smoother & 0.00 & 1.00 (100/100) & 24.651 & [24.226, 25.079] & Second \\
+Inventory & replenishment & 1.00 & Small MLP & MA(7) & 0.01 & 0.99 (99/100) & 1.029 & [0.946, 1.111] & Corrob. \\
 \bottomrule
 \end{tabular}
-\end{table}
-\FloatBarrier
+\end{table*}
 
-In event-micro, the forecast-side winner remains Reactive sharp across frictions, but the deployed winner shifts to Calibrated baseline at friction 0.50 and Lagged smoother at friction 1.00. Table~\ref{tab:event-micro-selection-drift-main} reports the canonical fixed-threshold interface. The deployed-selection consequence is recurrent: the forecast-selected model is deployed-suboptimal in 69/100 and 99/100 seeds at these two friction levels. The same qualitative inversion persists under an alternate threshold, under a hysteresis-threshold interface, and when forecast-side ranking is recomputed with log loss.
+In the report card, Event-micro shows the clearest primary Q2 pattern: the forecast-side winner remains Reactive sharp, but the deployed winner changes to Calibrated baseline at friction 0.50 and Lagged smoother at friction 1.00. The deployed-selection consequence is recurrent: the forecast-selected model is deployed-suboptimal in 69/100 and 99/100 seeds at these two friction levels. The same qualitative inversion persists under an alternate threshold, under a hysteresis-threshold interface, and when forecast-side ranking is recomputed with log loss.
 
-\begin{table}[H]
-\centering
-\scriptsize
-\setlength{\tabcolsep}{3pt}
-\input{results/table_q2_selection_drift_event_micro_main.tex}
-\caption{Event-micro main evidence under the canonical fixed-threshold interface. The forecast-side winner remains Reactive sharp, while moderate-to-high friction changes the deployed winner and makes the forecast-selected model deployed-suboptimal in 69/100 and 99/100 seeds.}
-\label{tab:event-micro-selection-drift-main}
-\end{table}
+A second forecasting-native Traffic-Hourly Top-\(k\) alert task repeats the same selection failure under a fixed-budget alert interface. In the selected Top-\(k\) setting ($k=249$), Reactive short is both the forecast-side winner and the deployed winner at zero friction, with exact agreement $1.0$. Once switching costs are introduced, however, the forecast-side winner remains Reactive short while the deployed winner shifts to Lagged smoother, and deployed-suboptimality reaches $100/100$ seeds at both friction $0.5$ and friction $1.0$. A relative-rank Traffic variant shows the same qualitative pattern in the appendix.
 
-A second forecasting-native Traffic-Hourly Top-\(k\) alert task shows the same deployed-selection consequence under a different fixed-interface structure. In the selected Top-k setting ($k=249$), Reactive short is both the forecast-side winner and the deployed winner at zero friction, with exact agreement $1.0$. Once switching costs are introduced, however, the forecast-side winner remains Reactive short while the deployed winner shifts to Lagged smoother, and deployed-suboptimality reaches $100/100$ seeds at both friction $0.5$ and friction $1.0$. A relative-rank Traffic variant shows the same qualitative pattern in the appendix.
-
-Inventory is used only as operational corroboration, not as main forecasting-native evidence. At friction 0.50 and 1.00, the forecast-selected Small MLP is deployed-suboptimal in 9/10 and 10/10 seeds, respectively, under the fixed replenishment interface. Table~\ref{tab:q2-corroboration-compact} collects the Traffic-Hourly and inventory corroboration rows.
-
-\begin{table}[H]
-\centering
-\scriptsize
-\setlength{\tabcolsep}{2.5pt}
-\input{results/table_q2_corroboration_compact.tex}
-\caption{Cross-domain corroboration under fixed interfaces. Traffic-Hourly provides a second forecasting-native task family, and inventory provides operational corroboration; both show recurrent deployed-side misselection at moderate-to-high friction.}
-\label{tab:q2-corroboration-compact}
-\end{table}
+Inventory is used only as operational corroboration, not as main forecasting-native evidence. At friction 0.50 and 1.00, the forecast-selected Small MLP is deployed-suboptimal in 74/100 and 99/100 seeds, respectively, under the fixed replenishment interface; the report card includes only the high-friction inventory row to keep this role bounded.
 
 \paragraph{Q1 mechanism support.} Q1 explains why divergence can arise; Q2 is the actual benchmark-selection claim. Holding the proposed action path fixed, synthetic and inventory show that frictional interfaces can separate proposed and realized actions. Synthetic yields an increasing proposal-versus-realization gap away from zero friction, while inventory shows a threshold pattern in which sufficiently high friction favors tempered execution. Q2 then shows when that mechanism produces deployed misselection under one fixed interface.
 
@@ -221,6 +203,26 @@ J. Mandi, J. Kotary, S. Berden, M. Mulamba, V. Bucarey, T. Guns, and F. Fioretto
 
 \setlength{\tabcolsep}{4pt}
 \renewcommand{\arraystretch}{1.08}
+
+\begin{center}
+\fbox{
+\begin{minipage}{0.93\linewidth}
+\textbf{Minimum reporting standard for fixed-interface deployed-selection robustness.}
+For each domain $\times$ interface $\times$ friction cell, report:
+\begin{itemize}
+\item domain/task, seed count, and evaluation split;
+\item fixed forecast-to-decision interface and interface parameters;
+\item friction grid, including a zero-friction anchor when applicable;
+\item forecast-side metric and tie-breaking rule;
+\item forecast-side winner and deployed-side winner;
+\item agreement rate between forecast-side and deployed-side selection;
+\item deployed-suboptimal share/count of the forecast-selected model;
+\item mean and median paired deployed gap with uncertainty intervals;
+\item whether the zero-friction row is exact, mixed, or not applicable.
+\end{itemize}
+\end{minipage}
+}
+\end{center}
 
 \section{Event-Micro Robustness Package}
 \label{app:event-micro}
@@ -359,7 +361,7 @@ The relative-rank target shows the same qualitative separation under a different
 
 \subsection{Five-Family Inventory Corroboration}
 
-This appendix records the full five-family inventory summary that underlies the compact corroboration rows in the main text. The mixed zero and low-friction rows are reported here, while the main text uses only the moderate-to-high friction rows to avoid overstating the zero-friction story.
+This appendix records the full five-family inventory summary that underlies the bounded main-text inventory evidence. The mixed zero and low-friction rows are reported here, while the main text uses only the moderate-to-high friction rows to avoid overstating the zero-friction story.
 
 \begin{table}[H]
 \centering
