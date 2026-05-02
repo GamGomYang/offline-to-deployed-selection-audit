@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.4.4)  2 MAY 2026 18:06
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.4.4)  2 MAY 2026 23:16
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -872,7 +872,7 @@ File: pgflibraryarrows.meta.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 File: tikzlibrarypositioning.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 )
 LaTeX Font Info:    Trying to load font information for OT1+ptm on input line 2
-0.
+3.
 
 (C:\Users\김금영\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ot1ptm.fd
 File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
@@ -884,34 +884,34 @@ File: l3backend-pdftex.def 2025-10-09 L3 backend support: PDF output (pdfTeX)
 ) (paper_forecasting_workshop_v2.aux)
 \openout1 = `paper_forecasting_workshop_v2.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 20.
-LaTeX Font Info:    ... okay on input line 20.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 20.
-LaTeX Font Info:    ... okay on input line 20.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 20.
-LaTeX Font Info:    ... okay on input line 20.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 20.
-LaTeX Font Info:    ... okay on input line 20.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 20.
-LaTeX Font Info:    ... okay on input line 20.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 20.
-LaTeX Font Info:    ... okay on input line 20.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 20.
-LaTeX Font Info:    ... okay on input line 20.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 20.
-LaTeX Font Info:    ... okay on input line 20.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 20.
-LaTeX Font Info:    ... okay on input line 20.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
 Package microtype Info: Patching varwidth to enable character protrusion.
 \MT@vwid@leftmargin=\dimen323
 \MT@vwid@rightmargin=\dimen324
-LaTeX Info: Redefining \microtypecontext on input line 20.
-Package microtype Info: Applying patch `item' on input line 20.
-Package microtype Info: Applying patch `toc' on input line 20.
-Package microtype Info: Applying patch `eqnum' on input line 20.
-Package microtype Info: Applying patch `footnote' on input line 20.
-Package microtype Info: Applying patch `verbatim' on input line 20.
-LaTeX Info: Redefining \microtypesetup on input line 20.
+LaTeX Info: Redefining \microtypecontext on input line 23.
+Package microtype Info: Applying patch `item' on input line 23.
+Package microtype Info: Applying patch `toc' on input line 23.
+Package microtype Info: Applying patch `eqnum' on input line 23.
+Package microtype Info: Applying patch `footnote' on input line 23.
+Package microtype Info: Applying patch `verbatim' on input line 23.
+LaTeX Info: Redefining \microtypesetup on input line 23.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using default protrusion set `alltext'.
@@ -952,7 +952,7 @@ Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
 ys.cfg
 File: epstopdf-sys.cfg 2021/03/18 v2.0 Configuration of epstopdf for MiKTeX
 ))
-Package hyperref Info: Link coloring ON on input line 20.
+Package hyperref Info: Link coloring ON on input line 23.
  (paper_forecasting_workshop_v2.out) (paper_forecasting_workshop_v2.out)
 \@outlinefile=\write4
 \openout4 = `paper_forecasting_workshop_v2.out'.
@@ -966,7 +966,7 @@ g
 File: mt-cmr.cfg 2013/05/19 v2.2 microtype config. file: Computer Modern Roman 
 (RS)
 )
-LaTeX Font Info:    Trying to load font information for U+msa on input line 39.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 42.
 
  (C:\Users\김금영\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
@@ -975,7 +975,7 @@ File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 g
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 39.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 42.
 
  (C:\Users\김금영\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
@@ -985,25 +985,25 @@ g
 File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 )
 
-Package hyperref Warning: Ignoring empty anchor on input line 41.
+Package hyperref Warning: Ignoring empty anchor on input line 44.
 
 LaTeX Font Info:    Trying to load font information for OML+ptm on input line 4
-1.
+4.
 (C:\Users\김금영\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\omlptm.fd
 File: omlptm.fd 
 )
 LaTeX Font Info:    Font shape `OML/ptm/m/n' in size <9> not available
-(Font)              Font shape `OML/cmm/m/it' tried instead on input line 41.
+(Font)              Font shape `OML/cmm/m/it' tried instead on input line 44.
 <assets/figures/fig1_fixed_interface_inversion.pdf, id=6, 397.04837pt x 228.063
 03pt>
 File: assets/figures/fig1_fixed_interface_inversion.pdf Graphic file (type pdf)
 
 <use assets/figures/fig1_fixed_interface_inversion.pdf>
 Package pdftex.def Info: assets/figures/fig1_fixed_interface_inversion.pdf  use
-d on input line 53.
+d on input line 56.
 (pdftex.def)             Requested size: 478.06395pt x 274.60689pt.
 LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 6
-1.
+4.
 
 (C:\Users\김금영\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ts1ptm.fd
 File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
@@ -1016,19 +1016,17 @@ s/김금영/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc}
 ]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [2 <./assets/figures/fig1_fixed_interface_inversion.pdf>]
-Underfull \vbox (badness 2111) has occurred while \output is active []
+ [2 <./assets/figures/fig1_fixed_interface_inversion.pdf>] [3] [4
 
- [3]
-[4
 
-] (results/table_q2_selection_drift_event_micro.tex)
+]
+(results/table_q2_selection_drift_event_micro.tex)
 <assets/figures/fig_q2_event_micro_support.png, id=115, 247.0028pt x 181.9598pt
 >
 File: assets/figures/fig_q2_event_micro_support.png Graphic file (type png)
 <use assets/figures/fig_q2_event_micro_support.png>
 Package pdftex.def Info: assets/figures/fig_q2_event_micro_support.png  used on
- input line 244.
+ input line 251.
 (pdftex.def)             Requested size: 448.79579pt x 330.61757pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -1051,7 +1049,7 @@ File: assets/figures/fig_event_micro_interface_uncertainty_appendix.png Graphic
  file (type png)
 <use assets/figures/fig_event_micro_interface_uncertainty_appendix.png>
 Package pdftex.def Info: assets/figures/fig_event_micro_interface_uncertainty_a
-ppendix.png  used on input line 310.
+ppendix.png  used on input line 317.
 (pdftex.def)             Requested size: 458.55432pt x 292.62393pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -1071,7 +1069,7 @@ Underfull \vbox (badness 4242) has occurred while \output is active []
 File: assets/figures/fig_q1_results_v2.png Graphic file (type png)
 <use assets/figures/fig_q1_results_v2.png>
 Package pdftex.def Info: assets/figures/fig_q1_results_v2.png  used on input li
-ne 451.
+ne 458.
 (pdftex.def)             Requested size: 439.03726pt x 172.48503pt.
 
 (results/table_q2_recurrence_tests.tex)
@@ -1084,7 +1082,7 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 File: assets/figures/fig_q2_uncertainty_appendix.png Graphic file (type png)
 <use assets/figures/fig_q2_uncertainty_appendix.png>
 Package pdftex.def Info: assets/figures/fig_q2_uncertainty_appendix.png  used o
-n input line 486.
+n input line 494.
 (pdftex.def)             Requested size: 458.55432pt x 175.66833pt.
  [11 <./assets/figures/fig_q2_uncertainty_appendix.png (PNG copy)>] (paper_fore
 casting_workshop_v2.aux)
@@ -1097,11 +1095,11 @@ hanged.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 27267 strings out of 467871
- 510667 string characters out of 5416441
- 941342 words of memory out of 5000000
- 55307 multiletter control sequences out of 15000+600000
- 659974 words of font info for 259 fonts, out of 8000000 for 9000
+ 27274 strings out of 467871
+ 510748 string characters out of 5416441
+ 936241 words of memory out of 5000000
+ 55308 multiletter control sequences out of 15000+600000
+ 660212 words of font info for 263 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  84i,12n,94p,1323b,623s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Users/김금영/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts
@@ -1109,20 +1107,21 @@ Here is how much of TeX's memory you used:
 blic/amsfonts/cm/cmmi7.pfb><C:/Users/김금영/AppData/Local/Programs/MiKTeX/fo
 nts/type1/public/amsfonts/cm/cmmi9.pfb><C:/Users/김금영/AppData/Local/Progra
 ms/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/김금영/AppData/
-Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:/Users/김금�
-��/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr9.pfb><C:/Us
-ers/김금영/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy
-10.pfb><C:/Users/김금영/AppData/Local/Programs/MiKTeX/fonts/type1/public/ams
-fonts/cm/cmsy7.pfb><C:/Users/김금영/AppData/Local/Programs/MiKTeX/fonts/type
-1/public/amsfonts/cm/cmsy9.pfb><C:/Users/김금영/AppData/Local/Programs/MiKTe
-X/fonts/type1/urw/helvetic/uhvb8a.pfb><C:/Users/김금영/AppData/Local/Program
-s/MiKTeX/fonts/type1/urw/helvetic/uhvr8a.pfb><C:/Users/김금영/AppData/Local/
-Programs/MiKTeX/fonts/type1/urw/times/utmb8a.pfb><C:/Users/김금영/AppData/Lo
-cal/Programs/MiKTeX/fonts/type1/urw/times/utmr8a.pfb><C:/Users/김금영/AppDat
-a/Local/Programs/MiKTeX/fonts/type1/urw/times/utmri8a.pfb>
-Output written on paper_forecasting_workshop_v2.pdf (11 pages, 1220333 bytes).
+Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr6.pfb><C:/Users/김금�
+��/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:/Us
+ers/김금영/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr9
+.pfb><C:/Users/김금영/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfo
+nts/cm/cmsy10.pfb><C:/Users/김금영/AppData/Local/Programs/MiKTeX/fonts/type1
+/public/amsfonts/cm/cmsy7.pfb><C:/Users/김금영/AppData/Local/Programs/MiKTeX
+/fonts/type1/public/amsfonts/cm/cmsy9.pfb><C:/Users/김금영/AppData/Local/Pro
+grams/MiKTeX/fonts/type1/urw/helvetic/uhvb8a.pfb><C:/Users/김금영/AppData/Lo
+cal/Programs/MiKTeX/fonts/type1/urw/helvetic/uhvr8a.pfb><C:/Users/김금영/App
+Data/Local/Programs/MiKTeX/fonts/type1/urw/times/utmb8a.pfb><C:/Users/김금영
+/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmr8a.pfb><C:/Users/김�
+�영/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmri8a.pfb>
+Output written on paper_forecasting_workshop_v2.pdf (11 pages, 1231808 bytes).
 PDF statistics:
- 242 PDF objects out of 1000 (max. 8388607)
+ 249 PDF objects out of 1000 (max. 8388607)
  61 named destinations out of 1000 (max. 500000)
  45606 words of extra memory for PDF output out of 51595 (max. 10000000)
 

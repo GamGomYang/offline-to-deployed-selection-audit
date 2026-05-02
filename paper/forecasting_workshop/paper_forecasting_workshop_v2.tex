@@ -4,6 +4,9 @@
 \usepackage{graphicx}
 \usepackage{hyperref}
 \usepackage{icml2026}
+\makeatletter
+\renewcommand{\icmlruler}[1]{}
+\makeatother
 \usepackage{amsmath,amssymb}
 \usepackage{booktabs}
 \usepackage{array}
@@ -72,8 +75,8 @@ We use Q1/Q2 only to separate mechanism from model-selection evidence. Q1 fixes 
 
 Q2 asks the paper's headline reporting question: under one fixed forecast-to-decision interface, does the forecast-side winner remain the deployed-side winner? Table~\ref{tab:deployed-selection-report-card} reports the resulting deployed-selection robustness report card. The zero-friction synthetic row is a sanity anchor. Event-micro and Traffic-Hourly provide forecasting-native Q2 evidence under two different fixed-interface structures, while inventory is included only as operational corroboration. Figure~\ref{fig:fixed-interface-inversion} visualizes the main winner-inversion evidence across the forecasting-native and corroboration rows.
 
-\begin{table*}[t]
-\caption{Deployed-selection robustness report card. Each row reports one domain $\times$ fixed interface $\times$ friction cell and records whether the forecast-side winner remains the deployed-side winner after the same fixed interface is applied. Subopt. reports the seed-level deployed-suboptimal share/count. The 95\% CI column reports the bootstrap CI for the mean deployed gap, not the binomial CI for the suboptimal share.}
+\begin{table*}[!t]
+\caption{Deployed-selection robustness report card. Each row reports one domain $\times$ fixed interface $\times$ friction cell and records whether the forecast-side winner remains the deployed-side winner after the same fixed interface is applied. Agreement rate is the fraction of matched seeds for which the forecast-side selected model is also the deployed-side best model; deployed-suboptimal share is the complementary fraction; deployed gap is the paired deployed-utility shortfall of the forecast-selected model relative to the deployed winner. Subopt. reports the seed-level deployed-suboptimal share/count. The 95\% CI column reports the paired-bootstrap CI for the mean deployed gap, not the binomial CI for the suboptimal share.}
 \label{tab:deployed-selection-report-card}
 \centering
 \scriptsize
@@ -92,11 +95,13 @@ Inventory & replenishment & 1.00 & Small MLP & MA(7) & 0.01 & 0.99 (99/100) & 1.
 \end{tabular}
 \end{table*}
 
-In the report card, Event-micro shows the clearest primary Q2 pattern: the forecast-side winner remains Reactive sharp, but the deployed winner changes to Calibrated baseline at friction 0.50 and Lagged smoother at friction 1.00. The deployed-selection consequence is recurrent: the forecast-selected model is deployed-suboptimal in 69/100 and 99/100 seeds at these two friction levels. The same qualitative inversion persists under an alternate threshold, under a hysteresis-threshold interface, and when forecast-side ranking is recomputed with log loss.
+In the report card, Event-micro shows the clearest primary Q2 pattern: the forecast-side winner remains Reactive sharp, but the deployed winner changes to Calibrated baseline at friction 0.50 and Lagged smoother at friction 1.00. The deployed-selection consequence is recurrent: the forecast-selected model is deployed-suboptimal in 69/100 and 99/100 seeds at these two friction levels. The event-micro result is not confined to the canonical threshold or Brier ranking: at frictions 0.50/1.00, deployed-suboptimality remains 77/100 and 98/100 under an alternate threshold, 74/100 and 99/100 under log-loss reranking, and 55/100 and 82/100 under a hysteresis interface, where the direction is preserved with smaller magnitude.
 
 A second forecasting-native Traffic-Hourly Top-\(k\) alert task repeats the same selection failure under a fixed-budget alert interface. In the selected Top-\(k\) setting ($k=249$), Reactive short is both the forecast-side winner and the deployed winner at zero friction, with exact agreement $1.0$. Once switching costs are introduced, however, the forecast-side winner remains Reactive short while the deployed winner shifts to Lagged smoother, and deployed-suboptimality reaches $100/100$ seeds at both friction $0.5$ and friction $1.0$. A relative-rank Traffic variant shows the same qualitative pattern in the appendix.
 
 Inventory is used only as operational corroboration, not as main forecasting-native evidence. At friction 0.50 and 1.00, the forecast-selected Small MLP is deployed-suboptimal in 74/100 and 99/100 seeds, respectively, under the fixed replenishment interface; the report card includes only the high-friction inventory row to keep this role bounded.
+
+\FloatBarrier
 
 \paragraph{Q1 mechanism support.} Q1 explains why divergence can arise; Q2 is the actual benchmark-selection claim. Holding the proposed action path fixed, synthetic and inventory show that frictional interfaces can separate proposed and realized actions. Synthetic yields an increasing proposal-versus-realization gap away from zero friction, while inventory shows a threshold pattern in which sufficiently high friction favors tempered execution. Q2 then shows when that mechanism produces deployed misselection under one fixed interface.
 
@@ -110,7 +115,9 @@ Inventory is used only as operational corroboration, not as main forecasting-nat
 
 This differs from proper scoring rules, decision-maker-perspective forecast evaluation, decision-focused learning, and predict-then-optimize, which either evaluate forecast quality/value or modify training/optimization objectives for downstream tasks \cite{gneiting2007,murphy1993,raeth2025,donti2017task,elmachtoub2021spo,mandi2024decisionfocused}. Here, forecasters are fixed, and only the evaluation object changes.
 
-\paragraph{Discussion and limitations.} Our claim is evaluative and deliberately narrow. We do not claim that forecast-side metrics are invalid for prediction, and we do not seek a single reporting rule for all forecasting applications. Event-micro provides the main forecasting-native evidence, Traffic-Hourly provides a second forecasting-native task family, and inventory provides operational corroboration, but this is still not a broad benchmark suite. Broader inventory sweeps are reported in the appendix, and load-following is secondary; the strongest main-text evidence comes from the moderate-to-high friction settings studied here. Our results therefore support a reporting recommendation: deployment-facing forecasting benchmarks should consider reporting fixed-interface deployed-selection robustness alongside standard forecast-side metrics.
+\paragraph{Discussion and limitations.} Our claim is evaluative and deliberately narrow. We do not claim that forecast-side metrics are invalid for prediction, and we do not seek a single reporting rule for all forecasting applications. We use low, moderate, and high only as shorthand for the lower, middle, and upper parts of each domain's tested friction grid; these labels are not intended as a universal calibration across domains. Event-micro provides the main forecasting-native evidence, Traffic-Hourly provides a second forecasting-native task family, and inventory provides operational corroboration, but this is still not a broad benchmark suite. Broader inventory sweeps are reported in the appendix, and load-following is secondary; the strongest main-text evidence comes from the moderate-to-high friction settings studied here. Our results therefore support a reporting recommendation: deployment-facing forecasting benchmarks should consider reporting fixed-interface deployed-selection robustness alongside standard forecast-side metrics.
+
+\clearpage
 
 \begingroup
 \small
@@ -289,7 +296,7 @@ This addendum records interface-specific recurrence and gap summaries for the hy
 \begin{adjustbox}{max width=\linewidth}
 \input{results/table_event_micro_interface_recurrence_tests.tex}
 \end{adjustbox}
-\caption{Interface-aware recurrence tests for event-micro deployed-suboptimality. The canonical fixed threshold shows stronger recurrence, while hysteresis preserves the same direction with smaller magnitudes.}
+\caption{Interface-aware recurrence and share uncertainty for event-micro deployed-suboptimality. The canonical fixed threshold shows stronger recurrence, while hysteresis preserves the same direction with smaller magnitudes.}
 \label{tab:event-micro-interface-recurrence-tests}
 \end{table}
 
@@ -334,7 +341,7 @@ The aggregate recurrence table reports the seed-level pattern directly, replacin
 \begin{adjustbox}{max width=\linewidth}
 \input{results/table_q2_selection_drift_traffic_topk_main.tex}
 \end{adjustbox}
-\caption{Traffic-Hourly Top-k corroboration under a fixed interface. Agreement is strongest at zero friction and weakens at higher friction, where the deployed winner shifts away from the forecast-side winner.}
+\caption{Traffic-Hourly Top-\(k\) forecasting-native Q2 check under a fixed-budget interface. Agreement is strongest at zero friction and weakens at higher friction, where the deployed winner shifts away from the forecast-side winner.}
 \label{tab:traffic-topk-alert-support}
 \end{table}
 
@@ -348,7 +355,7 @@ In the selected Top-k setting, Reactive short is the forecast-side winner and th
 \begin{adjustbox}{max width=\linewidth}
 \input{results/table_q2_selection_drift_traffic_relative_rank_support.tex}
 \end{adjustbox}
-\caption{Traffic-Hourly relative-rank corroboration. The same qualitative separation between forecast-side and deployed-side selection appears under fixed-budget set action.}
+\caption{Traffic-Hourly relative-rank appendix variant. The same qualitative separation between forecast-side and deployed-side selection appears under fixed-budget set action.}
 \label{tab:traffic-relative-rank-support}
 \end{table}
 
@@ -455,9 +462,10 @@ Q1 serves only as mechanism support for why Q2 divergence can arise. Holding the
 
 \FloatBarrier
 
-\section{Additional Uncertainty and Seed Recurrence}
+\section{Uncertainty Reporting for Seed-Level Recurrence and Deployed Gaps}
+\label{app:uncertainty-reporting}
 
-This appendix collects cross-domain seed-level reliability checks for the main Q2 rows. These appendix additions do not overturn the narrower main-text claim.
+This appendix reports uncertainty for the seed-level recurrence and paired deployed-gap summaries used in the main report card. We emphasize intervals and paired shortfalls rather than hypothesis-test significance. For binary share summaries, rows with fewer than 30 matched seeds use Clopper--Pearson exact intervals; rows with at least 30 matched seeds use Wilson intervals. For continuous deployed gaps, we use 10,000 paired seed bootstrap resamples. We report these intervals as descriptive uncertainty summaries for the reporting diagnostic, not as hypothesis-test evidence for a universal effect.
 
 \begin{table}[H]
 \centering
@@ -465,11 +473,11 @@ This appendix collects cross-domain seed-level reliability checks for the main Q
 \begin{adjustbox}{max width=\linewidth}
 \input{results/table_q2_recurrence_tests.tex}
 \end{adjustbox}
-\caption{Seed-level recurrence tests for deployed-suboptimality. Event-micro and inventory show the strongest majority recurrence; load-following remains directional.}
-\label{tab:q2-recurrence-tests}
+\caption{Seed-level recurrence and share uncertainty for deployed-suboptimality. Agreement rate is the fraction of matched seeds for which the forecast-side selected model is also the deployed-side best model; deployed-suboptimal share is the complementary fraction. We report Clopper--Pearson exact intervals for rows with $n<30$ and Wilson intervals otherwise.}
+\label{tab:q2-recurrence-share-ci}
 \end{table}
 
-Aggregate recurrence tests and uncertainty bands summarize the seed-level pattern without the dense seed-strip visualization.
+Aggregate recurrence intervals and uncertainty bands summarize the seed-level pattern without the dense seed-strip visualization.
 
 \begin{table}[H]
 \centering
@@ -477,19 +485,19 @@ Aggregate recurrence tests and uncertainty bands summarize the seed-level patter
 \begin{adjustbox}{max width=\linewidth}
 \input{results/table_q2_gap_bootstrap_cis.tex}
 \end{adjustbox}
-\caption{Bootstrap intervals for deployed-gap rows. Event-micro and inventory provide the strongest positive-gap support; load-following remains directional.}
+\caption{Paired-bootstrap intervals for deployed-gap rows. Deployed gap is the paired deployed-utility shortfall $U_{\mathrm{best}} - U_{\mathrm{forecast\mbox{-}selected}}$ computed within each matched seed. Intervals use 10,000 paired seed bootstrap resamples. Event-micro and Traffic-Hourly provide the main forecasting-native Q2 gap evidence; inventory is operational corroboration; load-following remains appendix-only directional context.}
 \label{tab:q2-gap-bootstrap-cis}
 \end{table}
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.94\linewidth]{assets/figures/fig_q2_uncertainty_appendix.png}
-\caption{Q2 uncertainty bands for synthetic and event-micro. Panels show mean flip-rate bands and exact 95\% binomial intervals for deployed-suboptimal share.}
+\caption{Q2 uncertainty bands for synthetic and event-micro. Panels show mean flip-rate bands and share-uncertainty intervals for deployed-suboptimality, using the interval convention described in Appendix~\ref{app:uncertainty-reporting}.}
 \label{fig:q2-uncertainty}
 \end{figure}
 
 % Removed from compiled appendix: dense seed-strip.
-% Aggregate recurrence and uncertainty evidence are reported in Table~\ref{tab:q2-recurrence-tests} and Figure~\ref{fig:q2-uncertainty}.
+% Aggregate recurrence and uncertainty evidence are reported in Table~\ref{tab:q2-recurrence-share-ci} and Figure~\ref{fig:q2-uncertainty}.
 % \begin{figure}[H]
 % \centering
 % \includegraphics[width=\appwidefigwidth]{assets/figures/fig_q2_seed_recurrence_appendix.png}
