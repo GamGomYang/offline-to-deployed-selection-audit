@@ -1,0 +1,5 @@
+domain,friction_level,n_seeds,most_frequent_forecast_best,most_frequent_deployed_best,agreement_rate,disagreement_rate,deployed_suboptimal_seed_count,deployed_suboptimal_seed_fraction,deployed_suboptimal_seeds_over_total,mean_deployed_gap_of_forecast_selected,median_deployed_gap_of_forecast_selected
+synthetic,0.0,20,naive_last,naive_last,1.0,0.0,0,0.0,0/20,0.0,0.0
+synthetic,0.25,20,naive_last,noisy_overreactive,0.0,1.0,20,1.0,20/20,0.009589226972475915,0.009567984490041953
+synthetic,0.5,20,naive_last,noisy_overreactive,0.0,1.0,20,1.0,20/20,0.008137746182890671,0.008144468722551798
+synthetic,1.0,20,naive_last,noisy_overreactive,0.0,1.0,20,1.0,20/20,0.006933707490661531,0.006960099471904249
