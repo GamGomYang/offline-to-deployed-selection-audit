@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.4.4)  30 APR 2026 15:36
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.4.4)  1 MAY 2026 18:08
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -994,32 +994,39 @@ File: omlptm.fd
 )
 LaTeX Font Info:    Font shape `OML/ptm/m/n' in size <9> not available
 (Font)              Font shape `OML/cmm/m/it' tried instead on input line 41.
-LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 5
-6.
-
-(C:\Users\김금영\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ts1ptm.fd
-File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
-)
-Underfull \hbox (badness 2065) in paragraph at lines 58--59
-\OT1/ptm/m/n/10 (+20) forecast-side win-ner be-comes re-cur-rently deployed-
- []
-
 <assets/figures/fig1_fixed_interface_inversion.pdf, id=6, 397.04837pt x 228.063
 03pt>
 File: assets/figures/fig1_fixed_interface_inversion.pdf Graphic file (type pdf)
 
 <use assets/figures/fig1_fixed_interface_inversion.pdf>
 Package pdftex.def Info: assets/figures/fig1_fixed_interface_inversion.pdf  use
-d on input line 64.
+d on input line 53.
 (pdftex.def)             Requested size: 478.06395pt x 274.60689pt.
+LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 6
+1.
+
+(C:\Users\김금영\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ts1ptm.fd
+File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
+)
 [1{C:/Users/김금영/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/User
 s/김금영/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc}
 
 
 
 ]
-Underfull \vbox (badness 10000) has occurred while \output is active []
+Underfull \hbox (badness 10000) in paragraph at lines 86--87
+[]|\OT1/ptm/m/n/9 (+20) main forecasting-
+ []
 
+
+Underfull \hbox (badness 10000) in paragraph at lines 87--88
+[]|\OT1/ptm/m/n/9 (+20) second forecasting-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 89--90
+[]|\OT1/ptm/m/n/9 (+20) secondary/fairness
+ []
 
 (results/table_q2_selection_drift_event_micro_main.tex)
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -1051,12 +1058,6 @@ Underfull \hbox (badness 10000) in paragraph at lines 12--12
  []
 
 )
-Underfull \hbox (badness 7116) in paragraph at lines 123--124
- \OT1/ptm/b/n/10 (+20) Ap-pendix ro-bust-ness. \OT1/ptm/m/n/10 (+20) Ap-pendix 
-re-ports thresh-old,
- []
-
-
 Underfull \vbox (badness 1142) has occurred while \output is active []
 
  [3]
@@ -1066,7 +1067,7 @@ Underfull \vbox (badness 1142) has occurred while \output is active []
 File: assets/figures/fig_q2_event_micro_support.png Graphic file (type png)
 <use assets/figures/fig_q2_event_micro_support.png>
 Package pdftex.def Info: assets/figures/fig_q2_event_micro_support.png  used on
- input line 244.
+ input line 242.
 (pdftex.def)             Requested size: 448.79579pt x 330.61757pt.
 
 (results/table_q2_selection_drift_event_micro_threshold_robustness.tex)
@@ -1086,7 +1087,7 @@ File: assets/figures/fig_event_micro_interface_uncertainty_appendix.png Graphic
  file (type png)
 <use assets/figures/fig_event_micro_interface_uncertainty_appendix.png>
 Package pdftex.def Info: assets/figures/fig_event_micro_interface_uncertainty_a
-ppendix.png  used on input line 310.
+ppendix.png  used on input line 308.
 (pdftex.def)             Requested size: 458.55432pt x 292.62393pt.
  [6]
 (results/table_q2_selection_drift_traffic_topk_main.tex)
@@ -1096,7 +1097,7 @@ ts/figures/fig_event_micro_interface_uncertainty_appendix.png (PNG copy)>]
 (results/table_step5_same_interface_summary.tex)
 (results/table_q2_stronger_baseline_robustness.tex)
 (results/table_load_following_support_summary.tex) [8]
-<assets/figures/fig_q1_results_v2.png, id=157, 499.9478pt x 196.4138pt>
+<assets/figures/fig_q1_results_v2.png, id=158, 499.9478pt x 196.4138pt>
 File: assets/figures/fig_q1_results_v2.png Graphic file (type png)
 <use assets/figures/fig_q1_results_v2.png>
 Package pdftex.def Info: assets/figures/fig_q1_results_v2.png  used on input li
@@ -1105,7 +1106,7 @@ ne 449.
 
 (results/table_q2_recurrence_tests.tex) (results/table_q2_gap_bootstrap_cis.tex
 ) [9 <./assets/figures/fig_q1_results_v2.png (PNG copy)>]
-<assets/figures/fig_q2_uncertainty_appendix.png, id=167, 531.586pt x 203.6408pt
+<assets/figures/fig_q2_uncertainty_appendix.png, id=168, 531.586pt x 203.6408pt
 >
 File: assets/figures/fig_q2_uncertainty_appendix.png Graphic file (type png)
 <use assets/figures/fig_q2_uncertainty_appendix.png>
@@ -1123,13 +1124,13 @@ hanged.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 27288 strings out of 467871
- 511426 string characters out of 5416441
- 940364 words of memory out of 5000000
- 55311 multiletter control sequences out of 15000+600000
- 661822 words of font info for 266 fonts, out of 8000000 for 9000
+ 27283 strings out of 467871
+ 511411 string characters out of 5416441
+ 940515 words of memory out of 5000000
+ 55312 multiletter control sequences out of 15000+600000
+ 661581 words of font info for 262 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 84i,11n,94p,1404b,623s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 84i,11n,94p,1323b,623s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Users/김금영/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts
 /cm/cmmi10.pfb><C:/Users/김금영/AppData/Local/Programs/MiKTeX/fonts/type1/pu
 blic/amsfonts/cm/cmmi7.pfb><C:/Users/김금영/AppData/Local/Programs/MiKTeX/fo
@@ -1144,9 +1145,9 @@ helvetic/uhvr8a.pfb><C:/Users/김금영/AppData/Local/Programs/MiKTeX/fonts/typ
 e1/urw/times/utmb8a.pfb><C:/Users/김금영/AppData/Local/Programs/MiKTeX/fonts
 /type1/urw/times/utmr8a.pfb><C:/Users/김금영/AppData/Local/Programs/MiKTeX/f
 onts/type1/urw/times/utmri8a.pfb>
-Output written on paper_forecasting_workshop_v2.pdf (10 pages, 1198033 bytes).
+Output written on paper_forecasting_workshop_v2.pdf (10 pages, 1200352 bytes).
 PDF statistics:
- 225 PDF objects out of 1000 (max. 8388607)
+ 228 PDF objects out of 1000 (max. 8388607)
  62 named destinations out of 1000 (max. 500000)
  49702 words of extra memory for PDF output out of 51595 (max. 10000000)
 
