@@ -1,5 +1,5 @@
 # Fdb version 4
-["pdflatex"] 1777876190.17079 "paper_forecasting_workshop_v2.tex" "paper_forecasting_workshop_v2.pdf" "paper_forecasting_workshop_v2" 1777876195.11396 0
+["pdflatex"] 1777876453.40735 "paper_forecasting_workshop_v2.tex" "paper_forecasting_workshop_v2.pdf" "paper_forecasting_workshop_v2" 1777876459.1182 0
   "C:/Users/김금영/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map" 1777477166 82507 a9eef8696c92627b87e9975edea03b2a ""
   "C:/Users/김금영/AppData/Local/MiKTeX/miktex/data/le/pdftex/pdflatex.fmt" 1775291030 13335422 e35e815d885c0a1029bd8ba154087707 ""
   "C:/Users/김금영/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc" 1458473887 4993 80dc9bab7f31fb78a000ccfed0e27cab ""
@@ -200,9 +200,9 @@
   "assets/figures/fig_q2_event_micro_support.png" 1777448575 78986 26a440ea447a075f88992bb136ad164a ""
   "assets/figures/fig_q2_uncertainty_appendix.png" 1777448575 296560 53d40c2c027db3a2550482016d7fbd80 ""
   "icml2026.sty" 1777448575 28111 8c96f291f57623e81d0a232c8de55616 ""
-  "paper_forecasting_workshop_v2.aux" 1777876194 9229 30479e314cac84c439a93bf57ebd1545 "pdflatex"
-  "paper_forecasting_workshop_v2.out" 1777876193 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
-  "paper_forecasting_workshop_v2.tex" 1777876178 35853 8d4bf96cf14db3a2cd429fbaa98d2781 ""
+  "paper_forecasting_workshop_v2.aux" 1777876458 9229 30479e314cac84c439a93bf57ebd1545 "pdflatex"
+  "paper_forecasting_workshop_v2.out" 1777876457 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
+  "paper_forecasting_workshop_v2.tex" 1777876445 35869 6dbdabb791e16a7d515f24400404a0f7 ""
   "results/table_epsilon_tie_sensitivity.tex" 1777876032 3240 66c6c7a8b652afe2bffa6907bb580798 ""
   "results/table_event_micro_interface_gap_bootstrap_cis.tex" 1777449884 518 00c1f849dc5245beb561e40b696f3780 ""
   "results/table_event_micro_interface_recurrence_tests.tex" 1777730819 504 ee4c69935ede864f059e5444ec3520ec ""

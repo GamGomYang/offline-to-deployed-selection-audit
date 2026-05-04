@@ -498,20 +498,22 @@ Aggregate recurrence intervals and uncertainty bands summarize the seed-level pa
 \label{fig:q2-uncertainty}
 \end{figure}
 
+\FloatBarrier
+
 \subsection{Epsilon-Tie Sensitivity}
 
 The audit covers Event-micro, Traffic-Hourly Top-\(k\), Inventory, and the appendix-only Load-following check; Load-following remains appendix-only because its lower-margin rows are tie-sensitive or partially sensitive.
 
-\begin{table*}[!t]
+\begin{table}[H]
 \caption{\(\epsilon\)-tie sensitivity for the gated main report-card domains and the appendix-only Load-following check. A seed is tie-compatible when the deployed shortfall of the forecast-selected model is at most \(\epsilon_{\mathrm{rel}} S + 10^{-12}\), where \(S\) is the median seed-level deployed-utility scale within the row. Adjusted agreement equals \(1-\) adjusted suboptimal share.}
 \label{tab:epsilon-tie-sensitivity}
 \centering
 \scriptsize
 \setlength{\tabcolsep}{2.2pt}
-\begin{adjustbox}{width=\textwidth}
+\begin{adjustbox}{max width=\linewidth}
 \input{results/table_epsilon_tie_sensitivity.tex}
 \end{adjustbox}
-\end{table*}
+\end{table}
 
 % Removed from compiled appendix: dense seed-strip.
 % Aggregate recurrence and uncertainty evidence are reported in Table~\ref{tab:q2-recurrence-share-ci} and Figure~\ref{fig:q2-uncertainty}.
