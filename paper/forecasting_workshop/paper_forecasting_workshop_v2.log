@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.4.4)  2 MAY 2026 23:16
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.4.4)  4 MAY 2026 15:29
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1016,17 +1016,20 @@ s/김금영/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc}
 ]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
  [2 <./assets/figures/fig1_fixed_interface_inversion.pdf>] [3] [4
 
 
 ]
 (results/table_q2_selection_drift_event_micro.tex)
-<assets/figures/fig_q2_event_micro_support.png, id=115, 247.0028pt x 181.9598pt
+<assets/figures/fig_q2_event_micro_support.png, id=116, 247.0028pt x 181.9598pt
 >
 File: assets/figures/fig_q2_event_micro_support.png Graphic file (type png)
 <use assets/figures/fig_q2_event_micro_support.png>
 Package pdftex.def Info: assets/figures/fig_q2_event_micro_support.png  used on
- input line 251.
+ input line 253.
 (pdftex.def)             Requested size: 448.79579pt x 330.61757pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -1049,7 +1052,7 @@ File: assets/figures/fig_event_micro_interface_uncertainty_appendix.png Graphic
  file (type png)
 <use assets/figures/fig_event_micro_interface_uncertainty_appendix.png>
 Package pdftex.def Info: assets/figures/fig_event_micro_interface_uncertainty_a
-ppendix.png  used on input line 317.
+ppendix.png  used on input line 319.
 (pdftex.def)             Requested size: 458.55432pt x 292.62393pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -1069,7 +1072,7 @@ Underfull \vbox (badness 4242) has occurred while \output is active []
 File: assets/figures/fig_q1_results_v2.png Graphic file (type png)
 <use assets/figures/fig_q1_results_v2.png>
 Package pdftex.def Info: assets/figures/fig_q1_results_v2.png  used on input li
-ne 458.
+ne 460.
 (pdftex.def)             Requested size: 439.03726pt x 172.48503pt.
 
 (results/table_q2_recurrence_tests.tex)
@@ -1082,10 +1085,14 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 File: assets/figures/fig_q2_uncertainty_appendix.png Graphic file (type png)
 <use assets/figures/fig_q2_uncertainty_appendix.png>
 Package pdftex.def Info: assets/figures/fig_q2_uncertainty_appendix.png  used o
-n input line 494.
+n input line 496.
 (pdftex.def)             Requested size: 458.55432pt x 175.66833pt.
- [11 <./assets/figures/fig_q2_uncertainty_appendix.png (PNG copy)>] (paper_fore
-casting_workshop_v2.aux)
+
+(results/table_epsilon_tie_sensitivity.tex)
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [11 <./assets/figures/fig_q2_uncertainty_appendix.png (PNG copy)>] [12]
+(paper_forecasting_workshop_v2.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2025-12-24>
@@ -1095,33 +1102,36 @@ hanged.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 27274 strings out of 467871
- 510748 string characters out of 5416441
- 936241 words of memory out of 5000000
- 55308 multiletter control sequences out of 15000+600000
- 660212 words of font info for 263 fonts, out of 8000000 for 9000
+ 27287 strings out of 467871
+ 511170 string characters out of 5416441
+ 962629 words of memory out of 5000000
+ 55312 multiletter control sequences out of 15000+600000
+ 660413 words of font info for 265 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  84i,12n,94p,1323b,623s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Users/김금영/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts
 /cm/cmmi10.pfb><C:/Users/김금영/AppData/Local/Programs/MiKTeX/fonts/type1/pu
-blic/amsfonts/cm/cmmi7.pfb><C:/Users/김금영/AppData/Local/Programs/MiKTeX/fo
-nts/type1/public/amsfonts/cm/cmmi9.pfb><C:/Users/김금영/AppData/Local/Progra
-ms/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/김금영/AppData/
-Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr6.pfb><C:/Users/김금�
-��/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:/Us
-ers/김금영/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr9
-.pfb><C:/Users/김금영/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfo
-nts/cm/cmsy10.pfb><C:/Users/김금영/AppData/Local/Programs/MiKTeX/fonts/type1
-/public/amsfonts/cm/cmsy7.pfb><C:/Users/김금영/AppData/Local/Programs/MiKTeX
-/fonts/type1/public/amsfonts/cm/cmsy9.pfb><C:/Users/김금영/AppData/Local/Pro
-grams/MiKTeX/fonts/type1/urw/helvetic/uhvb8a.pfb><C:/Users/김금영/AppData/Lo
-cal/Programs/MiKTeX/fonts/type1/urw/helvetic/uhvr8a.pfb><C:/Users/김금영/App
-Data/Local/Programs/MiKTeX/fonts/type1/urw/times/utmb8a.pfb><C:/Users/김금영
-/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmr8a.pfb><C:/Users/김�
-�영/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmri8a.pfb>
-Output written on paper_forecasting_workshop_v2.pdf (11 pages, 1231808 bytes).
+blic/amsfonts/cm/cmmi5.pfb><C:/Users/김금영/AppData/Local/Programs/MiKTeX/fo
+nts/type1/public/amsfonts/cm/cmmi7.pfb><C:/Users/김금영/AppData/Local/Progra
+ms/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi9.pfb><C:/Users/김금영/AppData/
+Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/김금
+영/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr6.pfb><C:/U
+sers/김금영/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr
+7.pfb><C:/Users/김금영/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsf
+onts/cm/cmr9.pfb><C:/Users/김금영/AppData/Local/Programs/MiKTeX/fonts/type1/
+public/amsfonts/cm/cmsy10.pfb><C:/Users/김금영/AppData/Local/Programs/MiKTeX
+/fonts/type1/public/amsfonts/cm/cmsy6.pfb><C:/Users/김금영/AppData/Local/Pro
+grams/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Users/김금영/AppDa
+ta/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy9.pfb><C:/Users/김
+금영/AppData/Local/Programs/MiKTeX/fonts/type1/urw/helvetic/uhvb8a.pfb><C:/Us
+ers/김금영/AppData/Local/Programs/MiKTeX/fonts/type1/urw/helvetic/uhvr8a.pfb
+><C:/Users/김금영/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmb8a
+.pfb><C:/Users/김금영/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/ut
+mr8a.pfb><C:/Users/김금영/AppData/Local/Programs/MiKTeX/fonts/type1/urw/time
+s/utmri8a.pfb>
+Output written on paper_forecasting_workshop_v2.pdf (12 pages, 1256726 bytes).
 PDF statistics:
- 249 PDF objects out of 1000 (max. 8388607)
- 61 named destinations out of 1000 (max. 500000)
+ 265 PDF objects out of 1000 (max. 8388607)
+ 64 named destinations out of 1000 (max. 500000)
  45606 words of extra memory for PDF output out of 51595 (max. 10000000)
 

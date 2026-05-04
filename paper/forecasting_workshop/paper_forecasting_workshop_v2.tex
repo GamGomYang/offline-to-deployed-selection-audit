@@ -99,15 +99,17 @@ In the report card, Event-micro shows the clearest primary Q2 pattern: the forec
 
 A second forecasting-native Traffic-Hourly Top-\(k\) alert task repeats the same selection failure under a fixed-budget alert interface. In the selected Top-\(k\) setting ($k=249$), Reactive short is both the forecast-side winner and the deployed winner at zero friction, with exact agreement $1.0$. Once switching costs are introduced, however, the forecast-side winner remains Reactive short while the deployed winner shifts to Lagged smoother, and deployed-suboptimality reaches $100/100$ seeds at both friction $0.5$ and friction $1.0$. A relative-rank Traffic variant shows the same qualitative pattern in the appendix.
 
-Inventory is used only as operational corroboration, not as main forecasting-native evidence. At friction 0.50 and 1.00, the forecast-selected Small MLP is deployed-suboptimal in 74/100 and 99/100 seeds, respectively, under the fixed replenishment interface; the report card includes only the high-friction inventory row to keep this role bounded.
+An \(\epsilon\)-tie audit gives the same qualitative reading for the main forecasting-native rows: Traffic-Hourly Top-\(k\) and Event-micro at \(\kappa \in \{0.50,1.00\}\) remain deployed-suboptimal under relative tie thresholds up to \(\epsilon_{\mathrm{rel}}=0.005\); inventory remains corroborative and lower-margin secondary checks are reported only in the appendix.
 
-\FloatBarrier
+Inventory is used only as operational corroboration, not as main forecasting-native evidence. At friction 0.50 and 1.00, the forecast-selected Small MLP is deployed-suboptimal in 74/100 and 99/100 seeds, respectively, under the fixed replenishment interface; the report card includes only the high-friction inventory row to keep this role bounded.
 
 \paragraph{Q1 mechanism support.} Q1 explains why divergence can arise; Q2 is the actual benchmark-selection claim. Holding the proposed action path fixed, synthetic and inventory show that frictional interfaces can separate proposed and realized actions. Synthetic yields an increasing proposal-versus-realization gap away from zero friction, while inventory shows a threshold pattern in which sufficiently high friction favors tempered execution. Q2 then shows when that mechanism produces deployed misselection under one fixed interface.
 
 \paragraph{Appendix robustness.} Appendix checks surface robustness without changing the evidence hierarchy: event-micro includes alternate-threshold, log-loss, and hysteresis-interface checks; Traffic-Hourly includes a relative-rank variant; and expanded inventory and load-following remain fairness or appendix-only context. These checks are consistent with the main qualitative conclusion: under a fixed interface, a forecast-side winner can remain forecast-best while becoming recurrently deployed-suboptimal in moderate-to-high friction regimes.
 
 \paragraph{Why forecast ordering need not be preserved.} Proper forecast-side scores evaluate predictive quality, not the composed object obtained after forecasts are mapped to actions and executed through a frictional interface. If a forecaster's forecast-side advantage is smaller than the extra friction-induced loss created by its implied action path, the deployed ordering can reverse even under a fixed interface. This is why Q1 is useful as mechanism support and why Q2 is the actual benchmark-selection question.
+
+\FloatBarrier
 
 \section{Discussion, Related Work, and Limitations}
 
@@ -495,6 +497,21 @@ Aggregate recurrence intervals and uncertainty bands summarize the seed-level pa
 \caption{Q2 uncertainty bands for synthetic and event-micro. Panels show mean flip-rate bands and share-uncertainty intervals for deployed-suboptimality, using the interval convention described in Appendix~\ref{app:uncertainty-reporting}.}
 \label{fig:q2-uncertainty}
 \end{figure}
+
+\subsection{Epsilon-Tie Sensitivity}
+
+The audit covers Event-micro, Traffic-Hourly Top-\(k\), Inventory, and the appendix-only Load-following check; Load-following remains appendix-only because its lower-margin rows are tie-sensitive or partially sensitive.
+
+\begin{table*}[!t]
+\caption{\(\epsilon\)-tie sensitivity for the gated main report-card domains and the appendix-only Load-following check. A seed is tie-compatible when the deployed shortfall of the forecast-selected model is at most \(\epsilon_{\mathrm{rel}} S + 10^{-12}\), where \(S\) is the median seed-level deployed-utility scale within the row. Adjusted agreement equals \(1-\) adjusted suboptimal share.}
+\label{tab:epsilon-tie-sensitivity}
+\centering
+\scriptsize
+\setlength{\tabcolsep}{2.2pt}
+\begin{adjustbox}{width=\textwidth}
+\input{results/table_epsilon_tie_sensitivity.tex}
+\end{adjustbox}
+\end{table*}
 
 % Removed from compiled appendix: dense seed-strip.
 % Aggregate recurrence and uncertainty evidence are reported in Table~\ref{tab:q2-recurrence-share-ci} and Figure~\ref{fig:q2-uncertainty}.
