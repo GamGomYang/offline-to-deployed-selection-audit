@@ -60,10 +60,12 @@ Forecasting benchmarks typically compare models using forecast-side metrics, and
 
 This paper frames the mismatch as a reporting diagnostic for deployment-facing forecasting benchmarks. We call the diagnostic fixed-interface deployed-selection robustness: whether the forecast-side winner remains the deployed-side winner after forecasts are passed through the same fixed interface. Our main empirical question, Q2, asks whether this preservation holds when the interface is fixed and the forecaster varies. Q1 is retained only as mechanism support: it holds the proposed action path fixed and asks how frictional execution can separate proposed and realized actions. This framing keeps forecast-side metrics as prediction measures while asking what deployment-facing evaluation should report alongside them.
 
+We frame this diagnostic as a lightweight report-card protocol for deployment-facing forecasting benchmarks: given forecasts, a fixed forecast-to-decision interface, and a friction grid, the protocol reports forecast-side winners, deployed-side winners, agreement rates, deployed-suboptimal shares, paired deployed-utility gaps, and tie/uncertainty diagnostics.
+
 This paper makes three focused contributions.
 \begin{itemize}[leftmargin=*,noitemsep,topsep=2pt]
-\item First, we define fixed-interface deployed-selection robustness as a reporting diagnostic: whether a forecast-side winner remains the deployed-side winner after forecasts are passed through the same fixed interface.
-\item Second, we show that, under the studied fixed interfaces, forecast-side winners can become recurrently deployed-suboptimal as friction increases, especially in moderate-to-high friction regimes.
+\item First, we formulate fixed-interface deployed-selection robustness as a lightweight report-card protocol for deployment-facing forecasting benchmarks: under a specified fixed interface and friction grid, the report card records whether forecast-side model selection is preserved after deployment-side scoring.
+\item Second, across the studied fixed interfaces, we show that forecast-side winners can become recurrently deployed-suboptimal in moderate-to-high friction regimes.
 \item Third, we organize evidence in a Q2-first structure, with event-micro and Traffic-Hourly as main forecasting-native evidence, inventory as operational corroboration, and Q1 only as mechanism support.
 \end{itemize}
 
@@ -73,10 +75,10 @@ We use Q1/Q2 only to separate mechanism from model-selection evidence. Q1 fixes 
 
 \subsection{Q2: Fixed interface and deployed-selection robustness}
 
-Q2 asks the paper's headline reporting question: under one fixed forecast-to-decision interface, does the forecast-side winner remain the deployed-side winner? Table~\ref{tab:deployed-selection-report-card} reports the resulting deployed-selection robustness report card. The zero-friction synthetic row is a sanity anchor. Event-micro and Traffic-Hourly provide forecasting-native Q2 evidence under two different fixed-interface structures, while inventory is included only as operational corroboration. Figure~\ref{fig:fixed-interface-inversion} visualizes the main winner-inversion evidence across the forecasting-native and corroboration rows.
+Q2 asks the paper's headline reporting question: under one fixed forecast-to-decision interface, does the forecast-side winner remain the deployed-side winner? Table~\ref{tab:deployed-selection-report-card} reports the resulting deployed-selection robustness report card. The table is not merely a performance summary; it is the output format of the proposed report-card diagnostic. The zero-friction synthetic row is a sanity anchor. Event-micro and Traffic-Hourly provide forecasting-native Q2 evidence under two different fixed-interface structures, while inventory is included only as operational corroboration. Figure~\ref{fig:fixed-interface-inversion} visualizes the main winner-inversion evidence across the forecasting-native and corroboration rows.
 
 \begin{table*}[!t]
-\caption{Deployed-selection robustness report card. Each row reports one domain \(\times\) fixed interface \(\times\) friction cell and asks whether the forecast-side winner remains the deployed-side winner after the same interface is applied. Subopt. reports the seed-level deployed-suboptimal share/count; the 95\% CI reports the paired-bootstrap interval for the mean deployed gap.}
+\caption{Deployed-selection robustness report card, the output format of the proposed diagnostic. Each row reports one domain \(\times\) fixed interface \(\times\) friction cell and asks whether the forecast-side winner remains the deployed-side winner after the same interface is applied. Subopt. reports the seed-level deployed-suboptimal share/count; the 95\% CI reports the paired-bootstrap interval for the mean deployed gap.}
 \label{tab:deployed-selection-report-card}
 \centering
 \scriptsize
@@ -121,7 +123,7 @@ Inventory is used only as operational corroboration, not as main forecasting-nat
 
 \paragraph{Forecast scoring and decision-focused learning.} This is distinct from proper scoring rules, decision-maker-perspective forecast evaluation, decision-focused learning, and predict-then-optimize, which either define forecast quality or modify learning or optimization objectives for downstream decisions \cite{gneiting2007,murphy1993,raeth2025,donti2017task,elmachtoub2021spo,mandi2024decisionfocused}. Here, forecasters and the interface are fixed; the contribution is a reporting diagnostic for whether forecast-side model selection survives the composed forecast-to-interface-to-utility evaluation.
 
-\paragraph{Discussion and limitations.} Our claim is evaluative and deliberately narrow. We do not claim that forecast-side metrics are invalid for prediction, and we do not seek a single reporting rule for all forecasting applications. We use low, moderate, and high only as shorthand for the lower, middle, and upper parts of each domain's tested friction grid; these labels are not intended as a universal calibration across domains. Event-micro provides the main forecasting-native evidence, Traffic-Hourly provides a second forecasting-native task family, and inventory provides operational corroboration, but this is still not a comprehensive benchmark collection. Broader inventory sweeps are reported in the appendix, and load-following is secondary; the strongest main-text evidence comes from the moderate-to-high friction settings studied here. Our contribution is not a new benchmark suite, a new forecasting model, or a universal decision metric. It is a narrow reporting recommendation: when a forecasting benchmark is interpreted as model-selection advice for a fixed deployment interface, it should also report whether forecast-side ranking preserves deployed-side model selection. Under this interpretation, inventory and load-following remain corroborative or secondary context rather than standalone statistical evidence for a general effect.
+\paragraph{Discussion and limitations.} Our claim is evaluative and deliberately narrow. We do not claim that forecast-side metrics are invalid for prediction, and we do not seek a single reporting rule for all forecasting applications. We use low, moderate, and high only as shorthand for the lower, middle, and upper parts of each domain's tested friction grid; these labels are not intended as a universal calibration across domains. Event-micro provides the main forecasting-native evidence, Traffic-Hourly provides a second forecasting-native task family, and inventory provides operational corroboration, but this is still not a comprehensive benchmark collection. Broader inventory sweeps are reported in the appendix, and load-following is secondary; the strongest main-text evidence comes from the moderate-to-high friction settings studied here. The intended artifact is modest: a report-card template for deployment-facing model selection under a specified fixed interface, not a new benchmark suite or universal deployed metric. Under this interpretation, inventory and load-following remain corroborative or secondary context rather than standalone statistical evidence for a general effect.
 
 \begingroup
 \small
@@ -248,22 +250,45 @@ J. Mandi, J. Kotary, S. Berden, M. Mulamba, V. Bucarey, T. Guns, and F. Fioretto
 \begin{center}
 \fbox{
 \begin{minipage}{0.93\linewidth}
-\textbf{Minimum reporting standard for fixed-interface deployed-selection robustness.}
-For each domain $\times$ interface $\times$ friction cell, report:
-\begin{itemize}
-\item domain/task, seed count, and evaluation split;
-\item fixed forecast-to-decision interface and interface parameters;
-\item friction grid, including a zero-friction anchor when applicable;
+\paragraph{Reproducible report-card checklist.}
+For each task family, the report-card artifact records:
+\begin{enumerate}
+\item task definition, seed count, and evaluation split;
 \item forecast-side metric and tie-breaking rule;
-\item forecast-side winner and deployed-side winner;
-\item agreement rate between forecast-side and deployed-side selection;
-\item deployed-suboptimal share/count of the forecast-selected model;
-\item mean and median paired deployed gap with uncertainty intervals;
-\item whether the zero-friction row is exact, mixed, or not applicable.
-\end{itemize}
+\item fixed forecast-to-decision interface and interface parameters;
+\item friction grid, including a zero-friction anchor and its status when applicable;
+\item candidate model families and representative selection rule;
+\item split/seed manifest;
+\item forecast-side winner and deployed-side winner for each domain $\times$ interface $\times$ friction cell;
+\item agreement rate and deployed-suboptimal share/count of the forecast-selected model;
+\item mean and median paired deployed-utility gaps with uncertainty intervals;
+\item uncertainty and $\epsilon$-tie audit;
+\item mixed or failed-gate variants, when applicable.
+\end{enumerate}
 \end{minipage}
 }
 \end{center}
+
+\paragraph{Mixed and failed-gate variants.}
+We retain mixed and failed-gate variants as audit evidence rather than promoting them into the main report card. This reduces the risk that the report card is read as a collection of selected successes: variants that fail the zero-friction alignment check, remain lower-margin under tie diagnostics, or show only partial recurrence are kept as appendix context or excluded from main-text claims.
+
+\begin{table}[H]
+\centering
+\caption{Mixed and failed-gate variants retained as audit context. These variants are not promoted into the main report card because they either fail the clean zero-friction alignment check, show lower-margin or tie-sensitive behavior, or provide only partial recurrence.}
+\label{tab:mixed_failed_gate_variants}
+\begin{tabular}{p{0.25\linewidth}p{0.20\linewidth}p{0.32\linewidth}p{0.15\linewidth}}
+\toprule
+Variant & Gate outcome & Interpretation & Placement \\
+\midrule
+Traffic daytime $\kappa=0.5$ & Partial & Lower-margin, directionally consistent & Appendix only \\
+Inventory zero/low friction & Mixed & Not a main zero-friction anchor & Appendix only \\
+Expanded inventory & Mixed & Fairness context only & Appendix only \\
+Load-following & Tie-sensitive & Directional secondary check & Appendix only \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+These variants are useful because they separate friction-induced deployed-selection drift from other sources of mismatch, such as objective mismatch, weak margins, or insufficient seed support. We therefore use them to bound the interpretation rather than to strengthen the main claim.
 
 \section{Event-Micro Robustness Package}
 \label{app:event-micro}
