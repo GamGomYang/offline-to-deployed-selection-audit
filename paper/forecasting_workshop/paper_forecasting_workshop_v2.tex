@@ -54,13 +54,13 @@ Forecasting benchmarks typically compare models using forecast-side metrics, and
 \begin{figure*}[t]
 \centering
 \includegraphics[width=0.98\textwidth]{assets/figures/fig1_fixed_interface_inversion.pdf}
-\caption{Fixed-interface evaluation can change model selection. Panel A shows the Q2 setting: the interface is fixed, the forecaster varies, and the question is whether the forecast-side winner remains the deployed-side winner. Panel B reports aggregate forecast-side and deployed-side winners across domains and friction levels. Cell counts denote seed-level deployed-suboptimal cases for the forecast-selected model; darker orange marks recurrent mismatch.}
+\caption{Fixed-interface evaluation can change model selection. Panel A shows the Q2 setting: the interface is fixed, the forecaster varies, and the question is whether the forecast-side winner remains the deployed-side winner. Panel B reports aggregate forecast-side and deployed-side winners across domains and friction levels. Cell counts denote seed-level deployed-suboptimal cases for the forecast-selected model; darker orange marks recurrent mismatch. Gray zero-friction cells are included for completeness rather than interpreted as friction-causal anchors; the clean zero-friction anchors are the synthetic sanity row in Table~\ref{tab:deployed-selection-report-card} and the Traffic-Hourly Top-\(k\) zero-friction cell.}
 \label{fig:fixed-interface-inversion}
 \end{figure*}
 
 This paper frames the mismatch as a reporting diagnostic for deployment-facing forecasting benchmarks. We call the diagnostic fixed-interface deployed-selection robustness: whether the forecast-side winner remains the deployed-side winner after forecasts are passed through the same fixed interface. Our main empirical question, Q2, asks whether this preservation holds when the interface is fixed and the forecaster varies. Q1 is retained only as mechanism support: it holds the proposed action path fixed and asks how frictional execution can separate proposed and realized actions. This framing keeps forecast-side metrics as prediction measures while asking what deployment-facing evaluation should report alongside them.
 
-This paper makes three narrow contributions.
+This paper makes three focused contributions.
 \begin{itemize}[leftmargin=*,noitemsep,topsep=2pt]
 \item First, we define fixed-interface deployed-selection robustness as a reporting diagnostic: whether a forecast-side winner remains the deployed-side winner after forecasts are passed through the same fixed interface.
 \item Second, we show that, under the studied fixed interfaces, forecast-side winners can become recurrently deployed-suboptimal as friction increases, especially in moderate-to-high friction regimes.
@@ -76,7 +76,7 @@ We use Q1/Q2 only to separate mechanism from model-selection evidence. Q1 fixes 
 Q2 asks the paper's headline reporting question: under one fixed forecast-to-decision interface, does the forecast-side winner remain the deployed-side winner? Table~\ref{tab:deployed-selection-report-card} reports the resulting deployed-selection robustness report card. The zero-friction synthetic row is a sanity anchor. Event-micro and Traffic-Hourly provide forecasting-native Q2 evidence under two different fixed-interface structures, while inventory is included only as operational corroboration. Figure~\ref{fig:fixed-interface-inversion} visualizes the main winner-inversion evidence across the forecasting-native and corroboration rows.
 
 \begin{table*}[!t]
-\caption{Deployed-selection robustness report card. Each row reports one domain $\times$ fixed interface $\times$ friction cell and records whether the forecast-side winner remains the deployed-side winner after the same fixed interface is applied. Agreement rate is the fraction of matched seeds for which the forecast-side selected model is also the deployed-side best model; deployed-suboptimal share is the complementary fraction; deployed gap is the paired deployed-utility shortfall of the forecast-selected model relative to the deployed winner. Subopt. reports the seed-level deployed-suboptimal share/count. The 95\% CI column reports the paired-bootstrap CI for the mean deployed gap, not the binomial CI for the suboptimal share.}
+\caption{Deployed-selection robustness report card. Each row reports one domain \(\times\) fixed interface \(\times\) friction cell and asks whether the forecast-side winner remains the deployed-side winner after the same interface is applied. Subopt. reports the seed-level deployed-suboptimal share/count; the 95\% CI reports the paired-bootstrap interval for the mean deployed gap.}
 \label{tab:deployed-selection-report-card}
 \centering
 \scriptsize
@@ -97,7 +97,9 @@ Inventory & replenishment & 1.00 & Small MLP & MA(7) & 0.01 & 0.99 (99/100) & 1.
 
 In the report card, Event-micro shows the clearest primary Q2 pattern: the forecast-side winner remains Reactive sharp, but the deployed winner changes to Calibrated baseline at friction 0.50 and Lagged smoother at friction 1.00. The deployed-selection consequence is recurrent: the forecast-selected model is deployed-suboptimal in 69/100 and 99/100 seeds at these two friction levels. The event-micro result is not confined to the canonical threshold or Brier ranking: at frictions 0.50/1.00, deployed-suboptimality remains 77/100 and 98/100 under an alternate threshold, 74/100 and 99/100 under log-loss reranking, and 55/100 and 82/100 under a hysteresis interface, where the direction is preserved with smaller magnitude.
 
-A second forecasting-native Traffic-Hourly Top-\(k\) alert task repeats the same selection failure under a fixed-budget alert interface. In the selected Top-\(k\) setting ($k=249$), Reactive short is both the forecast-side winner and the deployed winner at zero friction, with exact agreement $1.0$. Once switching costs are introduced, however, the forecast-side winner remains Reactive short while the deployed winner shifts to Lagged smoother, and deployed-suboptimality reaches $100/100$ seeds at both friction $0.5$ and friction $1.0$. A relative-rank Traffic variant shows the same qualitative pattern in the appendix.
+A second forecasting-native Traffic-Hourly Top-\(k\) alert task repeats the same selection failure under a fixed-budget alert interface. In the selected Top-\(k\) setting ($k=249$), Reactive short is both the forecast-side winner and the deployed winner at zero friction, with exact agreement $1.0$. Once switching costs are introduced, however, the forecast-side winner remains Reactive short while the deployed winner shifts to Lagged smoother, and deployed-suboptimality reaches $100/100$ seeds at both friction $0.5$ and friction $1.0$. Additional Traffic checks support this reading most strongly for the Top-\(k\) interface family: across \(k \in \{125,249,500\}\), zero-friction rows remain aligned and positive-friction rows keep the reactive forecast-side winner deployed-suboptimal; predefined time-of-day and relative-rank variants are kept in the appendix rather than used to broaden the main claim.
+
+\pagebreak[4]
 
 An \(\epsilon\)-tie audit gives the same qualitative reading for the main forecasting-native rows: Traffic-Hourly Top-\(k\) and Event-micro at \(\kappa \in \{0.50,1.00\}\) remain deployed-suboptimal under relative tie thresholds up to \(\epsilon_{\mathrm{rel}}=0.005\); inventory remains corroborative and lower-margin secondary checks are reported only in the appendix.
 
@@ -105,7 +107,7 @@ Inventory is used only as operational corroboration, not as main forecasting-nat
 
 \paragraph{Q1 mechanism support.} Q1 explains why divergence can arise; Q2 is the actual benchmark-selection claim. Holding the proposed action path fixed, synthetic and inventory show that frictional interfaces can separate proposed and realized actions. Synthetic yields an increasing proposal-versus-realization gap away from zero friction, while inventory shows a threshold pattern in which sufficiently high friction favors tempered execution. Q2 then shows when that mechanism produces deployed misselection under one fixed interface.
 
-\paragraph{Appendix robustness.} Appendix checks surface robustness without changing the evidence hierarchy: event-micro includes alternate-threshold, log-loss, and hysteresis-interface checks; Traffic-Hourly includes a relative-rank variant; and expanded inventory and load-following remain fairness or appendix-only context. These checks are consistent with the main qualitative conclusion: under a fixed interface, a forecast-side winner can remain forecast-best while becoming recurrently deployed-suboptimal in moderate-to-high friction regimes.
+\paragraph{Appendix robustness.} Appendix checks surface robustness without changing the evidence hierarchy: event-micro includes alternate-threshold, log-loss, and hysteresis-interface checks; Traffic-Hourly includes Top-\(k\) interface-family, predefined time-of-day slice, and relative-rank checks; and expanded inventory and load-following remain fairness or appendix-only context. These checks are consistent with the main qualitative conclusion: under a fixed interface, a forecast-side winner can remain forecast-best while becoming recurrently deployed-suboptimal in moderate-to-high friction regimes.
 
 \paragraph{Why forecast ordering need not be preserved.} Proper forecast-side scores evaluate predictive quality, not the composed object obtained after forecasts are mapped to actions and executed through a frictional interface. If a forecaster's forecast-side advantage is smaller than the extra friction-induced loss created by its implied action path, the deployed ordering can reverse even under a fixed interface. This is why Q1 is useful as mechanism support and why Q2 is the actual benchmark-selection question.
 
@@ -113,13 +115,13 @@ Inventory is used only as operational corroboration, not as main forecasting-nat
 
 \section{Discussion, Related Work, and Limitations}
 
-\paragraph{Related work.} Recent forecasting benchmarks span live AI-forecasting settings, broad time-series archives, and foundation-model evaluations \cite{forecastbench,prophetarena,gifteval,godahewa2021monash,das2024timesfm,williams2025contextkey}. These efforts have made forecasting evaluation itself a central research problem, but they primarily compare models by forecast-side accuracy, calibration, or leaderboard performance. Our question is different: under one fixed forecast-to-decision interface, does the forecast-side winner remain the deployed-side winner? We therefore treat deployed-selection robustness as a reporting diagnostic for deployment-facing benchmarks rather than as a new forecasting model or optimizer, with variance-aware benchmark reporting providing the closest methodological motivation \cite{bouthillier2021variance}.
+\paragraph{Forecasting benchmarks and evaluation frameworks.} Forecasting benchmarks and evaluation frameworks now span live AI forecasting, broad time-series archives, foundation-model evaluations, text-conditioned forecasting, and standardized TSFM evaluation pipelines \cite{forecastbench,prophetarena,gifteval,godahewa2021monash,das2024timesfm,williams2025contextkey,tsfmbench2025,tempusbench2026,timerecipe2025}. These works compare forecasting capability, datasets, model families, or evaluation pipelines. Our question is complementary: when a benchmark is interpreted as deployment-facing model-selection advice under a fixed forecast-to-decision interface, should it also report whether the forecast-side winner remains the deployed-side winner?
 
-This differs from proper scoring rules, decision-maker-perspective forecast evaluation, decision-focused learning, and predict-then-optimize, which either evaluate forecast quality/value or modify training/optimization objectives for downstream tasks \cite{gneiting2007,murphy1993,raeth2025,donti2017task,elmachtoub2021spo,mandi2024decisionfocused}. Here, forecasters are fixed, and only the evaluation object changes.
+\paragraph{Benchmark variance and uncertainty reporting.} Our reporting emphasis is closer to work on benchmark variance, aggregate uncertainty, and leaderboard interpretation. Prior work argues that benchmark conclusions should account for variance across training and evaluation choices \cite{bouthillier2021variance}, quantify uncertainty in aggregate benchmark metrics \cite{longjohn2025aggregate}, and use principled aggregation with bootstrap intervals in realistic forecasting benchmarks \cite{fevbench2025}. Recent re-evaluations of long-term time-series forecasting further caution against over-reading leaderboard differences as stable model dominance \cite{brigato2025nochampions}. We adopt the same spirit, but the object of reporting is different: whether forecast-side selection is preserved after a fixed forecast-to-decision interface.
 
-\paragraph{Discussion and limitations.} Our claim is evaluative and deliberately narrow. We do not claim that forecast-side metrics are invalid for prediction, and we do not seek a single reporting rule for all forecasting applications. We use low, moderate, and high only as shorthand for the lower, middle, and upper parts of each domain's tested friction grid; these labels are not intended as a universal calibration across domains. Event-micro provides the main forecasting-native evidence, Traffic-Hourly provides a second forecasting-native task family, and inventory provides operational corroboration, but this is still not a broad benchmark suite. Broader inventory sweeps are reported in the appendix, and load-following is secondary; the strongest main-text evidence comes from the moderate-to-high friction settings studied here. Our results therefore support a reporting recommendation: deployment-facing forecasting benchmarks should consider reporting fixed-interface deployed-selection robustness alongside standard forecast-side metrics.
+\paragraph{Forecast scoring and decision-focused learning.} This is distinct from proper scoring rules, decision-maker-perspective forecast evaluation, decision-focused learning, and predict-then-optimize, which either define forecast quality or modify learning or optimization objectives for downstream decisions \cite{gneiting2007,murphy1993,raeth2025,donti2017task,elmachtoub2021spo,mandi2024decisionfocused}. Here, forecasters and the interface are fixed; the contribution is a reporting diagnostic for whether forecast-side model selection survives the composed forecast-to-interface-to-utility evaluation.
 
-\clearpage
+\paragraph{Discussion and limitations.} Our claim is evaluative and deliberately narrow. We do not claim that forecast-side metrics are invalid for prediction, and we do not seek a single reporting rule for all forecasting applications. We use low, moderate, and high only as shorthand for the lower, middle, and upper parts of each domain's tested friction grid; these labels are not intended as a universal calibration across domains. Event-micro provides the main forecasting-native evidence, Traffic-Hourly provides a second forecasting-native task family, and inventory provides operational corroboration, but this is still not a comprehensive benchmark collection. Broader inventory sweeps are reported in the appendix, and load-following is secondary; the strongest main-text evidence comes from the moderate-to-high friction settings studied here. Our contribution is not a new benchmark suite, a new forecasting model, or a universal decision metric. It is a narrow reporting recommendation: when a forecasting benchmark is interpreted as model-selection advice for a fixed deployment interface, it should also report whether forecast-side ranking preserves deployed-side model selection. Under this interpretation, inventory and load-following remain corroborative or secondary context rather than standalone statistical evidence for a general effect.
 
 \begingroup
 \small
@@ -155,10 +157,40 @@ A. R. Williams, A. Ashok, E. Marcotte, V. Zantedeschi, J. Subramanian, R. Riachi
 \newblock Context is Key: A Benchmark for Forecasting with Essential Textual Information.
 \newblock In \emph{ICML}, PMLR 267, pages 66887--66944, 2025.
 
+\bibitem[Li et~al.(2025)Li, Qiu, Chen, Wang, Cheng, Shu, Hu, Guo, Zhou, Jensen, and Yang]{tsfmbench2025}
+Z. Li, X. Qiu, P. Chen, Y. Wang, H. Cheng, Y. Shu, J. Hu, C. Guo, A. Zhou, C. S. Jensen, and B. Yang.
+\newblock TSFM-Bench: A Comprehensive and Unified Benchmark of Foundation Models for Time Series Forecasting.
+\newblock arXiv:2410.11802, 2025.
+
+\bibitem[Goktas et~al.(2026)Goktas, Riano-Briceno, Abdullah, Nair, Shen, de Lucio, Magnusson, Mashrur, Abdulla, Sen, Thippireddy, Schwartz, and Greenwald]{tempusbench2026}
+D. Goktas, G. Riano-Briceno, A. Abdullah, A. Nair, C. Shen, B. de Lucio, A. Magnusson, F. Mashrur, A. Abdulla, S. Sen, M. Thippireddy, G. Schwartz, and A. Greenwald.
+\newblock TempusBench: An Evaluation Framework for Time-Series Forecasting.
+\newblock arXiv:2604.11529, 2026.
+
+\bibitem[Zhao et~al.(2025)Zhao, Ni, Xu, Liu, Jin, and Prakash]{timerecipe2025}
+Z. Zhao, J. Ni, S. Xu, H. Liu, W. Jin, and B. A. Prakash.
+\newblock TimeRecipe: A Time-Series Forecasting Recipe via Benchmarking Module Level Effectiveness.
+\newblock arXiv:2506.06482, 2025.
+
 \bibitem[Bouthillier et~al.(2021)Bouthillier, Delaunay, Bronzi, Trofimov, Nichyporuk, Szeto, Sepah, Raff, Madan, Voleti, Kahou, Michalski, Arbel, Pal, Varoquaux, and Vincent]{bouthillier2021variance}
 X. Bouthillier, P. Delaunay, M. Bronzi, A. Trofimov, B. Nichyporuk, J. Szeto, N. Sepah, E. Raff, K. Madan, V. Voleti, S. E. Kahou, V. Michalski, T. Arbel, C. Pal, G. Varoquaux, and P. Vincent.
 \newblock Accounting for Variance in Machine Learning Benchmarks.
 \newblock In \emph{MLSys}, 2021. arXiv:2103.03098.
+
+\bibitem[Longjohn et~al.(2025)Longjohn, Gopalan, and Casleton]{longjohn2025aggregate}
+R. Longjohn, G. Gopalan, and E. Casleton.
+\newblock Statistical Uncertainty Quantification for Aggregate Performance Metrics in Machine Learning Benchmarks.
+\newblock arXiv:2501.04234, 2025.
+
+\bibitem[Shchur et~al.(2025)Shchur, Ansari, Turkmen, Stella, Erickson, Guerron, Bohlke-Schneider, and Wang]{fevbench2025}
+O. Shchur, A. F. Ansari, C. Turkmen, L. Stella, N. Erickson, P. Guerron, M. Bohlke-Schneider, and Y. Wang.
+\newblock fev-bench: A Realistic Benchmark for Time Series Forecasting.
+\newblock arXiv:2509.26468, 2025.
+
+\bibitem[Brigato et~al.(2026)Brigato, Morand, Strommen, Panagiotou, Schmidt, and Mougiakakou]{brigato2025nochampions}
+L. Brigato, R. Morand, K. J. Strommen, M. Panagiotou, M. Schmidt, and S. Mougiakakou.
+\newblock There are no Champions in Supervised Long-Term Time Series Forecasting.
+\newblock \emph{Transactions on Machine Learning Research}, 2026. arXiv:2502.14045.
 
 \bibitem[Gneiting and Raftery(2007)]{gneiting2007}
 T. Gneiting and A. E. Raftery.
@@ -236,23 +268,34 @@ For each domain $\times$ interface $\times$ friction cell, report:
 \section{Event-Micro Robustness Package}
 \label{app:event-micro}
 
-Because event-micro provides the paper's main forecasting-native Q2 evidence, this appendix records the first domain-specific robustness package for that benchmark. We construct a minimal forecasting-native binary-event setting evaluated over 100 seeds, in which each forecaster emits event probabilities, a fixed thresholding rule maps probabilities to actions, and switching friction penalizes action changes. The main text uses Brier as the canonical forecast-side criterion. This appendix records the full six-row Brier table plus an alternate-threshold check, a log-loss reranking check, and a second-interface hysteresis check.
-
-\begin{table}[H]
-\centering
-\apptighttablesize
-\begin{adjustbox}{max width=\linewidth}
-\input{results/table_q2_selection_drift_event_micro.tex}
-\end{adjustbox}
-\caption{Forecast-side vs.\ deployed-side model selection in the full six-row event-micro benchmark summary. Under the canonical fixed-threshold interface, deployed-suboptimal counts rise from $38/100$ seeds at zero friction to $99/100$ at friction $1.00$.}
-\label{tab:event-micro-selection-drift}
-\end{table}
+Because event-micro provides the paper's main forecasting-native Q2 evidence, this appendix records the first domain-specific robustness package for that benchmark. We construct a minimal forecasting-native binary-event setting evaluated over 100 seeds, in which each forecaster emits event probabilities, a fixed thresholding rule maps probabilities to actions, and switching friction penalizes action changes. The main text uses Brier as the canonical forecast-side criterion. This appendix records the canonical six-row Brier summary plus an alternate-threshold check, a log-loss reranking check, and a second-interface hysteresis check.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\appfigwidth]{assets/figures/fig_q2_event_micro_support.png}
-\caption{Ranking mismatch in a minimal event-forecasting micro-benchmark. Disagreement between forecast-side and deployed-side model selection is lowest at zero and very low friction and increases as switching frictions rise.}
-\label{fig:event-micro-q2}
+\begin{minipage}[c]{0.46\linewidth}
+\centering
+\includegraphics[width=\linewidth]{assets/figures/fig_q2_event_micro_support_compact.pdf}
+\end{minipage}
+\hspace{0.035\linewidth}
+\begin{minipage}[c]{0.41\linewidth}
+\centering
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{ccccc}
+\toprule
+\(\kappa\) & Forecast & Deployed & Agree. & Gap \\
+\midrule
+0.00 & Sharp & Sharp & 0.62 & 0.003 \\
+0.05 & Sharp & Sharp & 0.60 & 0.002 \\
+0.10 & Sharp & Sharp & 0.58 & 0.002 \\
+0.25 & Sharp & Calibrated & 0.51 & 0.003 \\
+0.50 & Sharp & Calibrated & 0.31 & 0.011 \\
+1.00 & Sharp & Smoother & 0.01 & 0.057 \\
+\bottomrule
+\end{tabular}
+\end{minipage}
+\caption{Event-micro canonical summary. Left: disagreement between forecast-side and deployed-side model selection increases with friction. Right: canonical fixed-threshold selection summary; gap is the mean paired deployed shortfall of the forecast-selected model.}
+\label{fig:event-micro-canonical-summary}
 \end{figure}
 
 \begin{table}[H]
@@ -316,8 +359,8 @@ The aggregate recurrence table reports the seed-level pattern directly, replacin
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.94\linewidth]{assets/figures/fig_event_micro_interface_uncertainty_appendix.png}
-\caption{Event-micro robustness across interfaces. Fixed-threshold and hysteresis interfaces show the same direction: disagreement and deployed-suboptimal share rise with friction, while hysteresis attenuates the effect.}
+\includegraphics[width=0.94\linewidth]{assets/figures/fig_event_micro_interface_uncertainty_appendix.pdf}
+\caption{Event-micro robustness across fixed-threshold and hysteresis interfaces. Rows denote interfaces and columns denote disagreement and deployed-suboptimality metrics; hysteresis preserves the direction with attenuated magnitude.}
 \label{fig:event-micro-interface-uncertainty}
 \end{figure}
 
@@ -349,6 +392,36 @@ The aggregate recurrence table reports the seed-level pattern directly, replacin
 
 In the selected Top-k setting, Reactive short is the forecast-side winner and the deployed winner at zero friction. At frictions $0.5$ and $1.0$, the deployed winner shifts to Lagged smoother even though Reactive short remains Brier-best and continues to win on the forecast side. The qualitative reading is the same as in the main text: under a fixed interface, the more reactive forecast-optimal family need not remain deployment-optimal once switching is penalized.
 
+\subsection{Top-\(k\) Interface-Family Sweep}
+
+\begin{table}[H]
+\centering
+\apptighttablesize
+\begin{adjustbox}{max width=\linewidth}
+\input{results/table_traffic_interface_family_sweep.tex}
+\end{adjustbox}
+\caption{Traffic-Hourly Top-\(k\) interface-family sweep. The canonical \(k=249\) rows are reproduced from the recovered time-level Traffic source, and non-canonical \(k=125\) and \(k=500\) rows show the same qualitative pattern: zero-friction alignment and recurrent positive-friction deployed-suboptimality of the reactive forecast-side winner. Confidence intervals are paired-bootstrap intervals for the mean deployed gap.}
+\label{tab:traffic-interface-family-sweep}
+\end{table}
+
+Across \(k \in \{125,249,500\}\), Reactive short remains both the forecast-side and deployed-side winner at zero friction. At positive friction, Reactive short remains forecast-best but becomes deployed-suboptimal in all matched seeds, with positive paired deployed gaps and confidence intervals bounded away from zero.
+
+\subsection{Predefined Time-of-Day Slice Check}
+
+Slices are fixed before outcome computation as overnight, daytime, and evening blocks. Switching costs are computed on the full 168-hour timeline and utilities are then aggregated over the slice time points, so the interface state is not reset within each slice.
+
+\begin{table}[H]
+\centering
+\apptighttablesize
+\begin{adjustbox}{max width=\linewidth}
+\input{results/table_traffic_time_of_day_slice_sweep.tex}
+\end{adjustbox}
+\caption{Predefined Traffic-Hourly time-of-day slice check. Slices are fixed before outcome computation. Overnight and evening reproduce the positive-friction mismatch pattern at both positive-friction levels; daytime is directionally consistent but lower-margin at \(\kappa=0.5\). We therefore treat this slice check as appendix-only support. Confidence intervals are paired-bootstrap intervals for the mean deployed gap.}
+\label{tab:traffic-time-of-day-slice-sweep}
+\end{table}
+
+The slice check is supportive but weaker than the interface-family sweep. Overnight and evening pass at both positive-friction levels, while daytime passes at \(\kappa=1.0\) and remains directionally positive at \(\kappa=0.5\) but falls below the pre-specified deployed-suboptimality threshold. We therefore use this result only as appendix context rather than as a stronger main-text claim.
+
 \subsection{Relative-Rank Traffic Variant}
 
 \begin{table}[H]
@@ -361,7 +434,7 @@ In the selected Top-k setting, Reactive short is the forecast-side winner and th
 \label{tab:traffic-relative-rank-support}
 \end{table}
 
-The relative-rank target shows the same qualitative separation under a different forecasting-native label construction. Reactive short remains the forecast-side winner, while Calibrated baseline becomes the deployed winner once switching costs are introduced, so we report this variant as an appendix forecasting-native check. The alternate $m=0.15$ variant is also strong in the full report but is omitted from the compact table to keep the appendix narrow.
+As an additional Traffic appendix variant, the relative-rank target shows the same qualitative separation under a different forecasting-native label construction. Reactive short remains the forecast-side winner, while Calibrated baseline becomes the deployed winner once switching costs are introduced, so we report this variant as an appendix forecasting-native check. The alternate $m=0.15$ variant is also strong in the full report but is omitted from the compact table to keep the appendix narrow.
 
 \FloatBarrier
 
@@ -435,7 +508,7 @@ The mixed zero/low-friction rows do not overturn the narrower main claim from th
 \section{Load-Following Appendix-Only Secondary Check}
 \label{app:load-following}
 
-Load-following is a secondary operational check. It tests whether forecast-side and deployed-side selection can diverge outside the event-micro and Traffic-Hourly settings.
+Load-following is a secondary operational check. It tests whether forecast-side and deployed-side selection can diverge outside the event-micro and Traffic-Hourly settings. Its evaluation units are disjoint client groups rather than independent random seeds.
 
 \begin{table}[H]
 \centering
@@ -443,7 +516,7 @@ Load-following is a secondary operational check. It tests whether forecast-side 
 \begin{adjustbox}{max width=\linewidth}
 \input{results/table_load_following_support_summary.tex}
 \end{adjustbox}
-\caption{Load-following secondary check. Near-zero friction remains mixed, while positive-friction regimes can favor a different deployed winner.}
+\caption{Load-following secondary check over disjoint client-group evaluation units. Near-zero friction remains mixed, while positive-friction regimes can favor a different deployed winner.}
 \label{tab:load-following-support}
 \end{table}
 
@@ -467,7 +540,7 @@ Q1 serves only as mechanism support for why Q2 divergence can arise. Holding the
 \section{Uncertainty Reporting for Seed-Level Recurrence and Deployed Gaps}
 \label{app:uncertainty-reporting}
 
-This appendix reports uncertainty for the seed-level recurrence and paired deployed-gap summaries used in the main report card. We emphasize intervals and paired shortfalls rather than hypothesis-test significance. For binary share summaries, rows with fewer than 30 matched seeds use Clopper--Pearson exact intervals; rows with at least 30 matched seeds use Wilson intervals. For continuous deployed gaps, we use 10,000 paired seed bootstrap resamples. We report these intervals as descriptive uncertainty summaries for the reporting diagnostic, not as hypothesis-test evidence for a universal effect.
+This appendix reports uncertainty for the seed-level recurrence and paired deployed-gap summaries used in the main report card. We emphasize intervals and paired shortfalls rather than hypothesis-test significance. For binary share summaries, rows with fewer than 30 matched seeds use Clopper--Pearson exact intervals; rows with at least 30 matched seeds use Wilson intervals. For continuous deployed gaps, we use 10,000 paired seed bootstrap resamples. In the Load-following rows, the seed field denotes disjoint client-group evaluation units. We report these intervals as descriptive uncertainty summaries for the reporting diagnostic, not as hypothesis-test evidence for a general effect.
 
 \begin{table}[H]
 \centering
@@ -493,8 +566,8 @@ Aggregate recurrence intervals and uncertainty bands summarize the seed-level pa
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.94\linewidth]{assets/figures/fig_q2_uncertainty_appendix.png}
-\caption{Q2 uncertainty bands for synthetic and event-micro. Panels show mean flip-rate bands and share-uncertainty intervals for deployed-suboptimality, using the interval convention described in Appendix~\ref{app:uncertainty-reporting}.}
+\includegraphics[width=0.94\linewidth]{assets/figures/fig_q2_uncertainty_appendix.pdf}
+\caption{Q2 uncertainty summaries for synthetic and event-micro. Left: flip rate; right: deployed-suboptimal share. Bands follow the interval convention described in Appendix~\ref{app:uncertainty-reporting}; zero-width bands may coincide with the line.}
 \label{fig:q2-uncertainty}
 \end{figure}
 
@@ -505,13 +578,24 @@ Aggregate recurrence intervals and uncertainty bands summarize the seed-level pa
 The audit covers Event-micro, Traffic-Hourly Top-\(k\), Inventory, and the appendix-only Load-following check; Load-following remains appendix-only because its lower-margin rows are tie-sensitive or partially sensitive.
 
 \begin{table}[H]
-\caption{\(\epsilon\)-tie sensitivity for the gated main report-card domains and the appendix-only Load-following check. A seed is tie-compatible when the deployed shortfall of the forecast-selected model is at most \(\epsilon_{\mathrm{rel}} S + 10^{-12}\), where \(S\) is the median seed-level deployed-utility scale within the row. Adjusted agreement equals \(1-\) adjusted suboptimal share.}
+\caption{\(\epsilon\)-tie sensitivity for the gated report-card domains. A seed is tie-compatible when the deployed shortfall of the forecast-selected model is at most \(\epsilon_{\mathrm{rel}}S + 10^{-12}\), where \(S\) is the median seed-level deployed-utility scale within the row.}
 \label{tab:epsilon-tie-sensitivity}
 \centering
 \scriptsize
 \setlength{\tabcolsep}{2.2pt}
 \begin{adjustbox}{max width=\linewidth}
-\input{results/table_epsilon_tie_sensitivity.tex}
+\input{results/table_epsilon_tie_sensitivity_gated.tex}
+\end{adjustbox}
+\end{table}
+
+\begin{table}[H]
+\caption{\(\epsilon\)-tie sensitivity for the appendix-only Load-following secondary check. These rows are reported separately because Load-following is not used as primary evidence and includes lower-margin tie-sensitive rows.}
+\label{tab:epsilon-tie-sensitivity-load-following}
+\centering
+\scriptsize
+\setlength{\tabcolsep}{2.2pt}
+\begin{adjustbox}{max width=\linewidth}
+\input{results/table_epsilon_tie_sensitivity_load_following.tex}
 \end{adjustbox}
 \end{table}
 
