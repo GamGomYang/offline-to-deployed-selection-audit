@@ -44,7 +44,7 @@
 \printAffiliationsAndNotice{}
 
 \begin{abstract}
-Forecasting benchmarks commonly rank models by forecast-side metrics, and these metrics remain the appropriate object when the target is predictive quality. In deployment-facing forecasting settings, however, forecasts may be consumed through a fixed forecast-to-decision interface, such as a threshold alert, hysteresis threshold, or top-\(k\) budget alert, before deployed-side scoring. We do not propose a new forecaster, training objective, or universal deployed metric; instead, we study whether forecast-side ranking preserves deployed-side model selection under the same fixed interface. Across a synthetic zero-friction anchor, forecasting-native event-micro and Traffic-Hourly tasks, and inventory corroboration, we find that forecast-side winners can become recurrently deployed-suboptimal in moderate-to-high friction regimes in the studied settings. The implication is not to invalidate forecast-side evaluation for prediction, but to report fixed-interface deployed-selection robustness alongside forecast-side metrics when forecasting benchmarks are used for deployment-facing model selection.
+Forecasting benchmarks commonly rank models by forecast-side metrics, and these metrics remain the appropriate object when the target is predictive quality. In deployment-facing forecasting settings, however, forecasts may be consumed through a fixed forecast-to-decision interface, such as a threshold alert, hysteresis threshold, or top-\(k\) budget alert, before deployed-side scoring. We do not propose a new forecaster, training objective, or universal deployed metric; instead, we study whether forecast-side ranking preserves deployed-side model selection under the same fixed interface. Across a synthetic zero-friction anchor, forecasting-native event-micro, Traffic-Hourly, and EPA PM2.5 residual-warning tasks, and inventory corroboration, we find that forecast-side winners can become recurrently deployed-suboptimal in moderate-to-high friction regimes in the studied settings. The implication is not to invalidate forecast-side evaluation for prediction, but to report fixed-interface deployed-selection robustness alongside forecast-side metrics when forecasting benchmarks are used for deployment-facing model selection.
 \end{abstract}
 
 \section{Introduction}
@@ -66,7 +66,7 @@ This paper makes three focused contributions.
 \begin{itemize}[leftmargin=*,noitemsep,topsep=2pt]
 \item First, we formulate fixed-interface deployed-selection robustness as a lightweight report-card protocol for deployment-facing forecasting benchmarks: under a specified fixed interface and friction grid, the report card records whether forecast-side model selection is preserved after deployment-side scoring.
 \item Second, across the studied fixed interfaces, we show that forecast-side winners can become recurrently deployed-suboptimal in moderate-to-high friction regimes.
-\item Third, we organize evidence in a Q2-first structure, with event-micro and Traffic-Hourly as main forecasting-native evidence, inventory as operational corroboration, and Q1 only as mechanism support.
+\item Third, we organize evidence in a Q2-first structure, with event-micro and Traffic-Hourly as core forecasting-native evidence, an EPA residual-warning audit as one additional report-card row, inventory as operational corroboration, and Q1 only as mechanism support.
 \end{itemize}
 
 We use Q1/Q2 only to separate mechanism from model-selection evidence. Q1 fixes the proposed action path and varies the interface as an exact-control check. Q2 fixes the interface and varies the forecaster as the main model-selection question.
@@ -75,7 +75,7 @@ We use Q1/Q2 only to separate mechanism from model-selection evidence. Q1 fixes 
 
 \subsection{Q2: Fixed interface and deployed-selection robustness}
 
-Q2 asks the paper's headline reporting question: under one fixed forecast-to-decision interface, does the forecast-side winner remain the deployed-side winner? Table~\ref{tab:deployed-selection-report-card} reports the resulting deployed-selection robustness report card. The table is not merely a performance summary; it is the output format of the proposed report-card diagnostic. The zero-friction synthetic row is a sanity anchor. Event-micro and Traffic-Hourly provide forecasting-native Q2 evidence under two different fixed-interface structures, while inventory is included only as operational corroboration. Figure~\ref{fig:fixed-interface-inversion} visualizes the main winner-inversion evidence across the forecasting-native and corroboration rows.
+Q2 asks the paper's headline reporting question: under one fixed forecast-to-decision interface, does the forecast-side winner remain the deployed-side winner? Table~\ref{tab:deployed-selection-report-card} reports the resulting deployed-selection robustness report card. The table is not merely a performance summary; it is the output format of the proposed report-card diagnostic. The zero-friction synthetic row is a sanity anchor. Event-micro and Traffic-Hourly provide the core forecasting-native Q2 evidence under two different fixed-interface structures, the EPA residual-warning audit adds one additional forecasting-native row, and inventory is included only as operational corroboration. Figure~\ref{fig:fixed-interface-inversion} visualizes the main winner-inversion evidence across the forecasting-native and corroboration rows.
 
 \begin{table*}[!t]
 \caption{Deployed-selection robustness report card, the output format of the proposed diagnostic. Each row reports one domain \(\times\) fixed interface \(\times\) friction cell and asks whether the forecast-side winner remains the deployed-side winner after the same interface is applied. Subopt. reports the seed-level deployed-suboptimal share/count; the 95\% CI reports the paired-bootstrap interval for the mean deployed gap.}
@@ -92,6 +92,7 @@ Event-micro & threshold $\tau{=}0.55$ & 0.50 & Reactive sharp & Calibrated & 0.3
 Event-micro & threshold $\tau{=}0.55$ & 1.00 & Reactive sharp & Smoother & 0.01 & 0.99 (99/100) & 0.057 & [0.052, 0.063] & Primary \\
 Traffic Top-\(k\) & budget $k{=}249$ & 0.50 & Reactive short & Smoother & 0.00 & 1.00 (100/100) & 7.016 & [6.756, 7.283] & Second \\
 Traffic Top-\(k\) & budget $k{=}249$ & 1.00 & Reactive short & Smoother & 0.00 & 1.00 (100/100) & 24.651 & [24.226, 25.079] & Second \\
+EPA AQS & PM2.5 residual warning & 1.00 & Reactive lag-1 & Long smoother & 0.00 & 0.87 (720/825) & 17.939 & [16.560, 19.342] & Third \\
 Inventory & replenishment & 1.00 & Small MLP & MA(7) & 0.01 & 0.99 (99/100) & 1.029 & [0.946, 1.111] & Corrob. \\
 \bottomrule
 \end{tabular}
@@ -101,9 +102,11 @@ In the report card, Event-micro shows the clearest primary Q2 pattern: the forec
 
 A second forecasting-native Traffic-Hourly Top-\(k\) alert task repeats the same selection failure under a fixed-budget alert interface. In the selected Top-\(k\) setting ($k=249$), Reactive short is both the forecast-side winner and the deployed winner at zero friction, with exact agreement $1.0$. Once switching costs are introduced, however, the forecast-side winner remains Reactive short while the deployed winner shifts to Lagged smoother, and deployed-suboptimality reaches $100/100$ seeds at both friction $0.5$ and friction $1.0$. Additional Traffic checks support this reading most strongly for the Top-\(k\) interface family: across \(k \in \{125,249,500\}\), zero-friction rows remain aligned and positive-friction rows keep the reactive forecast-side winner deployed-suboptimal; predefined time-of-day and relative-rank variants are kept in the appendix rather than used to broaden the main claim.
 
+A residual-warning audit adds one additional forecasting-native report-card row without changing the evidence hierarchy. In expanded EPA AQS PM2.5 residual warning, Reactive lag-1 remains the forecast-side winner, while Long smoother becomes the deployed winner at \(\kappa=1.00\). The appendix reports the full residual-candidate audit, including appendix-only Green support and failed-gate context.
+
 \pagebreak[4]
 
-An \(\epsilon\)-tie audit gives the same qualitative reading for the main forecasting-native rows: Traffic-Hourly Top-\(k\) and Event-micro at \(\kappa \in \{0.50,1.00\}\) remain deployed-suboptimal under relative tie thresholds up to \(\epsilon_{\mathrm{rel}}=0.005\); inventory remains corroborative and lower-margin secondary checks are reported only in the appendix.
+An \(\epsilon\)-tie audit gives the same qualitative reading for the main forecasting-native rows: Traffic-Hourly Top-\(k\) and Event-micro at \(\kappa \in \{0.50,1.00\}\), and expanded EPA at \(\kappa=1.00\), remain deployed-suboptimal under relative tie thresholds up to \(\epsilon_{\mathrm{rel}}=0.005\); inventory remains corroborative and lower-margin secondary checks are reported only in the appendix.
 
 Inventory is used only as operational corroboration, not as main forecasting-native evidence. At friction 0.50 and 1.00, the forecast-selected Small MLP is deployed-suboptimal in 74/100 and 99/100 seeds, respectively, under the fixed replenishment interface; the report card includes only the high-friction inventory row to keep this role bounded.
 
@@ -123,7 +126,7 @@ Inventory is used only as operational corroboration, not as main forecasting-nat
 
 \paragraph{Forecast scoring and decision-focused learning.} This is distinct from proper scoring rules, decision-maker-perspective forecast evaluation, decision-focused learning, and predict-then-optimize, which either define forecast quality or modify learning or optimization objectives for downstream decisions \cite{gneiting2007,murphy1993,raeth2025,donti2017task,elmachtoub2021spo,mandi2024decisionfocused}. Here, forecasters and the interface are fixed; the contribution is a reporting diagnostic for whether forecast-side model selection survives the composed forecast-to-interface-to-utility evaluation.
 
-\paragraph{Discussion and limitations.} Our claim is evaluative and deliberately narrow. We do not claim that forecast-side metrics are invalid for prediction, and we do not seek a single reporting rule for all forecasting applications. We use low, moderate, and high only as shorthand for the lower, middle, and upper parts of each domain's tested friction grid; these labels are not intended as a universal calibration across domains. Event-micro provides the main forecasting-native evidence, Traffic-Hourly provides a second forecasting-native task family, and inventory provides operational corroboration, but this is still not a comprehensive benchmark collection. Broader inventory sweeps are reported in the appendix, and load-following is secondary; the strongest main-text evidence comes from the moderate-to-high friction settings studied here. The intended artifact is modest: a report-card template for deployment-facing model selection under a specified fixed interface, not a new benchmark suite or universal deployed metric. Under this interpretation, inventory and load-following remain corroborative or secondary context rather than standalone statistical evidence for a general effect.
+\paragraph{Discussion and limitations.} Our claim is evaluative and deliberately narrow. We do not claim that forecast-side metrics are invalid for prediction, and we do not seek a single reporting rule for all forecasting applications. We use low, moderate, and high only as shorthand for the lower, middle, and upper parts of each domain's tested friction grid; these labels are not intended as a universal calibration across domains. Event-micro and Traffic-Hourly provide the core forecasting-native evidence, the EPA residual-warning audit adds one additional report-card row, and inventory provides operational corroboration, but this is still not a comprehensive benchmark collection. Broader inventory sweeps are reported in the appendix, and load-following is secondary; the strongest main-text evidence comes from the moderate-to-high friction settings studied here. The intended artifact is modest: a report-card template for deployment-facing model selection under a specified fixed interface, not a new benchmark suite or universal deployed metric. Under this interpretation, inventory and load-following remain corroborative or secondary context rather than standalone statistical evidence for a broader population-level claim.
 
 \begingroup
 \small
@@ -284,6 +287,8 @@ Traffic daytime $\kappa=0.5$ & Partial & Lower-margin, directionally consistent 
 Inventory zero/low friction & Mixed & Not a main zero-friction anchor & Appendix only \\
 Expanded inventory & Mixed & Fairness context only & Appendix only \\
 Load-following & Tie-sensitive & Directional secondary check & Appendix only \\
+Load-alert screening & Yellow/Red & Daily peak-hour Yellow; residual/four-week Red & Screening artifacts \\
+Residual-candidate audit & Mixed & Expanded EPA/Capital/Wikimedia pass; NYC/M5 fail zero-friction alignment & Appendix~\ref{app:residual-audit} \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -463,6 +468,36 @@ As an additional Traffic appendix variant, the relative-rank target shows the sa
 
 \FloatBarrier
 
+\section{Residual-Candidate Step-B Audit}
+\label{app:residual-audit}
+
+This appendix reports the full residual-candidate audit from which the expanded EPA AQS PM2.5 row is promoted to the main report card. We include all five residual candidates rather than only the Green rows. The original 16-unit EPA row is retained as prior audit context; the main text uses the expanded EPA confirmation row. Units in the expanded EPA audit are treated as report-card evaluation cells rather than independent iid samples, with leave-one-site-out and site, unit, and time-block concentration diagnostics reported in the audit artifacts.
+
+\begin{table}[H]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{2.2pt}
+\begin{adjustbox}{max width=\linewidth}
+\begin{tabular}{p{0.18\linewidth}llrrrrrlp{0.16\linewidth}}
+\toprule
+Candidate & Verdict & \(\kappa^\star\) & Units & \(\kappa=0\) subopt. & Subopt. & Mean gap & Median gap & CI & Placement \\
+\midrule
+EPA AQS PM2.5 expanded & Green & 1.00 & 825 & 0.000 & 0.873 & 17.939 & 12.000 & [16.560, 19.342] & Main row; concentration pass \\
+Capital Bikeshare & Green & 1.00 & 16 & 0.063 & 1.000 & 2791.750 & 2814.000 & [2743.998, 2831.502] & Appendix support \\
+Wikimedia hourly & Green & 1.00 & 11 & 0.000 & 1.000 & 118.182 & 115.000 & [94.818, 139.727] & Appendix robustness \\
+NYC TLC taxi-zone & Red & -- & 16 & 0.750 & 1.000 & 2285.812 & 2298.000 & [2255.186, 2315.563] & Failed gate \\
+M5 store-quota & Red & -- & 20 & 0.500 & 0.900 & 24.150 & 21.000 & [17.400, 31.250] & Failed gate \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\caption{Residual-candidate audit. EPA AQS uses the expanded confirmation row; the other rows use the original residual-candidate audit. Capital and Wikimedia remain appendix-only Green support, while NYC TLC and M5 are retained as failed-gate context.}
+\label{tab:residual-candidate-audit}
+\end{table}
+
+The failed candidates are not negative results for the report-card protocol. They identify cases where positive-friction gaps exist but the zero-friction alignment gate fails, which makes the result better interpreted as objective/interface mismatch rather than friction-induced deployed-selection drift.
+
+\FloatBarrier
+
 \section{Inventory Operational Corroboration and Fairness Context}
 \label{app:inventory-corroboration}
 
@@ -565,7 +600,7 @@ Q1 serves only as mechanism support for why Q2 divergence can arise. Holding the
 \section{Uncertainty Reporting for Seed-Level Recurrence and Deployed Gaps}
 \label{app:uncertainty-reporting}
 
-This appendix reports uncertainty for the seed-level recurrence and paired deployed-gap summaries used in the main report card. We emphasize intervals and paired shortfalls rather than hypothesis-test significance. For binary share summaries, rows with fewer than 30 matched seeds use Clopper--Pearson exact intervals; rows with at least 30 matched seeds use Wilson intervals. For continuous deployed gaps, we use 10,000 paired seed bootstrap resamples. In the Load-following rows, the seed field denotes disjoint client-group evaluation units. We report these intervals as descriptive uncertainty summaries for the reporting diagnostic, not as hypothesis-test evidence for a general effect.
+This appendix reports uncertainty for the seed-level recurrence and paired deployed-gap summaries used in the main report card. We emphasize intervals and paired shortfalls rather than hypothesis-test significance. For binary share summaries, rows with fewer than 30 matched seeds use Clopper--Pearson exact intervals; rows with at least 30 matched seeds use Wilson intervals. For continuous deployed gaps, we use 10,000 paired seed bootstrap resamples. In the Load-following rows, the seed field denotes disjoint client-group evaluation units. We report these intervals as descriptive uncertainty summaries for the reporting diagnostic, not as hypothesis-test evidence for a broader population-level claim.
 
 \begin{table}[H]
 \centering
