@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.4.4)  4 MAY 2026 15:34
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.4.4)  7 MAY 2026 15:23
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -994,22 +994,28 @@ File: omlptm.fd
 )
 LaTeX Font Info:    Font shape `OML/ptm/m/n' in size <9> not available
 (Font)              Font shape `OML/cmm/m/it' tried instead on input line 44.
-<assets/figures/fig1_fixed_interface_inversion.pdf, id=6, 397.04837pt x 228.063
-03pt>
+
+Underfull \hbox (badness 1910) in paragraph at lines 47--48
+\OT1/ptm/m/n/10 (+20) re-port card that records the offline-selected
+ []
+
+<assets/figures/fig1_fixed_interface_inversion.pdf, id=6, 397.04837pt x 227.970
+7pt>
 File: assets/figures/fig1_fixed_interface_inversion.pdf Graphic file (type pdf)
 
 <use assets/figures/fig1_fixed_interface_inversion.pdf>
 Package pdftex.def Info: assets/figures/fig1_fixed_interface_inversion.pdf  use
-d on input line 56.
-(pdftex.def)             Requested size: 478.06395pt x 274.60689pt.
+d on input line 58.
+(pdftex.def)             Requested size: 478.06395pt x 274.49571pt.
 LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 6
 4.
-
 (C:\Users\김금영\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ts1ptm.fd
 File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
 )
-[1{C:/Users/김금영/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/User
-s/김금영/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc}
+Underfull \vbox (badness 3088) has occurred while \output is active []
+
+ [1{C:/Users/김금영/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Use
+rs/김금영/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc}
 
 
 
@@ -1019,79 +1025,100 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [2 <./assets/figures/fig1_fixed_interface_inversion.pdf>] [3] [4
+ [2 <./assets/figures/fig1_fixed_interface_inversion.pdf>]
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
-
-]
-(results/table_q2_selection_drift_event_micro.tex)
-<assets/figures/fig_q2_event_micro_support.png, id=116, 247.0028pt x 181.9598pt
->
-File: assets/figures/fig_q2_event_micro_support.png Graphic file (type png)
-<use assets/figures/fig_q2_event_micro_support.png>
-Package pdftex.def Info: assets/figures/fig_q2_event_micro_support.png  used on
- input line 253.
-(pdftex.def)             Requested size: 448.79579pt x 330.61757pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [5
+ [3]
+[4] [5
+
+]
+Underfull \hbox (badness 10000) in paragraph at lines 294--294
+[]|\OT1/ptm/m/n/10 (+20) Expanded EPA/Capital/Wikimedia
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 294--294
+\OT1/ptm/m/n/10 (+20) pass; NYC/M5 fail zero-friction
+ []
+
+[6
 
 
 ]
+<assets/figures/fig_q2_event_micro_support_compact.pdf, id=159, 223.79562pt x 1
+62.36429pt>
+File: assets/figures/fig_q2_event_micro_support_compact.pdf Graphic file (type 
+pdf)
+<use assets/figures/fig_q2_event_micro_support_compact.pdf>
+Package pdftex.def Info: assets/figures/fig_q2_event_micro_support_compact.pdf 
+ used on input line 310.
+(pdftex.def)             Requested size: 224.40161pt x 162.81229pt.
+
+Overfull \hbox (0.73734pt too wide) in paragraph at lines 317--329
+ [][] 
+ []
+
 (results/table_q2_selection_drift_event_micro_threshold_robustness.tex)
 (results/table_q2_selection_drift_event_micro_logloss.tex)
 (results/table_q2_selection_drift_event_micro_hysteresis_robustness.tex)
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [6 <./assets/figures/fig_q2_event_micro_support.png (PNG copy)>]
-(results/table_event_micro_interface_recurrence_tests.tex)
+(results/table_event_micro_interface_recurrence_tests.tex) [7 <./assets/figures
+/fig_q2_event_micro_support_compact.pdf>]
 (results/table_event_micro_interface_gap_bootstrap_cis.tex)
-<assets/figures/fig_event_micro_interface_uncertainty_appendix.png, id=131, 556
-.9608pt x 355.4078pt>
-File: assets/figures/fig_event_micro_interface_uncertainty_appendix.png Graphic
- file (type png)
-<use assets/figures/fig_event_micro_interface_uncertainty_appendix.png>
+<assets/figures/fig_event_micro_interface_uncertainty_appendix.pdf, id=180, 475
+.3537pt x 303.29262pt>
+File: assets/figures/fig_event_micro_interface_uncertainty_appendix.pdf Graphic
+ file (type pdf)
+<use assets/figures/fig_event_micro_interface_uncertainty_appendix.pdf>
 Package pdftex.def Info: assets/figures/fig_event_micro_interface_uncertainty_a
-ppendix.png  used on input line 319.
-(pdftex.def)             Requested size: 458.55432pt x 292.62393pt.
+ppendix.pdf  used on input line 395.
+(pdftex.def)             Requested size: 458.55432pt x 292.57835pt.
 
+(results/table_q2_selection_drift_traffic_topk_main.tex)
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [7]
-(results/table_q2_selection_drift_traffic_topk_main.tex)
-(results/table_q2_selection_drift_traffic_relative_rank_support.tex) [8 <./asse
-ts/figures/fig_event_micro_interface_uncertainty_appendix.png (PNG copy)>]
-(results/table_q2_selection_drift_inventory.tex)
-(results/table_step5_same_interface_summary.tex)
-(results/table_q2_stronger_baseline_robustness.tex)
-(results/table_load_following_support_summary.tex)
-Underfull \vbox (badness 4242) has occurred while \output is active []
+ [8 <./assets/figures/fig_event_micro_interface_uncertainty_appendix.pdf>]
+(results/table_traffic_interface_family_sweep.tex)
+(results/table_traffic_time_of_day_slice_sweep.tex)
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [9]
-<assets/figures/fig_q1_results_v2.png, id=161, 499.9478pt x 196.4138pt>
+(results/table_q2_selection_drift_traffic_relative_rank_support.tex)
+Underfull \hbox (badness 2521) in paragraph at lines 488--489
+[]|\OT1/ptm/m/n/7 (+20) Main row; con-cen-tra-tion
+ []
+
+[10] (results/table_q2_selection_drift_inventory.tex)
+(results/table_step5_same_interface_summary.tex)
+(results/table_q2_stronger_baseline_robustness.tex)
+(results/table_load_following_support_summary.tex) [11]
+<assets/figures/fig_q1_results_v2.png, id=230, 499.9478pt x 196.4138pt>
 File: assets/figures/fig_q1_results_v2.png Graphic file (type png)
 <use assets/figures/fig_q1_results_v2.png>
 Package pdftex.def Info: assets/figures/fig_q1_results_v2.png  used on input li
-ne 460.
+ne 596.
 (pdftex.def)             Requested size: 439.03726pt x 172.48503pt.
 
 (results/table_q2_recurrence_tests.tex)
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [10 <./assets/figures/fig_q1_results_v2.png (PNG copy)>]
+ [12 <./assets/figures/fig_q1_results_v2.png (PNG copy)>]
 (results/table_q2_gap_bootstrap_cis.tex)
-<assets/figures/fig_q2_uncertainty_appendix.png, id=171, 531.586pt x 203.6408pt
->
-File: assets/figures/fig_q2_uncertainty_appendix.png Graphic file (type png)
-<use assets/figures/fig_q2_uncertainty_appendix.png>
-Package pdftex.def Info: assets/figures/fig_q2_uncertainty_appendix.png  used o
-n input line 496.
-(pdftex.def)             Requested size: 458.55432pt x 175.66833pt.
+<assets/figures/fig_q2_uncertainty_appendix.pdf, id=240, 409.6975pt x 177.77328
+pt>
+File: assets/figures/fig_q2_uncertainty_appendix.pdf Graphic file (type pdf)
+<use assets/figures/fig_q2_uncertainty_appendix.pdf>
+Package pdftex.def Info: assets/figures/fig_q2_uncertainty_appendix.pdf  used o
+n input line 632.
+(pdftex.def)             Requested size: 458.55432pt x 198.97722pt.
 
-(results/table_epsilon_tie_sensitivity.tex)
-Underfull \vbox (badness 10000) has occurred while \output is active []
+(results/table_epsilon_tie_sensitivity_gated.tex)
+Underfull \vbox (badness 3138) has occurred while \output is active []
 
- [11 <./assets/figures/fig_q2_uncertainty_appendix.png (PNG copy)>] [12]
+ [13 <./assets/figures/fig_q2_uncertainty_appendix.pdf>]
+(results/table_epsilon_tie_sensitivity_load_following.tex) [14]
 (paper_forecasting_workshop_v2.aux)
  ***********
 LaTeX2e <2025-11-01>
@@ -1102,36 +1129,37 @@ hanged.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 27287 strings out of 467871
- 511170 string characters out of 5416441
- 962629 words of memory out of 5000000
- 55312 multiletter control sequences out of 15000+600000
- 660413 words of font info for 265 fonts, out of 8000000 for 9000
+ 27419 strings out of 467871
+ 513938 string characters out of 5416441
+ 952107 words of memory out of 5000000
+ 55369 multiletter control sequences out of 15000+600000
+ 665232 words of font info for 302 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 84i,12n,94p,1323b,623s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 84i,12n,94p,1552b,623s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Users/김금영/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts
 /cm/cmmi10.pfb><C:/Users/김금영/AppData/Local/Programs/MiKTeX/fonts/type1/pu
-blic/amsfonts/cm/cmmi5.pfb><C:/Users/김금영/AppData/Local/Programs/MiKTeX/fo
-nts/type1/public/amsfonts/cm/cmmi7.pfb><C:/Users/김금영/AppData/Local/Progra
-ms/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi9.pfb><C:/Users/김금영/AppData/
-Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/김금
-영/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr6.pfb><C:/U
-sers/김금영/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr
-7.pfb><C:/Users/김금영/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsf
-onts/cm/cmr9.pfb><C:/Users/김금영/AppData/Local/Programs/MiKTeX/fonts/type1/
-public/amsfonts/cm/cmsy10.pfb><C:/Users/김금영/AppData/Local/Programs/MiKTeX
-/fonts/type1/public/amsfonts/cm/cmsy6.pfb><C:/Users/김금영/AppData/Local/Pro
-grams/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Users/김금영/AppDa
-ta/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy9.pfb><C:/Users/김
-금영/AppData/Local/Programs/MiKTeX/fonts/type1/urw/helvetic/uhvb8a.pfb><C:/Us
-ers/김금영/AppData/Local/Programs/MiKTeX/fonts/type1/urw/helvetic/uhvr8a.pfb
-><C:/Users/김금영/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmb8a
-.pfb><C:/Users/김금영/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/ut
-mr8a.pfb><C:/Users/김금영/AppData/Local/Programs/MiKTeX/fonts/type1/urw/time
-s/utmri8a.pfb>
-Output written on paper_forecasting_workshop_v2.pdf (12 pages, 1256676 bytes).
+blic/amsfonts/cm/cmmi12.pfb><C:/Users/김금영/AppData/Local/Programs/MiKTeX/f
+onts/type1/public/amsfonts/cm/cmmi5.pfb><C:/Users/김금영/AppData/Local/Progr
+ams/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/Users/김금영/AppData
+/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi9.pfb><C:/Users/김�
+�영/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:
+/Users/김금영/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/c
+mr6.pfb><C:/Users/김금영/AppData/Local/Programs/MiKTeX/fonts/type1/public/am
+sfonts/cm/cmr7.pfb><C:/Users/김금영/AppData/Local/Programs/MiKTeX/fonts/type
+1/public/amsfonts/cm/cmr9.pfb><C:/Users/김금영/AppData/Local/Programs/MiKTeX
+/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/김금영/AppData/Local/Pr
+ograms/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy6.pfb><C:/Users/김금영/AppD
+ata/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Users/�
+�금영/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy9.pfb>
+<C:/Users/김금영/AppData/Local/Programs/MiKTeX/fonts/type1/urw/helvetic/uhvb
+8a.pfb><C:/Users/김금영/AppData/Local/Programs/MiKTeX/fonts/type1/urw/helvet
+ic/uhvr8a.pfb><C:/Users/김금영/AppData/Local/Programs/MiKTeX/fonts/type1/urw
+/times/utmb8a.pfb><C:/Users/김금영/AppData/Local/Programs/MiKTeX/fonts/type1
+/urw/times/utmr8a.pfb><C:/Users/김금영/AppData/Local/Programs/MiKTeX/fonts/t
+ype1/urw/times/utmri8a.pfb>
+Output written on paper_forecasting_workshop_v2.pdf (14 pages, 580295 bytes).
 PDF statistics:
- 265 PDF objects out of 1000 (max. 8388607)
- 64 named destinations out of 1000 (max. 500000)
- 45606 words of extra memory for PDF output out of 51595 (max. 10000000)
+ 356 PDF objects out of 1000 (max. 8388607)
+ 90 named destinations out of 1000 (max. 500000)
+ 46630 words of extra memory for PDF output out of 51595 (max. 10000000)
 

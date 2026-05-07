@@ -215,23 +215,23 @@ def build_latex(cells: list[FigureCell]) -> str:
   colheader/.style={align=center, font=\bfseries\scriptsize},
   legend/.style={font=\scriptsize, anchor=west}
 ]
-\node[anchor=west,font=\bfseries\large,text=titlegray] at (0.00,0.00) {Forecast-side winners can diverge under fixed interfaces.};
+\node[anchor=west,font=\bfseries\large,text=titlegray] at (0.00,0.00) {Offline-selected models can become deployed-suboptimal.};
 
 \filldraw[fill=panelbg,draw=panelrule,rounded corners=4pt] (0.00,-0.42) rectangle (13.80,-2.70);
-\node[anchor=west,font=\bfseries\footnotesize,text=titlegray] at (0.25,-0.72) {A. Fixed forecast-to-decision interface};
-\node[anchor=east,font=\scriptsize,text=muted] at (13.55,-0.72) {same interface, different forecast source};
-\node[stage={forecastline}{forecastbg}] (forecast) at (1.75,-1.56) {Forecast\\[-1pt]{\scriptsize model ranking}};
-\node[stage={interfaceline}{interfacebg}] (interface) at (5.15,-1.56) {fixed\\[-1pt]{\scriptsize interface}};
-\node[stage={actionline}{actionbg}] (executed) at (8.55,-1.56) {executed\\[-1pt]{\scriptsize action path}};
-\node[stage={metricline}{metricbg}] (metric) at (11.95,-1.56) {deployed\\[-1pt]{\scriptsize metric}};
+\node[anchor=west,font=\bfseries\footnotesize,text=titlegray] at (0.25,-0.72) {A. Fixed decision interface};
+\node[anchor=east,font=\scriptsize,text=muted] at (13.55,-0.72) {same interface, different candidate model};
+\node[stage={forecastline}{forecastbg}] (forecast) at (1.75,-1.56) {Offline\\[-1pt]{\scriptsize validation ranking}};
+\node[stage={interfaceline}{interfacebg}] (interface) at (5.15,-1.56) {fixed decision\\[-1pt]{\scriptsize interface}};
+\node[stage={actionline}{actionbg}] (executed) at (8.55,-1.56) {deployed\\[-1pt]{\scriptsize action path}};
+\node[stage={metricline}{metricbg}] (metric) at (11.95,-1.56) {deployed\\[-1pt]{\scriptsize utility}};
 \draw[arr] (forecast) -- (interface);
 \draw[arr] (interface) -- (executed);
 \draw[arr] (executed) -- (metric);
-\node[anchor=west,align=left,font=\scriptsize,text=muted] at (0.25,-2.35) {Q2 fixes the interface and asks whether the forecast-side winner remains the deployed-side winner.};
+\node[anchor=west,align=left,font=\scriptsize,text=muted] at (0.25,-2.35) {Fixed interface, varying model: does offline selection transfer?};
 
 \filldraw[fill=panelbg,draw=panelrule,rounded corners=4pt] (0.00,-2.95) rectangle (13.80,-7.55);
 \node[anchor=west,font=\bfseries\footnotesize,text=titlegray] at (0.25,-3.25) {B. Winner-inversion matrix};
-\node[anchor=east,font=\scriptsize,text=muted] at (13.55,-3.25) {arrows: aggregate winners; counts: seed-level deployed-suboptimal cases};
+\node[anchor=east,font=\scriptsize,text=muted] at (13.55,-3.25) {arrows: offline-selected $\rightarrow$ deployed-utility winner; counts: deployed-suboptimal cases};
 """
         + "\n".join(column_labels)
         + "\n"
@@ -249,7 +249,7 @@ def build_latex(cells: list[FigureCell]) -> str:
 
 
 def write_data_table(cells: list[FigureCell]) -> None:
-    print("Domain | Friction | Forecast winner | Deployed winner | Suboptimal seeds | Cell color | Source file")
+    print("Domain | Friction | Offline-selected model | Deployed-utility winner | Suboptimal seeds | Cell color | Source file")
     print("--- | --- | --- | --- | --- | --- | ---")
     color_name = {"neutralbg": "Gray", "shiftbg": "Amber", "strongbg": "Orange"}
     for cell in cells:
