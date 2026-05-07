@@ -62,9 +62,12 @@ def _suboptimal_rate(value: str) -> float:
 
 
 def _cell_color(forecast_winner: str, deployed_winner: str, friction: str, suboptimal_seeds: str) -> str:
-    if friction == "0.00" or forecast_winner == deployed_winner:
+    if friction == "0.00":
         return "neutralbg"
-    if _suboptimal_rate(suboptimal_seeds) >= 0.8:
+    rate = _suboptimal_rate(suboptimal_seeds)
+    if forecast_winner == deployed_winner or rate < 0.5:
+        return "partialbg"
+    if rate >= 0.8:
         return "strongbg"
     return "shiftbg"
 
@@ -151,7 +154,7 @@ def _short_name(value: str) -> str:
 
 def _make_cell_node(cell: FigureCell, x: float, y: float) -> str:
     transition = _short_name(cell.forecast_winner) + r" $\rightarrow$ " + _short_name(cell.deployed_winner)
-    body = r"{\bfseries " + _latex_escape(transition) + r"}\\[-1pt]{\scriptsize " + _latex_escape(cell.suboptimal_seeds) + "}"
+    body = r"{\bfseries " + _latex_escape(transition) + r"}\\[-1pt]{\scriptsize subopt. " + _latex_escape(cell.suboptimal_seeds) + "}"
     return rf"\node[cell,fill={cell.color}] at ({x:.2f},{y:.2f}) {{{body}}};"
 
 
@@ -164,8 +167,8 @@ def build_latex(cells: list[FigureCell]) -> str:
         "Inventory": r"Inventory",
     }
 
-    x_positions = {"0.00": 5.10, "0.50": 8.55, "1.00": 12.00}
-    y_positions = {"Event-micro": -4.34, "Traffic-Hourly Top-k": -5.44, "Inventory": -6.54}
+    x_positions = {"0.00": 5.10, "0.50": 8.42, "1.00": 11.74}
+    y_positions = {"Event-micro": -4.74, "Traffic-Hourly Top-k": -5.97, "Inventory": -7.20}
     cell_map = {(cell.domain, cell.friction): cell for cell in cells}
 
     cell_nodes = []
@@ -174,13 +177,13 @@ def build_latex(cells: list[FigureCell]) -> str:
             cell_nodes.append(_make_cell_node(cell_map[(domain, friction)], x_positions[friction], y_positions[domain]))
 
     row_labels = [
-        rf"\node[rowlabel] at (3.00,{y_positions[domain]:.2f}) {{{domain_labels[domain]}}};"
+        rf"\node[rowlabel] at (2.90,{y_positions[domain]:.2f}) {{{domain_labels[domain]}}};"
         for domain in domains
     ]
-    column_labels = [
-        rf"\node[colheader] at ({x_positions[friction]:.2f},-3.66) {{$\kappa = {friction}$}};"
-        for friction in frictions
-    ]
+    column_labels = []
+    for friction in frictions:
+        label = rf"\kappa = {friction}^{{*}}" if friction == "0.00" else rf"\kappa = {friction}"
+        column_labels.append(rf"\node[colheader] at ({x_positions[friction]:.2f},-4.16) {{${label}$}};")
 
     return (
         r"""
@@ -202,36 +205,37 @@ def build_latex(cells: list[FigureCell]) -> str:
 \definecolor{metricbg}{HTML}{FDE5C8}
 \definecolor{metricline}{HTML}{F28E2B}
 \definecolor{neutralbg}{HTML}{E7E7E7}
-\definecolor{shiftbg}{HTML}{FFE0A3}
-\definecolor{strongbg}{HTML}{F4A261}
+\definecolor{partialbg}{HTML}{FFF0C2}
+\definecolor{shiftbg}{HTML}{FBC878}
+\definecolor{strongbg}{HTML}{E76F51}
 \definecolor{framegray}{HTML}{8C9298}
+\definecolor{footmuted}{HTML}{6F747A}
 \begin{document}
 \sffamily
 \begin{tikzpicture}[
-  stage/.style 2 args={draw=#1, rounded corners=3pt, fill=#2, align=center, font=\footnotesize, minimum width=2.35cm, minimum height=0.86cm, inner sep=3pt},
-  arr/.style={-{Latex[length=2.5mm]}, line width=0.8pt, draw=framegray},
-  cell/.style={draw=white, line width=1.0pt, minimum width=3.08cm, minimum height=0.88cm, align=center, font=\scriptsize, text width=2.80cm, inner sep=2pt},
-  rowlabel/.style={anchor=east, align=right, font=\bfseries\scriptsize, text width=2.05cm},
+  stage/.style 2 args={draw=#1, rounded corners=3pt, fill=#2, align=center, font=\scriptsize, minimum width=2.23cm, minimum height=0.76cm, inner sep=2.5pt},
+  arr/.style={-{Latex[length=2.25mm]}, line width=0.7pt, draw=framegray},
+  cell/.style={draw=white, line width=1.0pt, minimum width=2.98cm, minimum height=0.88cm, align=center, font=\scriptsize, text width=2.70cm, inner sep=2pt},
+  rowlabel/.style={anchor=east, align=right, font=\bfseries\scriptsize, text width=2.12cm},
   colheader/.style={align=center, font=\bfseries\scriptsize},
   legend/.style={font=\scriptsize, anchor=west}
 ]
-\node[anchor=west,font=\bfseries\large,text=titlegray] at (0.00,0.00) {Offline-selected models can become deployed-suboptimal.};
+\node[anchor=west,font=\bfseries\large,text=titlegray] at (0.00,0.00) {Offline-selected candidates can lose after fixed-interface deployment.};
 
-\filldraw[fill=panelbg,draw=panelrule,rounded corners=4pt] (0.00,-0.42) rectangle (13.80,-2.70);
-\node[anchor=west,font=\bfseries\footnotesize,text=titlegray] at (0.25,-0.72) {A. Fixed decision interface};
-\node[anchor=east,font=\scriptsize,text=muted] at (13.55,-0.72) {same interface, different candidate model};
-\node[stage={forecastline}{forecastbg}] (forecast) at (1.75,-1.56) {Offline\\[-1pt]{\scriptsize validation ranking}};
-\node[stage={interfaceline}{interfacebg}] (interface) at (5.15,-1.56) {fixed decision\\[-1pt]{\scriptsize interface}};
-\node[stage={actionline}{actionbg}] (executed) at (8.55,-1.56) {deployed\\[-1pt]{\scriptsize action path}};
-\node[stage={metricline}{metricbg}] (metric) at (11.95,-1.56) {deployed\\[-1pt]{\scriptsize utility}};
+\filldraw[fill=panelbg,draw=panelrule,rounded corners=4pt] (0.00,-0.42) rectangle (13.80,-2.36);
+\node[anchor=west,font=\bfseries\footnotesize,text=titlegray] at (0.25,-0.68) {A. Fixed-interface selection-transfer audit};
+\node[stage={forecastline}{forecastbg}] (forecast) at (2.02,-1.42) {Offline score\\[-1pt]{\fontsize{6.4}{6.8}\selectfont selects candidate}};
+\node[stage={interfaceline}{interfacebg}] (interface) at (5.24,-1.42) {Fixed interface\\[-1pt]{\fontsize{6.4}{6.8}\selectfont maps outputs to actions}};
+\node[stage={actionline}{actionbg}] (executed) at (8.46,-1.42) {Deployment friction\\[-1pt]{\fontsize{6.4}{6.8}\selectfont applies cost}};
+\node[stage={metricline}{metricbg}] (metric) at (11.68,-1.42) {Deployed utility\\[-1pt]{\fontsize{6.4}{6.8}\selectfont ranks candidates}};
 \draw[arr] (forecast) -- (interface);
 \draw[arr] (interface) -- (executed);
 \draw[arr] (executed) -- (metric);
-\node[anchor=west,align=left,font=\scriptsize,text=muted] at (0.25,-2.35) {Fixed interface, varying model: does offline selection transfer?};
+\node[anchor=west,align=left,font=\fontsize{6.4}{6.8}\selectfont,text=muted] at (0.25,-2.13) {candidate rule: $\pi_m = I_\theta \circ f_m$};
 
-\filldraw[fill=panelbg,draw=panelrule,rounded corners=4pt] (0.00,-2.95) rectangle (13.80,-7.55);
-\node[anchor=west,font=\bfseries\footnotesize,text=titlegray] at (0.25,-3.25) {B. Winner-inversion matrix};
-\node[anchor=east,font=\scriptsize,text=muted] at (13.55,-3.25) {arrows: offline-selected $\rightarrow$ deployed-utility winner; counts: deployed-suboptimal cases};
+\filldraw[fill=panelbg,draw=panelrule,rounded corners=4pt] (0.00,-2.61) rectangle (13.80,-8.83);
+\node[anchor=west,font=\bfseries\footnotesize,text=titlegray] at (0.25,-2.91) {B. Winner inversion under fixed-interface deployment};
+\node[anchor=north west,align=left,font=\scriptsize,text=muted] at (0.55,-3.14) {Arrows show offline-selected $\rightarrow$ deployed-utility winner\\[1pt]Counts show deployed-suboptimal units};
 """
         + "\n".join(column_labels)
         + "\n"
@@ -239,9 +243,11 @@ def build_latex(cells: list[FigureCell]) -> str:
         + "\n"
         + "\n".join(cell_nodes)
         + r"""
-\node[legend] at (3.20,-7.27) {\tikz{\fill[neutralbg,draw=framegray] (0,0) rectangle (0.18,0.12);} same or mixed \quad
-\tikz{\fill[shiftbg,draw=framegray] (0,0) rectangle (0.18,0.12);} winner shift \quad
-\tikz{\fill[strongbg,draw=framegray] (0,0) rectangle (0.18,0.12);} recurrent mismatch};
+\node[legend] at (1.10,-8.18) {\tikz{\fill[neutralbg,draw=framegray] (0,0) rectangle (0.18,0.12);} zero-friction reference \quad
+\tikz{\fill[partialbg,draw=framegray] (0,0) rectangle (0.18,0.12);} partial transfer / mixed \quad
+\tikz{\fill[shiftbg,draw=framegray] (0,0) rectangle (0.18,0.12);} winner changes \quad
+\tikz{\fill[strongbg,draw=framegray] (0,0) rectangle (0.18,0.12);} recurrent suboptimality};
+\node[anchor=west,font=\fontsize{6.6}{7.0}\selectfont,text=footmuted] at (1.10,-8.52) {*Gray cells are zero-friction references, not friction-causal evidence.};
 \end{tikzpicture}
 \end{document}
 """
@@ -251,7 +257,7 @@ def build_latex(cells: list[FigureCell]) -> str:
 def write_data_table(cells: list[FigureCell]) -> None:
     print("Domain | Friction | Offline-selected model | Deployed-utility winner | Suboptimal seeds | Cell color | Source file")
     print("--- | --- | --- | --- | --- | --- | ---")
-    color_name = {"neutralbg": "Gray", "shiftbg": "Amber", "strongbg": "Orange"}
+    color_name = {"neutralbg": "Gray", "partialbg": "Light", "shiftbg": "Amber", "strongbg": "Orange"}
     for cell in cells:
         print(
             " | ".join(

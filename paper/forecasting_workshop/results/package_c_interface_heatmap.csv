@@ -1,0 +1,21 @@
+domain,interface,k,kappa,n_units,offline_selected,deployed_winner,deployed_suboptimal_share,deployed_suboptimal_count,mean_shortfall,canonical_marker,zero_friction_alignment,verdict
+Traffic-Hourly Top-k,top_k,125,0.0,100,reactive_short,reactive_short,0.0,0,0.0,False,True,Aligned
+Traffic-Hourly Top-k,top_k,125,0.25,100,reactive_short,reactive_short,0.0,0,0.0,False,True,Red
+Traffic-Hourly Top-k,top_k,125,0.5,100,reactive_short,calibrated_baseline,1.0,100,3.7936607142857137,False,True,Green
+Traffic-Hourly Top-k,top_k,125,0.75,100,reactive_short,calibrated_baseline,1.0,100,9.878258928571427,False,True,Green
+Traffic-Hourly Top-k,top_k,125,1.0,100,reactive_short,calibrated_baseline,1.0,100,15.985580357142858,False,True,Green
+Traffic-Hourly Top-k,top_k,249,0.0,100,reactive_short,reactive_short,0.0,0,0.0,True,True,Aligned
+Traffic-Hourly Top-k,top_k,249,0.25,100,reactive_short,reactive_short,0.05,5,0.010669642857142883,True,True,Red
+Traffic-Hourly Top-k,top_k,249,0.5,100,reactive_short,lagged_smoother,1.0,100,7.015550595238094,True,True,Green
+Traffic-Hourly Top-k,top_k,249,0.75,100,reactive_short,lagged_smoother,1.0,100,15.833407738095241,True,True,Green
+Traffic-Hourly Top-k,top_k,249,1.0,100,reactive_short,lagged_smoother,1.0,100,24.651264880952382,True,True,Green
+Traffic-Hourly Top-k,top_k,500,0.0,100,reactive_short,reactive_short,0.0,0,0.0,False,True,Aligned
+Traffic-Hourly Top-k,top_k,500,0.25,100,reactive_short,lagged_smoother,1.0,100,2.478125,False,True,Yellow
+Traffic-Hourly Top-k,top_k,500,0.5,100,reactive_short,lagged_smoother,1.0,100,14.313690476190475,False,True,Green
+Traffic-Hourly Top-k,top_k,500,0.75,100,reactive_short,lagged_smoother,1.0,100,26.14925595238096,False,True,Green
+Traffic-Hourly Top-k,top_k,500,1.0,100,reactive_short,lagged_smoother,1.0,100,37.98482142857143,False,True,Green
+Traffic-Hourly Top-k,top_k,750,0.0,100,reactive_short,reactive_short,0.0,0,0.0,False,True,Aligned
+Traffic-Hourly Top-k,top_k,750,0.25,100,reactive_short,lagged_smoother,1.0,100,4.429970238095238,False,True,Yellow
+Traffic-Hourly Top-k,top_k,750,0.5,100,reactive_short,lagged_smoother,1.0,100,12.633005952380952,False,True,Green
+Traffic-Hourly Top-k,top_k,750,0.75,100,reactive_short,lagged_smoother,1.0,100,20.83604166666667,False,True,Green
+Traffic-Hourly Top-k,top_k,750,1.0,100,reactive_short,lagged_smoother,1.0,100,29.03907738095238,False,True,Green

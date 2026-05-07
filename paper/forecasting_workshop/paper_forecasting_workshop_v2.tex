@@ -18,12 +18,12 @@
 \usepackage[section]{placeins}
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta,positioning}
-\icmltitlerunning{Offline-to-Online Selection Transfer}
+\icmltitlerunning{Offline-to-Deployed Selection Transfer}
 
 \begin{document}
 
 \twocolumn[
-  \icmltitle{Evaluating Offline-to-Online Selection Transfer under Fixed Decision Interfaces}
+  \icmltitle{Auditing Offline-to-Deployed Selection Transfer under Fixed Decision Interfaces}
 
   % For an anonymous ICML submission, keep the package line above as
   % \usepackage{icml2026}. To render author names in a visible draft,
@@ -44,19 +44,23 @@
 \printAffiliationsAndNotice{}
 
 \begin{abstract}
-Offline decision-making pipelines often select models using validation scores computed on collected data, then deploy the selected model through a fixed decision interface such as threshold alerts, hysteresis rules, budgeted top-\(k\) actions, residual-warning screens, or replenishment rules. We ask a narrow evaluation question: does the offline-selected model remain the deployed-utility winner after the same interface and deployment friction are applied? We propose an offline-to-deployed selection-transfer report card that records the offline-selected model, deployed-utility winner, agreement rate, deployed-suboptimal share, paired utility shortfall, and tie diagnostics. Across a synthetic zero-friction anchor, event-warning, traffic-alert, and EPA PM2.5 residual-warning tasks, with inventory as operational corroboration, models selected by offline validation scores become recurrently deployed-suboptimal in moderate-to-high friction regimes in the studied settings. This is not an online adaptation algorithm, a general off-policy evaluation method, or a universal offline decision-making benchmark suite; ``online'' refers to deployed-outcome evaluation under a specified fixed interface, not online model updating.
+Offline decision-making pipelines often select models using validation scores computed on collected data, then deploy the selected model through a fixed decision interface such as threshold alerts, hysteresis rules, budgeted top-\(k\) actions, residual-warning screens, or replenishment rules. We ask a narrow evaluation question: does the offline-selected model remain the deployed-utility winner after the same interface and deployment friction are applied? We propose an offline-to-deployed selection-transfer report card that records the offline-selected model, deployed-utility winner, agreement rate, deployed-suboptimal share, paired utility shortfall, and tie diagnostics. Across the studied tasks, the offline-selected model often fails to remain the deployed-utility winner once switching or adjustment costs are applied through the fixed interface, and the mismatch recurs across seeds and interface checks. We position this report card as a pre-adaptation evaluation layer for offline decision-making pipelines: before deployment, online fine-tuning, or exploration, practitioners can audit whether the candidate selected by an offline proxy remains preferred under the fixed decision interface and friction model they intend to use.
 \end{abstract}
 
 \section{Introduction}
 
 Offline decision-making pipelines often select a model using validation scores computed on collected data, then deploy the selected model through a fixed decision interface that maps predictions or scores into actions. Examples include triggering an alert when \(p_t > \tau\), changing state only if the score moves by at least \(\delta\), issuing the top-\(k\) alerts under a fixed budget, applying a residual-warning screen, or applying a replenishment rule. When the deployed interface includes switching or adjustment friction, the model selected by the offline score need not remain the deployed-utility winner. We do not tune the interface per model: the same specified decision interface is applied to every candidate model before deployed-utility scoring.
 
-This paper studies offline-to-deployed selection transfer as a reporting diagnostic. By selection transfer we mean whether the model selected by an offline validation score remains the best model under deployed utility after a fixed decision interface and friction model are applied. This is not an argument that forecast-quality metrics are invalid for prediction, nor a proposal for a single deployed metric. Deployed utility depends on a specified interface, simulator, and friction model. Our claim is narrower: when offline validation is used as deployment-facing model-selection advice, the evaluation should report whether that selection transfers to deployed utility under the specified fixed interface. Throughout, ``online'' means deployed-outcome evaluation under the specified interface, not online adaptation or model updating.
+This paper studies offline-to-deployed selection transfer as a reporting diagnostic. By selection transfer we mean whether the model selected by an offline validation score remains the best model under deployed utility after a fixed decision interface and friction model are applied. This is not an argument that forecast-quality metrics are invalid for prediction, nor a proposal for a single deployed metric. Deployed utility depends on a specified interface, simulator, and friction model. Our claim is narrower: when offline validation is used as deployment-facing model-selection advice, the evaluation should report whether that selection transfers to deployed utility under the specified fixed interface.
+
+In offline decision-making terms, each candidate prediction model \(f_m\), together with the fixed interface \(I_\theta\), induces a candidate decision rule \(\pi_m=I_\theta\circ f_m\). The report card is therefore a fixed-candidate selection audit: it asks whether the candidate chosen by an offline proxy score is also preferred by deployed utility under the intended interface and friction model. In many offline decision-making settings, the first deployment decision is not how to update a policy online, but which offline-trained candidate is reliable enough to deploy, evaluate, or adapt. Our report card targets this pre-adaptation selection step.
+
+This audit is complementary to OPE, decision-focused learning, and online adaptation: those methods estimate policy value, optimize downstream objectives, or adapt policies online, whereas our report card checks whether a fixed offline-selected candidate remains preferred under the intended interface and friction model.
 
 \begin{figure*}[t]
 \centering
 \includegraphics[width=0.98\textwidth]{assets/figures/fig1_fixed_interface_inversion.pdf}
-\caption{Offline model selection need not transfer through a fixed decision interface. Panel A shows the selection-transfer setting: models are ranked by an offline validation score, passed through the same fixed decision interface, and evaluated by deployed utility under friction. Panel B reports aggregate offline-selected and deployed-utility winners across representative task families and friction levels. Arrows show offline-selected model \(\rightarrow\) deployed-utility winner; counts denote evaluation units in which the offline-selected model is deployed-suboptimal. Gray zero-friction cells are included for completeness rather than interpreted as friction-causal anchors; the clean zero-friction anchors are the synthetic sanity row in Table~\ref{tab:deployed-selection-report-card} and the Traffic-Hourly Top-\(k\) zero-friction cell.}
+\caption{Offline-selected candidates can lose after fixed-interface deployment. (A) The audit ranks candidate models offline, applies the same fixed interface, and scores deployed utility under friction. (B) Arrows show offline-selected candidate \(\rightarrow\) deployed-utility winner; counts show deployed-suboptimal units. Gray cells are zero-friction references, not friction-causal evidence.}
 \label{fig:fixed-interface-inversion}
 \end{figure*}
 
@@ -64,70 +68,70 @@ This paper makes three focused contributions.
 \begin{itemize}[leftmargin=*,noitemsep,topsep=2pt]
 \item Selection-transfer diagnostic. We formulate offline-to-deployed selection-transfer robustness: whether the model selected by an offline validation score remains the best model under deployed utility after a fixed decision interface and friction model are applied.
 \item Report-card artifact. We provide a lightweight report card recording offline-selected models, deployed-utility winners, agreement rates, deployed-suboptimal shares, paired utility shortfalls, and tie/uncertainty diagnostics.
-\item Empirical audit. Across prediction-to-decision tasks, we find recurrent selection failures in moderate-to-high friction regimes, while retaining zero-friction anchors, failed-gate variants, and tie audits to bound the interpretation.
+\item Empirical audit. Across prediction-to-decision tasks, we find recurrent selection failures in the tested higher-friction settings, while retaining zero-friction anchors, failed-gate variants, and tie audits to bound the interpretation.
 \end{itemize}
 
 \paragraph{Setup.}
-For each candidate model \(m \in \mathcal{M}\), an offline validation score \(S_{\mathrm{off}}(m)\) selects \(m_{\mathrm{off}}=\arg\min_m S_{\mathrm{off}}(m)\). We use the loss convention for \(S_{\mathrm{off}}\), with lower values better. A fixed decision interface \(I_\theta\) maps model outputs to actions, \(a^m_{1:T}=I_\theta(\hat y^m_{1:T})\), and the same specified interface is applied to every candidate model. We evaluate deployed utility \(U_\kappa(m;I_\theta)\) under friction \(\kappa\), with larger values better. The deployed-utility winner is \(m_{\mathrm{dep}}=\arg\max_m U_\kappa(m;I_\theta)\). Selection transfer is preserved when \(m_{\mathrm{off}}=m_{\mathrm{dep}}\); otherwise the offline-selected model incurs deployed shortfall \(\Delta_\kappa=U_\kappa(m_{\mathrm{dep}};I_\theta)-U_\kappa(m_{\mathrm{off}};I_\theta)\). All deployed outcomes are reported as utilities or utility shortfalls, so larger \(U_\kappa\) is better and \(\Delta_\kappa>0\) means the offline-selected model is deployed-suboptimal. Near-ties are handled by the pre-specified tie-breaking rule and by the \(\epsilon\)-tie audit reported in the appendix.
+For each candidate model \(m \in \mathcal{M}\), an offline validation score \(S_{\mathrm{off}}(m)\) selects \(m_{\mathrm{off}}=\arg\min_m S_{\mathrm{off}}(m)\). We use the loss convention for \(S_{\mathrm{off}}\), with lower values better. A fixed decision interface \(I_\theta\) maps model outputs to actions, \(a^m_{1:T}=I_\theta(\hat y^m_{1:T})\), and the same specified interface is applied to every candidate model. We evaluate deployed utility \(U_\kappa(m;I_\theta)\) under friction \(\kappa\), with larger values better. The deployed-utility winner is \(m_{\mathrm{dep}}=\arg\max_m U_\kappa(m;I_\theta)\). Selection transfer is preserved when \(m_{\mathrm{off}}=m_{\mathrm{dep}}\); otherwise the offline-selected model incurs deployed shortfall \(\Delta_\kappa=U_\kappa(m_{\mathrm{dep}};I_\theta)-U_\kappa(m_{\mathrm{off}};I_\theta)\). All deployed outcomes are reported as utilities or utility shortfalls, so larger \(U_\kappa\) is better and \(\Delta_\kappa>0\) means the offline-selected model is deployed-suboptimal. Near-ties are handled by the pre-specified tie-breaking rule and by the \(\epsilon\)-tie audit reported in the appendix. Throughout the paper, ``offline-selected model'' denotes the candidate chosen by the offline validation score; ``deployed-utility winner'' denotes the candidate with the highest utility after the same fixed interface and friction model are applied.
 
-We use Q1/Q2 only to separate mechanism from model-selection evidence. Q1 fixes the proposed action path and varies the interface as an exact-control check. In Q2, the interface is fixed and the candidate prediction model varies; this is the main model-selection question.
+Q2 is the paper's main model-selection question: with the interface fixed, does the offline-selected model remain the deployed-utility winner? Q1 is used only as a mechanism check: when the proposed action path is held fixed, frictional execution can change realized utility. We report Q1 only to explain why Q2 failures can arise.
 
 \section{Results}
 
 \subsection{Selection transfer under fixed decision interfaces}
 
-This corresponds to the paper's Q2 question: the interface is fixed and the candidate model varies. The report card ranks candidate models by an offline validation score, applies the same fixed decision interface to every candidate, evaluates deployed utility across a friction grid, and reports whether the offline-selected model remains the deployed-utility winner using transfer rate, deployed-suboptimal share, paired shortfall, and tie diagnostics. Table~\ref{tab:deployed-selection-report-card} is the output format of this diagnostic. The zero-friction synthetic row is a sanity anchor. Event-micro and Traffic-Hourly provide the core prediction-to-decision Q2 evidence under two different fixed-interface structures, the EPA residual-warning audit adds one additional prediction-to-decision row, and inventory is included only as operational corroboration. Figure~\ref{fig:fixed-interface-inversion} visualizes the main winner-inversion evidence across the prediction-to-decision and corroboration rows.
+This subsection answers Q2: with the decision interface fixed, does the offline-selected model remain the deployed-utility winner? Table~\ref{tab:deployed-selection-report-card} reports the resulting selection-transfer report card. Event-micro and Traffic-Hourly carry the main fixed-interface selection-transfer claim; EPA and inventory are bounded support.
 
-\begin{table*}[!t]
-\caption{Offline-to-deployed selection-transfer report card. Each row fixes a task family, decision interface, and friction level, then asks whether the model selected by the offline validation score remains the deployed-utility winner after the same interface is applied. ``Offline sel.'' denotes the offline-selected model; ``Deploy winner'' denotes the best model under deployed utility; ``Transfer'' is the fraction of evaluation units where the offline-selected model also wins under deployed utility. ``Subopt.'' reports deployed-suboptimal share/count; intervals are paired-bootstrap intervals for the mean deployed shortfall.}
+\begin{table*}[t]
+\caption{Offline-to-deployed selection-transfer report card. Each row fixes a task, decision interface, and friction level. Transfer is the fraction of evaluation units where the offline-selected model also maximizes deployed utility; Subopt. counts the complementary deployed-suboptimal units. Shortfall is the paired deployed-utility gap to the deployed-utility winner in task-specific units, so values should be compared within, not across, task families.}
 \label{tab:deployed-selection-report-card}
 \centering
 \scriptsize
-\setlength{\tabcolsep}{2.4pt}
-\begin{tabular}{@{}p{0.105\textwidth}p{0.130\textwidth}cp{0.105\textwidth}p{0.105\textwidth}ccccp{0.060\textwidth}@{}}
+\setlength{\tabcolsep}{2.5pt}
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}llcllccccl@{}}
 \toprule
-Domain & Interface & $\kappa$ & Offline sel. & Deploy winner & Transfer & Subopt. & Mean shortfall & 95\% CI & Role \\
+Task & Fixed interface & $\kappa$ & Offline-selected & Deployed winner & Transfer & Subopt. & Shortfall & 95\% CI & Evidence role \\
 \midrule
-Synthetic & zero-friction anchor & 0.00 & Naive last & Naive last & 1.00 & 0.00 (0/20) & 0.000 & [0.000, 0.000] & Sanity \\
-Event-micro & threshold $\tau{=}0.55$ & 0.50 & Reactive sharp & Calibrated & 0.31 & 0.69 (69/100) & 0.011 & [0.009, 0.014] & Primary \\
-Event-micro & threshold $\tau{=}0.55$ & 1.00 & Reactive sharp & Smoother & 0.01 & 0.99 (99/100) & 0.057 & [0.052, 0.063] & Primary \\
-Traffic Top-\(k\) & budget $k{=}249$ & 0.50 & Reactive short & Smoother & 0.00 & 1.00 (100/100) & 7.016 & [6.756, 7.283] & Second \\
-Traffic Top-\(k\) & budget $k{=}249$ & 1.00 & Reactive short & Smoother & 0.00 & 1.00 (100/100) & 24.651 & [24.226, 25.079] & Second \\
-EPA AQS & PM2.5 residual warning & 1.00 & Reactive lag-1 & Long smoother & 0.00 & 0.87 (720/825) & 17.939 & [16.560, 19.342] & Third \\
-Inventory & replenishment & 1.00 & Small MLP & MA(7) & 0.01 & 0.99 (99/100) & 1.029 & [0.946, 1.111] & Corrob. \\
+Synthetic & zero-friction anchor & 0.00 & Naive last & Naive last & 1.00 & 0/20 & 0.000 & [0.000, 0.000] & sanity \\
+Event warning & threshold $\tau{=}0.55$ & 0.50 & Reactive sharp & Calibrated & 0.31 & 69/100 & 0.011 & [0.009, 0.014] & main Q2 \\
+Event warning & threshold $\tau{=}0.55$ & 1.00 & Reactive sharp & Smoother & 0.01 & 99/100 & 0.057 & [0.052, 0.063] & main Q2 \\
+Budgeted traffic alert & budget $k{=}249$ & 0.50 & Reactive short & Smoother & 0.00 & 100/100 & 7.02 & [6.76, 7.28] & supporting Q2 \\
+Budgeted traffic alert & budget $k{=}249$ & 1.00 & Reactive short & Smoother & 0.00 & 100/100 & 24.65 & [24.23, 25.08] & supporting Q2 \\
+PM2.5 warning & residual warning & 1.00 & Reactive lag-1 & Long smoother & 0.00 & 720/825 & 17.94 & [16.56, 19.34] & residual support \\
+Inventory replenishment & replenishment & 1.00 & Small MLP & MA(7) & 0.01 & 99/100 & 1.03 & [0.95, 1.11] & operational support \\
 \bottomrule
-\end{tabular}
+\end{tabular*}
 \end{table*}
 
-Event-micro is the primary selection-transfer failure. Brier and log-loss act as offline validation scores, while threshold and hysteresis rules are fixed decision interfaces. In the report card, the offline-selected model remains Reactive sharp, but the deployed-utility winner changes to Calibrated baseline at friction 0.50 and Lagged smoother at friction 1.00. The deployed-utility consequence is recurrent: the offline-selected model is deployed-suboptimal in 69/100 and 99/100 seeds at these two friction levels. The result is not confined to the canonical threshold or Brier ranking: at frictions 0.50/1.00, deployed-suboptimality remains 77/100 and 98/100 under an alternate threshold, 74/100 and 99/100 under log-loss reranking, and 55/100 and 82/100 under a hysteresis interface, where the direction is preserved with smaller magnitude.
+\paragraph{Why offline ordering need not be preserved.} Offline validation scores evaluate their specified validation objective, not the composed object obtained after model outputs are mapped to actions and executed through a frictional interface. If a candidate model's offline validation advantage is smaller than the extra friction-induced loss created by its implied action path, the deployed ordering can reverse even under a fixed interface.
 
-Traffic-Hourly Top-\(k\) is a prediction-to-decision task: forecasts are ranked by an offline validation score, but the fixed interface deploys only the top-\(k\) actions under a budget. In the selected Top-\(k\) setting ($k=249$), Reactive short is both the offline-selected model and the deployed-utility winner at zero friction, with exact transfer $1.0$. Once switching costs are introduced, however, the offline-selected model remains Reactive short while the deployed-utility winner shifts to Lagged smoother, and deployed-suboptimality reaches $100/100$ seeds at both friction $0.5$ and friction $1.0$. Additional Traffic checks support this reading most strongly for the Top-\(k\) interface family: across \(k \in \{125,249,500\}\), zero-friction rows remain aligned and positive-friction rows keep the reactive offline-selected model deployed-suboptimal; predefined time-of-day and relative-rank variants are kept in the appendix rather than used to broaden the main claim.
+Event-micro is the primary evidence because it isolates the selection-transfer question under a simple threshold interface and includes three robustness checks: an alternate threshold, log-loss reranking, and a hysteresis interface. In the report card, the offline-selected model remains Reactive sharp, but the deployed-utility winner changes to Calibrated baseline at friction 0.50 and Lagged smoother at friction 1.00. The deployed-utility consequence is recurrent: the offline-selected model is deployed-suboptimal in 69/100 and 99/100 seeds at these two friction levels. The result is not confined to the canonical threshold or Brier ranking: at frictions 0.50/1.00, deployed-suboptimality remains 77/100 and 98/100 under an alternate threshold, 74/100 and 99/100 under log-loss reranking, and 55/100 and 82/100 under a hysteresis interface, where the direction is preserved with smaller magnitude.
 
-EPA PM2.5 adds a broader residual-warning audit row without changing the evidence hierarchy. In expanded EPA AQS PM2.5 residual warning, Reactive lag-1 remains the offline-selected model, while Long smoother becomes the deployed-utility winner at \(\kappa=1.00\). We treat its units as report-card evaluation cells rather than independent iid samples; the appendix reports the full residual-candidate audit, including appendix-only Green support and failed-gate context.
+Traffic-Hourly Top-\(k\) is a prediction-to-decision task: forecasts are ranked by an offline validation score, but the fixed interface deploys only the top-\(k\) actions under a budget. The Traffic-Hourly pattern is not isolated to the canonical budget: appendix heatmaps show the same zero-friction alignment and positive-friction mismatch across \(k \in \{125,249,500,750\}\) and across canonical, earlier, and later temporal splits. In the selected Top-\(k\) setting ($k=249$), Reactive short is both the offline-selected model and the deployed-utility winner at zero friction, with exact transfer $1.0$. Once switching costs are introduced, however, the offline-selected model remains Reactive short while the deployed-utility winner shifts to Lagged smoother, and deployed-suboptimality reaches $100/100$ seeds at both friction $0.5$ and friction $1.0$.
 
-\pagebreak[4]
+EPA PM2.5 adds a broader residual-warning audit row without changing the evidence hierarchy. In expanded EPA AQS PM2.5 residual warning, Reactive lag-1 remains the offline-selected model, while Long smoother becomes the deployed-utility winner at \(\kappa=1.00\). We treat its units as report-card evaluation cells rather than independent iid samples. We interpret the EPA row as a broader residual-warning audit rather than independent population-level evidence; it shows that the report-card failure mode is not unique to the Event or Traffic constructions. The appendix reports the full residual-candidate audit, including appendix-only residual-audit support and failed-gate context.
 
 An \(\epsilon\)-tie audit gives the same qualitative reading for the main prediction-to-decision rows: Traffic-Hourly Top-\(k\) and Event-micro at \(\kappa \in \{0.50,1.00\}\), and expanded EPA at \(\kappa=1.00\), remain deployed-suboptimal under relative tie thresholds up to \(\epsilon_{\mathrm{rel}}=0.005\); inventory remains corroborative and lower-margin secondary checks are reported only in the appendix.
 
-Inventory provides operational prediction-to-decision corroboration, but we keep it bounded because the interface and utility are domain-specific. At friction 0.50 and 1.00, the offline-selected Small MLP is deployed-suboptimal in 74/100 and 99/100 seeds, respectively, under the fixed replenishment interface; the report card includes only the high-friction inventory row to keep this role bounded.
+Intervals are descriptive summaries for report-card cells, not hypothesis tests for a broader population-level claim. Appendix \(\epsilon\)-tie and mixed/failed-gate variants help guard against reading the main table as selected successes only.
 
-\paragraph{Q1 mechanism support.} Q1 explains why divergence can arise; Q2 is the actual benchmark-selection claim. Holding the proposed action path fixed, synthetic and inventory show that frictional interfaces can separate proposed and realized actions. Synthetic yields an increasing proposal-versus-realization gap away from zero friction, while inventory shows a threshold pattern in which sufficiently high friction favors tempered execution. Q2 then shows when that mechanism produces deployed misselection under one fixed interface.
+Inventory is retained as operational corroboration: it shows that the same audit format applies to a replenishment interface, but it is not used as primary evidence for the offline decision-making claim. At friction 0.50 and 1.00, the offline-selected Small MLP is deployed-suboptimal in 74/100 and 99/100 seeds, respectively, under the fixed replenishment interface; the report card includes only the high-friction inventory row to keep this role bounded.
 
-\paragraph{Appendix robustness.} Appendix checks surface robustness without changing the evidence hierarchy: event-micro includes alternate-threshold, log-loss, and hysteresis-interface checks; Traffic-Hourly includes Top-\(k\) interface-family, predefined time-of-day slice, and relative-rank checks; residual-candidate audits retain Green support and failed-gate context; and expanded inventory and load-following remain fairness or appendix-only context. These checks are consistent with the main qualitative conclusion: under a fixed interface, an offline-selected model can remain validation-best while becoming recurrently deployed-suboptimal in moderate-to-high friction regimes.
+\paragraph{Q1 mechanism support.} Q1 is not the main empirical claim. It is a mechanism check using synthetic and inventory fixed-action replay: when the proposed action path is held fixed, frictional execution can separate proposed and realized actions and change realized utility. The fixed-interface Q2 rows in Table~\ref{tab:deployed-selection-report-card} provide the paper's actual selection-transfer evidence.
 
-\paragraph{Why offline ordering need not be preserved.} Offline validation scores evaluate their specified validation objective, not the composed object obtained after model outputs are mapped to actions and executed through a frictional interface. If a candidate model's offline validation advantage is smaller than the extra friction-induced loss created by its implied action path, the deployed ordering can reverse even under a fixed interface. This is why Q1 is useful as mechanism support and why Q2 is the actual selection-transfer question.
-
-\FloatBarrier
+\paragraph{Appendix robustness.} Appendix checks are organized to answer whether the main rows are isolated successes: Event robustness varies threshold, scoring rule, and interface; Traffic robustness varies \(k\) and deployment window; mixed/failed-gate and tie-sensitivity rows are retained to show where the audit does not support a paper-facing claim. Appendix~\ref{app:reselection-diagnostic} adds a replay-based deployed-feedback diagnostic: in Traffic Top-\(k\), small calibration segments substantially reduce the observed misselection under fixed-interface replay on held-out outcomes; we keep this outside the main claim because it is not an online learning algorithm. Stronger-pool and residual-audit checks remain appendix-only, while time-of-day, relative-rank, inventory, and load-following variants are compressed as secondary context.
 
 \section{Discussion, Related Work, and Limitations}
 
-\paragraph{Offline decision-making evaluation protocols.} Our work is closest to the evaluation-protocol side of offline decision-making: before asking how to adapt online, we ask whether the model selected offline remains preferred after a specified deployment interface is applied. Policy comparison and off-policy evaluation are adjacent, but our object is narrower than estimating the value of arbitrary policies: we audit whether offline validation selection transfers through a fixed decision interface and friction model. Unlike general OPE, our fixed-interface replay setting does not estimate arbitrary counterfactual policies from logged propensities; it evaluates a fixed candidate set through the same specified decision interface on held-out outcomes.
+\paragraph{Offline policy evaluation and offline-to-deployment selection.} Policy comparison and OPE study how candidate policies can be compared before costly deployment. OPE asks whether policy value can be estimated from logged data under assumptions about coverage, propensities, or learned models. Offline-to-online adaptation asks how to update or explore after deployment begins. Our report card targets the preceding selection step: the candidate set and deployment interface are fixed, and the diagnostic asks whether the offline proxy used for candidate selection agrees with deployed utility under a specified replay/evaluation environment.
 
-\paragraph{Forecasting benchmarks and proper scoring.} Forecasting benchmarks and evaluation frameworks now span live AI forecasting, broad time-series archives, foundation-model evaluations, text-conditioned forecasting, and standardized TSFM evaluation pipelines \cite{forecastbench,prophetarena,gifteval,godahewa2021monash,das2024timesfm,williams2025contextkey,tsfmbench2025,tempusbench2026,timerecipe2025}. These works compare forecasting capability, datasets, model families, or evaluation pipelines, and proper scoring rules remain the right object when the target is predictive quality \cite{gneiting2007,murphy1993}. Our question is complementary: when a prediction benchmark is interpreted as deployment-facing model-selection advice under a fixed decision interface, should it also report whether offline validation selection transfers to deployed utility?
+\paragraph{Decision-focused learning and predict-then-optimize.} Decision-focused learning and predict-then-optimize change the training or optimization objective to improve downstream decisions \cite{raeth2025,donti2017task,elmachtoub2021spo,mandi2024decisionfocused}. Our candidates are already trained; the contribution is a reporting layer that detects when the offline-selected candidate would be deployment-suboptimal under the intended interface.
 
-\paragraph{Decision-focused learning and benchmark uncertainty.} This is distinct from decision-maker-perspective forecast evaluation, decision-focused learning, and predict-then-optimize, which either define forecast value or modify learning or optimization objectives for downstream decisions \cite{raeth2025,donti2017task,elmachtoub2021spo,mandi2024decisionfocused}. Here, candidate models and the interface are fixed; the contribution is a reporting diagnostic for whether offline model selection survives the composed model-output-to-interface-to-utility evaluation. Our uncertainty reporting follows the spirit of benchmark-variance and leaderboard-interpretation work \cite{bouthillier2021variance,longjohn2025aggregate,fevbench2025,brigato2025nochampions}, but reports selection transfer and deployed shortfalls rather than aggregate predictive leaderboard uncertainty. Deployment frictions such as switching costs, adjustment costs, and operational churn can change which model is preferable after actions are executed; our report card makes this effect visible at the model-selection level.
+\paragraph{Prediction benchmarks and decision-facing selection.} Forecasting benchmarks and evaluation frameworks now span live AI forecasting, broad time-series archives, foundation-model evaluations, text-conditioned forecasting, and standardized TSFM evaluation pipelines \cite{forecastbench,prophetarena,gifteval,godahewa2021monash,das2024timesfm,williams2025contextkey,tsfmbench2025,tempusbench2026,timerecipe2025}. These works compare forecasting capability, datasets, model families, or evaluation pipelines, and proper scoring rules remain the right object when the target is predictive quality \cite{gneiting2007,murphy1993}. Our question is complementary: when a prediction benchmark is interpreted as deployment-facing model-selection advice under a fixed decision interface, should it also report whether offline validation selection transfers to deployed utility?
 
-\paragraph{Discussion and limitations.} Our claim is evaluative and deliberately narrow. We do not claim that forecasting metrics are invalid for prediction, and we do not seek a single reporting rule for all applications. We use low, moderate, and high only as shorthand for the lower, middle, and upper parts of each domain's tested friction grid; these labels are not intended as a universal calibration across domains. Event-micro and Traffic-Hourly provide the core prediction-to-decision evidence, the EPA residual-warning audit adds one additional report-card row, and inventory provides operational corroboration, but this is still not a comprehensive benchmark collection. Broader inventory sweeps are reported in the appendix, and load-following is secondary; the strongest main-text evidence comes from the moderate-to-high friction settings studied here. Our contribution is not a new policy-learning algorithm, a general OPE method, an online adaptation algorithm, a new forecasting model, a universal deployed metric, or a universal offline decision-making benchmark suite. It is a narrow reporting recommendation: when offline validation is interpreted as model-selection advice for a fixed deployment interface, it should also report whether offline selection transfers to deployed utility. Under this interpretation, inventory and load-following remain corroborative or secondary context rather than standalone statistical evidence for a broader population-level claim.
+\paragraph{Benchmark uncertainty and report-card intervals.} Our uncertainty reporting follows the spirit of benchmark-variance and leaderboard-interpretation work \cite{bouthillier2021variance,longjohn2025aggregate,fevbench2025,brigato2025nochampions}, but reports selection transfer and deployed shortfalls rather than aggregate predictive leaderboard uncertainty. Deployment frictions such as switching costs, adjustment costs, and operational churn can change which model is preferable after actions are executed; the report card makes this effect visible at the model-selection level.
+
+\paragraph{Discussion and limitations.} Our claim is evaluative and deliberately narrow. We do not claim that forecasting metrics are invalid for prediction, and we do not seek a single reporting rule for all applications. We use low, moderate, and high only as shorthand for the lower, middle, and upper parts of each domain's tested friction grid; these labels are not intended as a universal calibration across domains. Event-micro and Traffic-Hourly provide the core fixed-interface selection-transfer evidence, the EPA residual-warning audit adds one additional report-card row, and inventory provides operational corroboration. These settings are intended as a focused audit of offline-to-deployed selection transfer, not as a comprehensive offline decision-making benchmark suite. Inventory and load-following variants are retained only as compressed secondary context; the strongest main-text evidence comes from the moderate-to-high friction settings studied here. The contribution is a fixed-interface selection-audit protocol: a lightweight pre-adaptation layer for checking whether the offline-selected candidate remains preferred before policy learning, OPE-based deployment decisions, online adaptation, or application-specific utility redesign. It is a narrow reporting recommendation: when offline validation is interpreted as model-selection advice for a fixed deployment interface, it should also report whether offline selection transfers to deployed utility. Under this interpretation, inventory and load-following remain corroborative or secondary context rather than standalone statistical evidence for a broader population-level claim.
 
 \begingroup
 \small
@@ -241,22 +245,32 @@ J. Mandi, J. Kotary, S. Berden, M. Mulamba, V. Bucarey, T. Guns, and F. Fioretto
 \renewcommand{\theHfigure}{A\arabic{figure}}
 \renewcommand{\theHtable}{A\arabic{table}}
 
-\captionsetup{font=small}
+\captionsetup{font=footnotesize}
+\setlength{\floatsep}{6pt plus 2pt minus 2pt}
+\setlength{\textfloatsep}{7pt plus 2pt minus 2pt}
+\setlength{\intextsep}{7pt plus 2pt minus 2pt}
+\setlength{\abovecaptionskip}{3pt}
+\setlength{\belowcaptionskip}{0pt}
 
 \providecommand{\appfigwidth}{0.92\linewidth}
 \providecommand{\appwidefigwidth}{0.98\linewidth}
+\providecommand{\appwidetablewidth}{0.92\linewidth}
+\providecommand{\appmidtablewidth}{0.80\linewidth}
+\providecommand{\appnarrowtablewidth}{0.79\linewidth}
+\providecommand{\appcontexttablewidth}{\appmidtablewidth}
 \providecommand{\apptablesize}{\small}
 \providecommand{\apptighttablesize}{\footnotesize}
 
-\setlength{\tabcolsep}{4pt}
-\renewcommand{\arraystretch}{1.08}
+\setlength{\tabcolsep}{3.6pt}
+\renewcommand{\arraystretch}{1.00}
 
 \begin{center}
 \fbox{
 \begin{minipage}{0.93\linewidth}
-\paragraph{Minimum reporting standard for offline-to-deployed selection transfer.}
-For each task family, the report-card artifact records:
-\begin{enumerate}
+\noindent\textbf{Minimum reporting standard for offline-to-deployed selection transfer.}\par
+\smallskip
+\noindent For each task family, the report-card artifact records:
+\begin{enumerate}[leftmargin=*,label=\arabic*.,align=left,widest=11,itemsep=2pt,topsep=3pt,parsep=0pt]
 \item task definition, seed count, and evaluation split;
 \item offline validation score and tie-breaking rule;
 \item fixed decision interface and interface parameters;
@@ -273,27 +287,61 @@ For each task family, the report-card artifact records:
 }
 \end{center}
 
-In appendix tables inherited from generated artifacts, ``Forecast-side winner'' or ``Forecast winner'' should be read as the offline-selected model, and ``Deployed winner'' as the deployed-utility winner.
+\begin{table}[!htbp]
+\centering
+\begin{minipage}{\appnarrowtablewidth}
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{0.95}
+\begin{tabular}{p{0.23\linewidth}p{0.22\linewidth}p{0.22\linewidth}p{0.23\linewidth}}
+\toprule
+Concern & Appendix evidence & Concern & Appendix evidence \\
+\midrule
+threshold sensitivity & Event alternate \(\tau\) & top-\(k\) sensitivity & Traffic \(k\)-grid heatmap \\
+offline metric sensitivity & Event log-loss reranking & temporal robustness & Traffic canonical/earlier/later splits \\
+interface sensitivity & Event hysteresis & cherry-picking concern & Mixed/failed-gate variants \\
+near-tie concern & \(\epsilon\)-tie audit & residual-warning generality & EPA/Capital/Wikimedia plus failed NYC/M5 \\
+\bottomrule
+\end{tabular}
+\caption{Review-facing robustness map. Each row links a common interpretation concern to the appendix diagnostic that bounds it.}
+\label{tab:review_facing_robustness_map}
+\end{minipage}
+\end{table}
+
+Some generated appendix tables use legacy column labels for the offline-selected model and deployed-utility winner; the surrounding captions define their paper-facing meaning.
+
+\paragraph{Audit-status labels.}
+Audit-status labels are descriptive shorthands rather than hypothesis-test outcomes.
+A row is marked \emph{Pass} when the intended zero-friction or reference-alignment check is satisfied, positive-friction deployed-suboptimality is recurrent, paired deployed-utility shortfalls are positive with descriptive uncertainty intervals, and the result is not removed by the \(\epsilon\)-tie audit when applicable.
+\emph{Boundary} denotes directionally consistent but lower-margin, transition-region, partially recurrent, or partially tie-sensitive behavior.
+\emph{Fail} denotes failed zero-friction alignment, lack of recurrence, or behavior dominated by objective mismatch rather than friction-induced selection-transfer failure.
+For diagnostic-specific tables, such as replay-based deployed-feedback reselection and \(\epsilon\)-tie sensitivity, status labels are local to the diagnostic and are defined by the corresponding caption.
 
 \paragraph{Mixed and failed-gate variants.}
 We retain mixed and failed-gate variants as audit evidence rather than promoting them into the main report card. This reduces the risk that the report card is read as a collection of selected successes: variants that fail the zero-friction alignment check, remain lower-margin under tie diagnostics, or show only partial recurrence are kept as appendix context or excluded from main-text claims.
 
-\begin{table}[H]
+\begin{table}[!htbp]
 \centering
-\caption{Mixed and failed-gate variants retained as audit context. These variants are not promoted into the main report card because they either fail the clean zero-friction alignment check, show lower-margin or tie-sensitive behavior, or provide only partial recurrence.}
-\label{tab:mixed_failed_gate_variants}
+\begin{minipage}{\appnarrowtablewidth}
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{0.98}
 \begin{tabular}{p{0.25\linewidth}p{0.20\linewidth}p{0.32\linewidth}p{0.15\linewidth}}
 \toprule
-Variant & Gate outcome & Interpretation & Placement \\
+Variant & Audit status & Interpretation & Placement \\
 \midrule
-Traffic daytime $\kappa=0.5$ & Partial & Lower-margin, directionally consistent & Appendix only \\
+Traffic daytime $\kappa=0.5$ & Boundary & Lower-margin, directionally consistent & Appendix only \\
 Inventory zero/low friction & Mixed & Not a main zero-friction anchor & Appendix only \\
 Expanded inventory & Mixed & Fairness context only & Appendix only \\
-Load-following & Tie-sensitive & Directional secondary check & Appendix only \\
-Load-alert screening & Yellow/Red & Daily peak-hour Yellow; residual/four-week Red & Screening artifacts \\
+Load-alert screening & Boundary/Fail & Daily peak-hour Boundary; residual/four-week Fail & Screening artifacts \\
 Residual-candidate audit & Mixed & Expanded EPA/Capital/Wikimedia pass; NYC/M5 fail zero-friction alignment & Appendix~\ref{app:residual-audit} \\
 \bottomrule
 \end{tabular}
+\caption{Mixed, boundary, and failed-gate variants retained as audit context. These variants are not promoted into the main report card because they either fail the clean zero-friction alignment check, show lower-margin or tie-sensitive behavior, or provide only partial recurrence.}
+\label{tab:mixed_failed_gate_variants}
+\end{minipage}
 \end{table}
 
 These variants are useful because they separate friction-induced selection-transfer failure from other sources of mismatch, such as objective mismatch, weak margins, or insufficient seed support. We therefore use them to bound the interpretation rather than to strengthen the main claim.
@@ -303,7 +351,7 @@ These variants are useful because they separate friction-induced selection-trans
 
 Because event-micro provides the paper's main prediction-to-decision selection-transfer evidence, this appendix records the first domain-specific robustness package for that benchmark. We construct a minimal binary-event setting evaluated over 100 seeds, in which each candidate prediction model emits event probabilities, a fixed thresholding rule maps probabilities to actions, and switching friction penalizes action changes. The main text uses Brier as the canonical offline validation score. This appendix records the canonical six-row Brier summary plus an alternate-threshold check, a log-loss reranking check, and a second-interface hysteresis check.
 
-\begin{figure}[H]
+\begin{figure}[!htbp]
 \centering
 \begin{minipage}[c]{0.46\linewidth}
 \centering
@@ -316,7 +364,7 @@ Because event-micro provides the paper's main prediction-to-decision selection-t
 \setlength{\tabcolsep}{3pt}
 \begin{tabular}{ccccc}
 \toprule
-\(\kappa\) & Offline sel. & Deploy winner & Transfer & Shortfall \\
+\(\kappa\) & \shortstack{Offline-\\selected} & \shortstack{Deployed\\winner} & Transfer & Shortfall \\
 \midrule
 0.00 & Sharp & Sharp & 0.62 & 0.003 \\
 0.05 & Sharp & Sharp & 0.60 & 0.002 \\
@@ -331,30 +379,33 @@ Because event-micro provides the paper's main prediction-to-decision selection-t
 \label{fig:event-micro-canonical-summary}
 \end{figure}
 
-\begin{table}[H]
+\begin{table}[!htbp]
 \centering
-\apptighttablesize
-\begin{adjustbox}{max width=\linewidth}
+\scriptsize
+\setlength{\tabcolsep}{2.5pt}
+\begin{adjustbox}{width=\appwidetablewidth}
 \input{results/table_q2_selection_drift_event_micro_threshold_robustness.tex}
 \end{adjustbox}
 \caption{Alternate-threshold robustness for the event-micro benchmark. The same qualitative selection-transfer mismatch and recurrent deployed-suboptimality pattern persists when the fixed threshold is changed from $\tau = 0.55$ to $\tau = 0.50$.}
 \label{tab:event-micro-threshold-robustness}
 \end{table}
 
-\begin{table}[H]
+\begin{table}[!htbp]
 \centering
-\apptighttablesize
-\begin{adjustbox}{max width=\linewidth}
+\scriptsize
+\setlength{\tabcolsep}{2.5pt}
+\begin{adjustbox}{width=\appwidetablewidth}
 \input{results/table_q2_selection_drift_event_micro_logloss.tex}
 \end{adjustbox}
 \caption{Log-loss robustness for the event-micro benchmark at the canonical threshold. The same qualitative selection-transfer mismatch and recurrent deployed-suboptimality pattern persists when offline validation ranking is recomputed with log loss instead of Brier.}
 \label{tab:event-micro-logloss-robustness}
 \end{table}
 
-\begin{table}[H]
+\begin{table}[!htbp]
 \centering
-\apptighttablesize
-\begin{adjustbox}{max width=\linewidth}
+\scriptsize
+\setlength{\tabcolsep}{2.5pt}
+\begin{adjustbox}{width=\appwidetablewidth}
 \input{results/table_q2_selection_drift_event_micro_hysteresis_robustness.tex}
 \end{adjustbox}
 \caption{Second-interface robustness for the event-micro benchmark. Under a fixed hysteresis-threshold interface with $\delta = 0.05$, the same qualitative selection-transfer mismatch and deployed-suboptimality pattern remains visible, though the magnitudes are smaller than under the canonical fixed threshold.}
@@ -368,38 +419,38 @@ Across this appendix robustness package, the same qualitative selection-transfer
 
 This addendum records interface-specific recurrence and gap summaries for the hysteresis-threshold check without changing the main cross-domain recurrence package.
 
-\begin{table}[H]
+\begin{table}[!htbp]
 \centering
-\apptighttablesize
-\begin{adjustbox}{max width=\linewidth}
+\begin{minipage}{\appmidtablewidth}
+\centering
+\scriptsize
+\setlength{\tabcolsep}{2.5pt}
+\begin{adjustbox}{width=\linewidth}
 \input{results/table_event_micro_interface_recurrence_tests.tex}
 \end{adjustbox}
 \caption{Interface-aware recurrence and share uncertainty for event-micro deployed-suboptimality. The canonical fixed threshold shows stronger recurrence, while hysteresis preserves the same direction with smaller magnitudes.}
 \label{tab:event-micro-interface-recurrence-tests}
+\end{minipage}
 \end{table}
 
 The aggregate recurrence table reports the seed-level pattern directly, replacing the dense seed-strip visualization.
 
-\begin{table}[H]
+\begin{table}[!htbp]
 \centering
-\apptighttablesize
-\begin{adjustbox}{max width=\linewidth}
+\scriptsize
+\setlength{\tabcolsep}{2.5pt}
+\begin{adjustbox}{width=\appwidetablewidth}
 \input{results/table_event_micro_interface_gap_bootstrap_cis.tex}
 \end{adjustbox}
 \caption{Interface-aware bootstrap intervals for the event-micro deployed gap. Positive intervals remain visible under both interfaces, with smaller gaps under hysteresis.}
 \label{tab:event-micro-interface-gap-bootstrap-cis}
 \end{table}
 
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.94\linewidth]{assets/figures/fig_event_micro_interface_uncertainty_appendix.pdf}
-\caption{Event-micro robustness across fixed-threshold and hysteresis interfaces. Rows denote interfaces and columns denote disagreement and deployed-suboptimality metrics; hysteresis preserves the direction with attenuated magnitude.}
-\label{fig:event-micro-interface-uncertainty}
-\end{figure}
+The dense interface uncertainty figure is omitted from the compact appendix; Tables~\ref{tab:event-micro-interface-recurrence-tests}--\ref{tab:event-micro-interface-gap-bootstrap-cis} retain the same aggregate recurrence and gap information.
 
 % Removed from compiled appendix: dense 100-seed strip.
 % Aggregate recurrence evidence is reported in Table~\ref{tab:event-micro-interface-recurrence-tests}.
-% \begin{figure}[H]
+% \begin{figure}[!htbp]
 % \centering
 % \includegraphics[width=\appwidefigwidth]{assets/figures/fig_event_micro_interface_seed_recurrence_appendix.png}
 % \caption{Seed-level disagreement strips for event-micro interfaces. Each panel shows the same seed set under one fixed interface.}
@@ -408,207 +459,131 @@ The aggregate recurrence table reports the seed-level pattern directly, replacin
 
 \FloatBarrier
 
-\section{Traffic Fixed-Budget Alert Robustness}
+\section{Traffic Fixed-Budget Robustness}
 \label{app:traffic-redesign}
 
-\subsection{Fixed-Budget Top-k Alert}
+\subsection{Interface/Friction Heatmap}
 
-\begin{table}[H]
+\begin{figure}[!htbp]
 \centering
-\apptighttablesize
-\begin{adjustbox}{max width=\linewidth}
-\input{results/table_q2_selection_drift_traffic_topk_main.tex}
-\end{adjustbox}
-\caption{Traffic-Hourly Top-\(k\) prediction-to-decision check under a fixed-budget interface. Agreement is strongest at zero friction and weakens at higher friction, where the deployed-utility winner shifts away from the offline-selected model.}
-\label{tab:traffic-topk-alert-support}
-\end{table}
+\includegraphics[width=0.84\linewidth]{results/fig_traffic_topk_heatmap.pdf}
+\caption{Traffic Top-\(k\) across budgets and friction levels. Colors show the share of deployed-suboptimal units. Cell text reports the deployed winner label and deployed-suboptimal count; R = Reactive, S = Smoother, C = Calibrated, and * marks the canonical budget. All tested \(k\) values align at zero friction. At \(\kappa \ge 0.50\), every tested \(k \in \{125,249,500,750\}\) shows 100/100 deployed-suboptimality of the reactive offline-selected candidate. The \(\kappa=0.25\) column is mixed and is interpreted as a transition region.}
+\label{fig:traffic-topk-heatmap}
+\end{figure}
 
-In the selected Top-k setting, Reactive short is the offline-selected model and the deployed-utility winner at zero friction. At frictions $0.5$ and $1.0$, the deployed-utility winner shifts to Lagged smoother even though Reactive short remains Brier-best and continues to win under the offline validation score. The qualitative reading is the same as in the main text: under a fixed interface, the more reactive validation-optimal family need not remain deployment-optimal once switching is penalized.
+The heatmap replaces the older compact Top-\(k\) family table: it extends the grid to \(k=750\) and intermediate frictions \(\kappa\in\{0.25,0.75\}\), while showing that the canonical \(k=249\) point is not isolated.
 
-\subsection{Top-\(k\) Interface-Family Sweep}
+\subsection{Temporal-Split Robustness}
 
-\begin{table}[H]
-\centering
-\apptighttablesize
-\begin{adjustbox}{max width=\linewidth}
-\input{results/table_traffic_interface_family_sweep.tex}
-\end{adjustbox}
-\caption{Traffic-Hourly Top-\(k\) interface-family sweep. The canonical \(k=249\) rows are reproduced from the recovered time-level Traffic source, and non-canonical \(k=125\) and \(k=500\) rows show the same qualitative pattern: zero-friction alignment and recurrent positive-friction deployed-suboptimality of the reactive offline-selected model. Confidence intervals are paired-bootstrap intervals for the mean deployed shortfall.}
-\label{tab:traffic-interface-family-sweep}
-\end{table}
-
-Across \(k \in \{125,249,500\}\), Reactive short remains both the offline-selected model and deployed-utility winner at zero friction. At positive friction, Reactive short remains validation-best but becomes deployed-suboptimal in all matched seeds, with positive paired deployed shortfalls and confidence intervals bounded away from zero.
-
-\subsection{Predefined Time-of-Day Slice Check}
-
-Slices are fixed before outcome computation as overnight, daytime, and evening blocks. Switching costs are computed on the full 168-hour timeline and utilities are then aggregated over the slice time points, so the interface state is not reset within each slice.
-
-\begin{table}[H]
-\centering
-\apptighttablesize
-\begin{adjustbox}{max width=\linewidth}
-\input{results/table_traffic_time_of_day_slice_sweep.tex}
-\end{adjustbox}
-\caption{Predefined Traffic-Hourly time-of-day slice check. Slices are fixed before outcome computation. Overnight and evening reproduce the positive-friction mismatch pattern at both positive-friction levels; daytime is directionally consistent but lower-margin at \(\kappa=0.5\). We therefore treat this slice check as appendix-only support. Confidence intervals are paired-bootstrap intervals for the mean deployed shortfall.}
-\label{tab:traffic-time-of-day-slice-sweep}
-\end{table}
-
-The slice check is supportive but weaker than the interface-family sweep. Overnight and evening pass at both positive-friction levels, while daytime passes at \(\kappa=1.0\) and remains directionally positive at \(\kappa=0.5\) but falls below the pre-specified deployed-suboptimality threshold. We therefore use this result only as appendix context rather than as a stronger main-text claim.
-
-\subsection{Relative-Rank Traffic Variant}
-
-\begin{table}[H]
-\centering
-\apptighttablesize
-\begin{adjustbox}{max width=\linewidth}
-\input{results/table_q2_selection_drift_traffic_relative_rank_support.tex}
-\end{adjustbox}
-\caption{Traffic-Hourly relative-rank appendix variant. The same qualitative separation between offline and deployed-utility selection appears under fixed-budget set action.}
-\label{tab:traffic-relative-rank-support}
-\end{table}
-
-As an additional Traffic appendix variant, the relative-rank target shows the same qualitative separation under a different prediction-to-decision label construction. Reactive short remains the offline-selected model, while Calibrated baseline becomes the deployed-utility winner once switching costs are introduced, so we report this variant as an appendix prediction-to-decision check. The alternate $m=0.15$ variant is also strong in the full report but is omitted from the compact table to keep the appendix narrow.
-
-\FloatBarrier
-
-\section{EPA Residual-Warning Audit}
-\label{app:residual-audit}
-
-This appendix reports the full residual-candidate audit from which the expanded EPA AQS PM2.5 row is promoted to the main report card. We include all five residual candidates rather than only the Green rows. The original 16-unit EPA row is retained as prior audit context; the main text uses the expanded EPA confirmation row. Units in the expanded EPA audit are treated as report-card evaluation cells rather than independent iid samples, with leave-one-site-out and site, unit, and time-block concentration diagnostics reported in the audit artifacts.
-
-\begin{table}[H]
+\begin{table}[!htbp]
 \centering
 \scriptsize
-\setlength{\tabcolsep}{2.2pt}
-\begin{adjustbox}{max width=\linewidth}
-\begin{tabular}{p{0.18\linewidth}llrrrrrlp{0.16\linewidth}}
-\toprule
-Candidate & Verdict & \(\kappa^\star\) & Units & \(\kappa=0\) subopt. & Subopt. & Mean shortfall & Median shortfall & CI & Placement \\
-\midrule
-EPA AQS PM2.5 expanded & Green & 1.00 & 825 & 0.000 & 0.873 & 17.939 & 12.000 & [16.560, 19.342] & Main row; concentration pass \\
-Capital Bikeshare & Green & 1.00 & 16 & 0.063 & 1.000 & 2791.750 & 2814.000 & [2743.998, 2831.502] & Appendix support \\
-Wikimedia hourly & Green & 1.00 & 11 & 0.000 & 1.000 & 118.182 & 115.000 & [94.818, 139.727] & Appendix robustness \\
-NYC TLC taxi-zone & Red & -- & 16 & 0.750 & 1.000 & 2285.812 & 2298.000 & [2255.186, 2315.563] & Failed gate \\
-M5 store-quota & Red & -- & 20 & 0.500 & 0.900 & 24.150 & 21.000 & [17.400, 31.250] & Failed gate \\
-\bottomrule
-\end{tabular}
+\setlength{\tabcolsep}{2.5pt}
+\begin{adjustbox}{width=\appwidetablewidth}
+\input{results/table_traffic_temporal_splits.tex}
 \end{adjustbox}
-\caption{Residual-candidate audit. EPA AQS uses the expanded confirmation row; the other rows use the original residual-candidate audit. Capital and Wikimedia remain appendix-only Green support, while NYC TLC and M5 are retained as failed-gate context.}
+\caption{Traffic-Hourly temporal-split robustness. Each split recomputes the offline-selected model from that split's validation segment. Zero-friction rows are marked as alignment checks; positive-friction rows are marked Pass when the split preserves zero-friction alignment and shows recurrent deployed-suboptimality with positive paired shortfalls.}
+\label{tab:traffic-temporal-splits}
+\end{table}
+
+Event-micro temporal slices show positive-friction recurrence but fail the clean zero-friction split-alignment gate, so they are retained only as secondary audit context. Predefined Traffic time-of-day and relative-rank checks were also run as secondary slices, but the temporal-split and interface/friction diagnostics provide cleaner fixed-budget robustness evidence.
+
+\FloatBarrier
+
+\section{Replay-Based Deployed-Feedback Reselection}
+\label{app:reselection-diagnostic}
+
+This diagnostic asks whether a small calibration segment of deployed-feedback replay can reduce or correct an offline model-selection error within the same fixed candidate set and interface. It is not an online learning or exploration algorithm: it assumes replay access to held-out outcomes for all fixed-interface candidates and is used only as an appendix diagnostic. Calibration is always the earlier segment and evaluation is always the later segment; no future deployed utility from the evaluation segment is used when selecting the reselected candidate.
+
+For compactness, Table~\ref{tab:reselection-diagnostic} reports representative budget rows, including the lower-friction Event boundary case and the high-friction/Traffic cases that pass the diagnostic; the full budget grid remains in the isolated experiment report.
+
+\begin{table}[!htbp]
+\centering
+\begin{minipage}{\appmidtablewidth}
+\centering
+\scriptsize
+\setlength{\tabcolsep}{2.5pt}
+\begin{adjustbox}{width=\linewidth}
+\input{results/table_reselection_diagnostic.tex}
+\end{adjustbox}
+\caption{Replay-based deployed-feedback reselection diagnostic. This diagnostic assumes replay access to held-out outcomes for all fixed-interface candidates and is not a deploy-one-policy online learning algorithm. The lower-friction Event row is retained as a Boundary case: it improves shortfall but has nontrivial worse-than-offline share, so it is not used as primary support.}
+\label{tab:reselection-diagnostic}
+\end{minipage}
+\end{table}
+
+\FloatBarrier
+
+\section{Candidate-Pool and Residual-Audit Checks}
+\label{app:candidate-residual-checks}
+
+\subsection{Stronger Candidate-Pool Fairness Pilot}
+\label{app:stronger-pool-pilot}
+
+This pilot checks whether the selection-transfer mismatch disappears under lightweight added candidates. It is not a forecasting model benchmark and uses fixed, lightweight configurations without extensive hyperparameter search.
+
+\begin{table}[!htbp]
+\centering
+\begin{minipage}{\appmidtablewidth}
+\centering
+\scriptsize
+\setlength{\tabcolsep}{2.5pt}
+\begin{adjustbox}{width=\linewidth}
+\input{results/table_stronger_pool_pilot.tex}
+\end{adjustbox}
+\caption{Expanded candidate-pool pilot. The qualitative selection-transfer mismatch remains under lightweight added candidates, but this check is appendix-only because the paper does not aim to benchmark forecasting model classes.}
+\label{tab:stronger-pool-pilot}
+\end{minipage}
+\end{table}
+
+\subsection{Residual-Warning Audit Family}
+\label{app:residual-audit}
+
+We use this family as audit context rather than main-domain breadth: EPA, Capital Bikeshare, and Wikimedia satisfy the residual-audit alignment and recurrence checks, while NYC TLC and M5 fail the zero-friction alignment gate.
+
+\begin{table}[!htbp]
+\centering
+\begin{minipage}{\appmidtablewidth}
+\centering
+\scriptsize
+\setlength{\tabcolsep}{2.5pt}
+\begin{adjustbox}{width=\linewidth}
+\input{results/table_residual_audit_family.tex}
+\end{adjustbox}
+\caption{Residual-warning audit family. EPA, Capital Bikeshare, and Wikimedia satisfy the residual-audit alignment and recurrence checks and remain appendix summary context; NYC TLC and M5 fail the zero-friction alignment gate and are retained as failed-gate context. These rows are not promoted as main-domain breadth.}
 \label{tab:residual-candidate-audit}
-\end{table}
-
-The failed candidates are not negative results for the report-card protocol. They identify cases where positive-friction gaps exist but the zero-friction alignment gate fails, which makes the result better interpreted as objective/interface mismatch rather than friction-induced offline-to-deployed selection mismatch.
-
-\FloatBarrier
-
-\section{Inventory Replenishment Corroboration and Fairness Context}
-\label{app:inventory-corroboration}
-
-\subsection{Five-Family Inventory Corroboration}
-
-This appendix records the full five-family inventory summary that underlies the bounded main-text inventory evidence. The mixed zero and low-friction rows are reported here, while the main text uses only the moderate-to-high friction rows to avoid overstating the zero-friction story.
-
-\begin{table}[H]
-\centering
-\apptighttablesize
-\begin{adjustbox}{max width=\linewidth}
-\input{results/table_q2_selection_drift_inventory.tex}
-\end{adjustbox}
-\caption{Inventory corroboration under a fixed replenishment interface. The zero/low-friction regime is mixed, while moderate-to-high friction shows recurrent deployed-utility misselection.}
-\label{tab:inventory-selection-drift-appendix}
+\end{minipage}
 \end{table}
 
 \FloatBarrier
 
-\subsection{Expanded-Family Inventory Fairness Context}
-\label{app:stronger-inventory-q2}
+\section{Mechanism, Tie Audit, and Secondary Corroboration}
+\label{app:mechanism-tie-secondary}
 
-The stronger-baseline sweep is included as a fairness check for the inventory corroboration. It contextualizes the inventory corroboration; the main claim is supported by the fixed-interface selection comparison in the main text.
+Inventory remains operational corroboration rather than a main-domain breadth claim: the main text reports the high-friction replenishment row, while mixed zero/low-friction and expanded-family inventory checks are retained only as secondary context. Load-following is likewise reduced to failed-gate context because its lower-margin rows are tie-sensitive or partially sensitive. Predefined Traffic time-of-day and relative-rank variants are not used as paper-facing robustness now that the temporal-split and interface/friction diagnostics provide cleaner fixed-budget evidence.
 
-\begin{table}[H]
-\centering
-\small
-\setlength{\tabcolsep}{3pt}
-\input{results/table_step5_same_interface_summary.tex}
-\caption{Expanded same-interface inventory sweep. The table records broader-family status checks for inventory robustness.}
-\label{tab:step5-package}
-\end{table}
-
-% \begin{table}[H]
-% \centering
-% \apptighttablesize
-% \setlength{\tabcolsep}{3pt}
-% \input{results/table_q2_stronger_baseline_protocol.tex}
-% \caption{Standardized tuning protocol for the stronger-baseline comparison. All tunable families share the same split, validation criterion, and two-stage selection structure; the two simple heuristics remain fixed ex ante.}
-% \label{tab:q2-stronger-protocol}
-% \end{table}
-
-% \begin{table}[H]
-% \centering
-% \apptighttablesize
-% \setlength{\tabcolsep}{3pt}
-% \input{results/table_q2_stronger_baseline_selection.tex}
-% \caption{Validation-selected representatives for the broader inventory Q2 family sweep. Family representatives are chosen by validation negative MAE only.}
-% \label{tab:q2-stronger-selection}
-% \end{table}
-
-Detailed tuning grids and representative selection are summarized compactly; the robustness table reports the resulting fixed-interface comparison.
-
-\begin{table}[H]
-\centering
-\apptighttablesize
-\begin{adjustbox}{max width=\linewidth}
-\input{results/table_q2_stronger_baseline_robustness.tex}
-\end{adjustbox}
-\caption{Expanded-family inventory selection-transfer robustness summary for the broader comparison set.}
-\label{tab:q2-stronger-robustness}
-\end{table}
-
-The mixed zero/low-friction rows do not overturn the narrower main claim from the five-family inventory comparison.
-
-\FloatBarrier
-
-\section{Load-Following Appendix-Only Secondary Check}
-\label{app:load-following}
-
-Load-following is a secondary operational check. It tests whether offline and deployed-utility selection can diverge outside the event-micro and Traffic-Hourly settings. Its evaluation units are disjoint client groups rather than independent random seeds.
-
-\begin{table}[H]
-\centering
-\apptighttablesize
-\begin{adjustbox}{max width=\linewidth}
-\input{results/table_load_following_support_summary.tex}
-\end{adjustbox}
-\caption{Load-following secondary check over disjoint client-group evaluation units. Near-zero friction remains mixed, while positive-friction regimes can favor a different deployed-utility winner.}
-\label{tab:load-following-support}
-\end{table}
-
-The result is consistent with the narrower reading used throughout the paper: deployed-utility selection can differ from offline validation selection under friction, but this domain is not used as primary evidence.
-
-\FloatBarrier
-
-\section{Mechanism Check under Fixed Action Paths}
+\subsection{Mechanism Check under Fixed Action Paths}
 
 Q1 serves only as mechanism support for why selection-transfer divergence can arise. Holding the proposed action path fixed, synthetic and inventory show how a fixed interface can separate proposed and realized actions once friction is introduced.
 
-\begin{figure}[H]
+\begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.90\linewidth]{assets/figures/fig_q1_results_v2.png}
-\caption{Q1 mechanism support. Even with the same proposed actions, a fixed frictional interface can alter realized actions and realized score; this explains how fixed-interface selection-transfer divergence can arise.}
+\includegraphics[width=0.64\linewidth]{assets/figures/fig_q1_results_v2.png}
+\caption{Q1 mechanism support. Even with the same proposed actions, a fixed frictional interface can alter realized actions and realized score. This illustrates how a fixed deployment interface can change the realized utility ordering of offline-selected candidates.}
 \label{fig:q1-required}
 \end{figure}
 
 \FloatBarrier
 
-\section{Uncertainty and \(\epsilon\)-Tie Audit}
+\subsection{Uncertainty and \(\epsilon\)-Tie Audit}
 \label{app:uncertainty-reporting}
 
-This appendix reports uncertainty for the seed-level recurrence and paired deployed-shortfall summaries used in the main report card. We emphasize intervals and paired shortfalls rather than hypothesis-test significance. For continuous deployed shortfalls, we use 10,000 paired seed bootstrap resamples. For binary share summaries, rows with fewer than 30 matched seeds use Clopper--Pearson exact intervals; rows with at least 30 matched seeds use Wilson intervals. In the Load-following rows, the seed field denotes disjoint client-group evaluation units. We report these intervals as descriptive uncertainty summaries for the reporting diagnostic, not as hypothesis-test evidence for a broader population-level claim.
+This appendix reports uncertainty for the seed-level recurrence and paired deployed-shortfall summaries used in the main report card. We emphasize intervals and paired shortfalls rather than hypothesis-test significance. For continuous deployed shortfalls, we use 10,000 paired seed bootstrap resamples. For binary share summaries, rows with fewer than 30 matched seeds use Clopper--Pearson exact intervals; rows with at least 30 matched seeds use Wilson intervals. We report these intervals as descriptive uncertainty summaries for the reporting diagnostic, not as hypothesis-test evidence for a broader population-level claim.
 
-\begin{table}[H]
+\begin{table}[!htbp]
 \centering
-\apptighttablesize
-\begin{adjustbox}{max width=\linewidth}
+\scriptsize
+\setlength{\tabcolsep}{2.5pt}
+\begin{adjustbox}{width=\appwidetablewidth}
 \input{results/table_q2_recurrence_tests.tex}
 \end{adjustbox}
 \caption{Seed-level recurrence and share uncertainty for deployed-suboptimality. Agreement rate is the fraction of matched seeds for which the offline-selected model is also the deployed-utility best model; deployed-suboptimal share is the complementary fraction. We report Clopper--Pearson exact intervals for rows with $n<30$ and Wilson intervals otherwise.}
@@ -617,19 +592,20 @@ This appendix reports uncertainty for the seed-level recurrence and paired deplo
 
 Aggregate recurrence intervals and uncertainty bands summarize the seed-level pattern without the dense seed-strip visualization.
 
-\begin{table}[H]
+\begin{table}[!htbp]
 \centering
-\apptighttablesize
-\begin{adjustbox}{max width=\linewidth}
+\scriptsize
+\setlength{\tabcolsep}{2.5pt}
+\begin{adjustbox}{width=\appwidetablewidth}
 \input{results/table_q2_gap_bootstrap_cis.tex}
 \end{adjustbox}
-\caption{Paired-bootstrap intervals for deployed-shortfall rows. Deployed shortfall is the paired deployed-utility shortfall $U_{\mathrm{best}} - U_{\mathrm{offline\mbox{-}selected}}$ computed within each matched seed. Intervals use 10,000 paired seed bootstrap resamples. Event-micro and Traffic-Hourly provide the main prediction-to-decision selection-transfer evidence; inventory is operational corroboration; load-following remains appendix-only directional context.}
+\caption{Paired-bootstrap intervals for deployed-shortfall rows. Deployed shortfall is the paired deployed-utility shortfall $U_{\mathrm{best}} - U_{\mathrm{offline\mbox{-}selected}}$ computed within each matched seed. Intervals use 10,000 paired seed bootstrap resamples. Event-micro and Traffic-Hourly provide the main prediction-to-decision selection-transfer evidence; inventory is operational corroboration.}
 \label{tab:q2-gap-bootstrap-cis}
 \end{table}
 
-\begin{figure}[H]
+\begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.94\linewidth]{assets/figures/fig_q2_uncertainty_appendix.pdf}
+\includegraphics[width=0.84\linewidth]{assets/figures/fig_q2_uncertainty_appendix.pdf}
 \caption{Selection-transfer uncertainty summaries for synthetic and event-micro. Left: flip rate; right: deployed-suboptimal share. Bands follow the interval convention described in Appendix~\ref{app:uncertainty-reporting}; zero-width bands may coincide with the line.}
 \label{fig:q2-uncertainty}
 \end{figure}
@@ -638,33 +614,22 @@ Aggregate recurrence intervals and uncertainty bands summarize the seed-level pa
 
 \subsection{Epsilon-Tie Sensitivity}
 
-The audit covers Event-micro, Traffic-Hourly Top-\(k\), Inventory, and the appendix-only Load-following check; Load-following remains appendix-only because its lower-margin rows are tie-sensitive or partially sensitive.
+The audit covers the gated report-card domains and is used to check whether deployed-suboptimality survives small relative tie thresholds.
 
 \begin{table}[H]
-\caption{\(\epsilon\)-tie sensitivity for the gated report-card domains. A seed is tie-compatible when the deployed shortfall of the offline-selected model is at most \(\epsilon_{\mathrm{rel}}S + 10^{-12}\), where \(S\) is the median seed-level deployed-utility scale within the row.}
+\caption{\(\epsilon\)-tie sensitivity for the gated report-card domains. A seed is tie-compatible when the deployed shortfall of the offline-selected model is at most \(\epsilon_{\mathrm{rel}}S + 10^{-12}\), where \(S\) is the median seed-level deployed-utility scale within the row. The Tie status column records whether the deployed-suboptimality conclusion remains after applying the stated relative tie threshold; it is a descriptive robustness label, not a hypothesis-test outcome.}
 \label{tab:epsilon-tie-sensitivity}
 \centering
 \scriptsize
 \setlength{\tabcolsep}{2.2pt}
-\begin{adjustbox}{max width=\linewidth}
+\begin{adjustbox}{width=\appwidetablewidth}
 \input{results/table_epsilon_tie_sensitivity_gated.tex}
-\end{adjustbox}
-\end{table}
-
-\begin{table}[H]
-\caption{\(\epsilon\)-tie sensitivity for the appendix-only Load-following secondary check. These rows are reported separately because Load-following is not used as primary evidence and includes lower-margin tie-sensitive rows.}
-\label{tab:epsilon-tie-sensitivity-load-following}
-\centering
-\scriptsize
-\setlength{\tabcolsep}{2.2pt}
-\begin{adjustbox}{max width=\linewidth}
-\input{results/table_epsilon_tie_sensitivity_load_following.tex}
 \end{adjustbox}
 \end{table}
 
 % Removed from compiled appendix: dense seed-strip.
 % Aggregate recurrence and uncertainty evidence are reported in Table~\ref{tab:q2-recurrence-share-ci} and Figure~\ref{fig:q2-uncertainty}.
-% \begin{figure}[H]
+% \begin{figure}[!htbp]
 % \centering
 % \includegraphics[width=\appwidefigwidth]{assets/figures/fig_q2_seed_recurrence_appendix.png}
 % \caption{Seed-level disagreement strips for the main Q2 domains. Filled markers indicate seeds where the offline-selected model is not deployed-best under the fixed interface.}
