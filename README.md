@@ -1,112 +1,86 @@
-# Execution-Aware Portfolio Reinforcement Learning
-## Target, Execution, and Accounting as Separate Objects
+# Offline-to-Deployed Selection Transfer Audit
 
-This repository studies portfolio control with a simple but strict distinction:
+This repository contains the manuscript artifacts and audit code for:
 
-- `w_tgt`: the portfolio the controller proposes
-- `w_exec`: the portfolio that is actually realized
+**Auditing Offline-to-Deployed Selection Transfer under Fixed Decision Interfaces**
 
-The execution layer maps target weights to realized holdings through a partial-adjustment rule,
+The paper studies a narrow pre-deployment model-selection question: when an offline validation score selects a model, does that selected model remain the deployed-utility winner after every candidate is passed through the same fixed decision interface and friction model?
 
-```text
-w_exec,t = (1 - eta_t) w_exec,t-1 + eta_t w_tgt,t,
-```
-
-and the paper evaluates performance on the executed path rather than on the untraded target path.
-
-## Why This Matters
-
-Many portfolio-RL pipelines implicitly treat
+The repository name used by this README is:
 
 ```text
-w_tgt = w_exec
+offline-to-deployed-selection-transfer-audit
 ```
 
-as if it were an identity. This repository treats that as a modeling choice instead.
+## Core Idea
 
-The paper asks a narrower question:
+Offline pipelines often rank candidate models by a validation score computed on collected data. In deployment, those model outputs are usually consumed by a fixed interface, for example:
 
-- if the learned target path is held fixed,
-- and only the execution rule changes,
-- does realized net performance change once trading frictions are charged on what is actually traded?
+- threshold alerts
+- hysteresis rules
+- budgeted top-k actions
+- residual-warning screens
+- replenishment rules
 
-## Where To Look First
+The audit checks whether the offline-selected model remains best after that fixed interface and deployment friction are applied. It does not argue that offline validation metrics are invalid for prediction, and it does not propose a universal deployed metric. It adds a report-card check for cases where offline validation is being used as deployment-facing model-selection advice.
 
-- [`prl-dow30/`](prl-dow30): active source tree for training, evaluation, and experiment scripts
-- [`frozen_protocol/`](frozen_protocol): locked protocol snapshots and split definitions used by the paper
-- [`repro/`](repro): manifests, rebuild artifacts, smoke checks, and paper-facing reproduction material
+## Report Card
 
-## Current Paper Scope
+For each task, interface, and friction level, the audit records:
 
-The paper is an execution-and-accounting identification study built around a fixed 27-name large-cap U.S. equity snapshot.
+- the offline-selected model
+- the deployed-utility winner
+- transfer or agreement rate
+- deployed-suboptimal share/count
+- paired deployed-utility shortfall
+- tie and uncertainty diagnostics
 
-- canonical splits: `2010--2021`, `2022--2023`, `2024--2025`
-- locked execution grid: `eta in {1.0, 0.5, 0.2, 0.1, 0.082, 0.05, 0.02}`
-- validation-selected operating point on the canonical split: `eta = 0.5`
+Selection transfer is preserved when the offline-selected model and deployed-utility winner agree. A positive deployed shortfall means the offline-selected model is deployed-suboptimal under the specified interface and friction model.
 
-Main empirical takeaway on the canonical split:
+## Main Findings From The PDF
 
-- executed turnover falls from `0.02200` to `0.01095`
-- paired median net Sharpe improves by `+0.0105` at `kappa = 5e-4`
-- paired median net Sharpe improves by `+0.0213` at `kappa = 1e-3`
-- the `kappa = 0` row remains nearly flat
+| Task | Fixed interface | Friction | Offline-selected | Deployed winner | Transfer | Suboptimal cases | Mean shortfall |
+| --- | --- | ---: | --- | --- | ---: | ---: | ---: |
+| Synthetic | zero-friction anchor | 0.00 | Naive last | Naive last | 1.00 | 0/20 | 0.000 |
+| Event warning | threshold tau=0.55 | 0.50 | Reactive sharp | Calibrated | 0.31 | 69/100 | 0.011 |
+| Event warning | threshold tau=0.55 | 1.00 | Reactive sharp | Smoother | 0.01 | 99/100 | 0.057 |
+| Budgeted traffic alert | budget k=249 | 0.50 | Reactive short | Smoother | 0.00 | 100/100 | 7.02 |
+| Budgeted traffic alert | budget k=249 | 1.00 | Reactive short | Smoother | 0.00 | 100/100 | 24.65 |
+| PM2.5 warning | residual warning | 1.00 | Reactive lag-1 | Long smoother | 0.00 | 720/825 | 17.94 |
+| Inventory replenishment | replenishment | 1.00 | Small MLP | MA(7) | 0.01 | 99/100 | 1.03 |
 
-The manuscript now also includes:
+The qualitative result is that offline-selected candidates can become deployed-suboptimal once switching or adjustment costs are applied through the fixed interface. Event warning and Traffic-Hourly are the main prediction-to-decision evidence; PM2.5 and inventory provide residual or operational support.
 
-- an `eta`-aligned retraining check
-- a second 36-name large-cap replication benchmark
-- a cost-calibrated linear-convex information-parity comparator
-
-## Representative Frontier
-
-<p align="center">
-  <img src="paper/fig_frontier.png" alt="Validation frontier for execution rate eta under multiple transaction-cost levels" width="760">
-</p>
-
-The main frontier should be read as follows:
-
-- when `kappa = 0`, the selected interior point is nearly flat relative to immediate execution
-- when `kappa > 0`, an interior execution rate improves net Sharpe by reducing realized turnover
-- the paper's main claim is therefore about implementation under frictions, not about new alpha
-
-## Quickstart
-
-Install:
-
-```bash
-cd prl-dow30
-pip install -r requirements.txt
-```
-
-Train:
-
-```bash
-python3 -m scripts.run_train --config configs/default.yaml --model-type prl --seed 0
-```
-
-Evaluate:
-
-```bash
-python3 -m scripts.run_eval --config configs/default.yaml --model-type prl --seed 0
-```
-
-Run experiment suites:
-
-```bash
-python3 -m scripts.run_matrix --config configs/main_experiment.yaml
-python3 -m scripts.run_matrix --config configs/eta_sweep.yaml
-python3 -m scripts.run_matrix --config configs/rule_vol.yaml
-```
-
-## Repository Layout
+## What Is In This Repository
 
 ```text
-paper/            final manuscript package
-prl-dow30/        code, configs, scripts, experiment outputs
-frozen_protocol/  locked paper protocol snapshots
-repro/            manifests, rebuilds, smoke checks, and paper reproduction artifacts
-docs/             project notes and specifications
-defence/          defense material
+121_Auditing_Offline_to_Deploy.pdf   submitted/reference PDF used for this README
+paper/forecasting_workshop/          manuscript source, compiled PDF, tables, and figures
+scripts/forecast_eval/               paper-facing audit, uncertainty, and robustness builders
+scripts/actionabilitybench_lite/      lightweight actionability/selection experiment scripts
+scripts/deployed_selection_tsfm/      deployed-selection time-series forecasting scripts
+scripts/reporting/                   report-card interval utilities
+outputs/                             generated experiment outputs and frozen result snapshots
 ```
 
+## Rebuilding Paper Artifacts
 
+The generated manuscript assets are already present under `paper/forecasting_workshop/`. To rebuild selected paper-facing figures and tables:
+
+```bash
+python paper/forecasting_workshop/results/build_v2_main_figures.py
+python scripts/forecast_eval/build_workshop_freeze_and_uncertainty.py
+```
+
+To compile the manuscript source:
+
+```bash
+cd paper/forecasting_workshop
+latexmk -pdf paper_forecasting_workshop_v2.tex
+```
+
+The scripts assume a Python environment with the usual scientific stack used by the builders, including `pandas` and `matplotlib`, and a LaTeX installation for PDF figure/manuscript generation.
+
+## Interpretation Boundaries
+
+The audit is a reporting diagnostic, not a new benchmark suite or a new forecasting model. Deployed utility is interface-specific, simulator-specific, and friction-specific. The intended use is to make model-selection transfer visible before deployment, online evaluation, or adaptation.
